@@ -43,14 +43,7 @@ class BankAccount(models.Model):
         now = timezone.now().date()
         delta = now - self.premium_start_date
 
-        if self.account_type == 'premium' and delta >= timedelta(days=90):
-            self.account_type = 'standard'
-            self.premium_start_date = None
-            self.limit = 200
-            self.balance = min(self.balance, self.limit)
-            self.save()
-
-        elif self.account_type == 'premium_pro' and delta >= timedelta(days=180):
+        if (self.account_type == 'premium' and delta >= timedelta(days=90)) or (self.account_type == 'premium_pro' and delta >= timedelta(days=180)):
             self.account_type = 'standard'
             self.premium_start_date = None
             self.limit = 200
@@ -86,7 +79,7 @@ class Loan(models.Model):
         (2, "100 galeones → 120 galeones"),
     ]
     loan_type = models.IntegerField(choices=LOAN_CHOICES)
-    
+
     user = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name='loans_requested'
     )

@@ -24,7 +24,7 @@
             <span style="color:green;">Activa</span>
             {% endif %}
         </li>
-        <li>Cuenta {{ account.account_type }}</li>
+        <li>Cuenta {{ account[account_type] }}</li>
         <li><strong>Límite:</strong> {{ account.limit }} galeones
             <p>Para extender su límite acceda a las cuentas premium del <a href="{% url 'bank_view' %}">Banco
                     Gringotts</a>

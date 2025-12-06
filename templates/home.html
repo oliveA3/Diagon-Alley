@@ -1,0 +1,29 @@
+{% extends 'base.html' %} {% load static %} {% block head %}
+<title>Diagon Alley</title>
+
+{% endblock %} {% block body %} {% if request.user.is_authenticated %}
+<a href="{% url 'profile' %}" class="btn btn-primary">Perfil</a>
+{% else %}
+<a href="{% url 'login' %}" class="btn btn-primary">Iniciar sesión</a>
+{% endif %}
+
+<div class="container-fluid d-flex justify-content-center" style="max-width: 900px;">
+    <div class="card" style="width: 18rem">
+        <img src="..." class="card-img-top" alt="..." />
+        <div class="card-body">
+            <h5 class="card-title">Banco Gringotts</h5>
+            <a href="{% url 'bank_view' %}" class="btn btn-primary">Entrar</a>
+        </div>
+    </div>
+
+    {% for store in stores %}
+    <div class="card" style="width: 18rem">
+        <img src="..." class="card-img-top" alt="..." />
+        <div class="card-body">
+            <h5 class="card-title">{{store.name}}</h5>
+            <a href="{% url 'store_view' store.id %}" class="btn btn-primary">Entrar</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

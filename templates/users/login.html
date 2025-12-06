@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+<title>Bienvenido(a)</title>
+
+{% endblock %}
+{% block body %}
+
+<main>
+    <h2>Iniciar sesión</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {% if error_message %}
+        <p style="color: red;">{{ error_message }}</p>
+        {% endif %}
+        <button type="submit">Entrar</button>
+    </form>
+    
+    <p>¿Aún no tienes una cuenta de Gringotts?
+        <a href="{% url 'register' %}" class="btn-link">Regístrate aquí</a>
+    </p>
+</main>
+
+{% endblock %}

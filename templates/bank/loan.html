@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+<title>Banco Grigotts</title>
+
+{% endblock %}
+{% block body %}
+
+<main>
+    <a href="{% url 'bank_view' %}">🏠 Volver al Banco Gringotts</a>
+
+    <p>Recuerda que debes de tener más de una copa en Hogwarts para pedir un préstamo y contar con dos codeudores.</p>
+
+    <form action="POST">
+        {% csrf_token %}
+        <div>
+            <label for="user_a">Primer codeudor</label>
+            <input class="form-control" list="user_a" placeholder="Selecciona un codeudor...">
+            <datalist id="user_a">
+                {% for a in accounts %}
+                <option value="{{ a.id }}">{{ a.full_name }}</option>
+                {% endfor %}
+            </datalist>
+        </div>
+
+        <div>
+            <label for="user_b">Segundo codeudor</label>
+            <input class="form-control" list="user_b" placeholder="Selecciona un codeudor...">
+            <datalist id="user_b">
+                {% for a in accounts %}
+                <option value="{{ a.id }}">{{ a.full_name }}</option>
+                {% endfor %}
+            </datalist>
+        </div>
+
+        <div>
+            <h3>Préstamos<br>(cantidad -- devolución)</h3>
+            <div>
+                <h4>25 galeones -- 30 galeones</h4>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="loan_type" value="0">
+                    <button type="button" class="btn btn-primary" data-title="Confirmación de préstamo"
+                        data-message="¿Deseas pedir un préstamo de 25 galeones a devolver 30? (Esta acción es irreversible)?"
+                        onclick="showConfirm(this)">
+                        Pedir préstamo
+                    </button>
+                </form>
+            </div>
+
+            <div>
+                <h4>50 galeones -- 60 galeones</h4>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="loan_type" value="0">
+                    <button type="button" class="btn btn-primary" data-title="Confirmación de préstamo"
+                        data-message="¿Deseas pedir un préstamo de 50 galeones a devolver 60? (Esta acción es irreversible)?"
+                        onclick="showConfirm(this)">
+                        Pedir préstamo
+                    </button>
+                </form>
+            </div>
+
+            <div>
+                <h4>100 galeones -- 120 galeones</h4>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="loan_type" value="0">
+                    <button type="button" class="btn btn-primary" data-title="Confirmación de préstamo"
+                        data-message="¿Deseas pedir un préstamo de 100 galeones a devolver 120? (Esta acción es irreversible)?"
+                        onclick="showConfirm(this)">
+                        Pedir préstamo
+                    </button>
+                </form>
+            </div>
+        </div>
+    </form>
+
+    {% include "components/confirm_modal.html" %}
+</main>
+
+<script src="{% static 'js/dropBox.js' %}"></script>
+<script src="{% static 'js/confirmLogic.js' %}"></script>
+{% endblock %}

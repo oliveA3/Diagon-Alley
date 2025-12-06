@@ -1,0 +1,13 @@
+{% if purchase_message %}
+<div class="alert alert-success mt-3">
+    <pre class="mt-2">{{ purchase_message }}</pre>
+    <p>Toma captura de este comprobante como prueba de tu compra.</p>
+</div>
+{% endif %}
+
+{% if usage_message %}
+<div class="alert alert-success mt-3">
+    <pre class="mt-2">{{ usage_message }}</pre>
+    <p>Toma captura de este comprobante como prueba de que usaste el producto.</p>
+</div>
+{% endif %}

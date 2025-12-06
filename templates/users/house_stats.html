@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+<title>Stats</title>
+
+{% endblock %}
+{% block body %}
+
+<main>
+    <a href="{% url 'profile' %}">🏠 Volver a mi perfil</a>
+
+    <h4>Varitas y Escobas en {{ user.house|title }}</h4>
+
+    <div>
+        <h5>Varitas:</h5>
+        {% for user in users_with_wands %}
+        <h6>{{ user }}</h6>
+        {% endfor %}
+    </div>
+
+    <div>
+        <h5>Escobas:</h5>
+        {% for user in users_with_brooms %}
+        <h6>{{ user }}</h6>
+        {% endfor %}
+    </div>
+</main>
+
+{% endblock %}

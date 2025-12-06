@@ -1,0 +1,22 @@
+{% if usage_message %}
+<div id="usageContent" style="display:none;">
+    <pre class="mt-2">{{ usage_message }}</pre>
+    <p>Toma captura de este comprobante como prueba de que usaste el producto.</p>
+</div>
+{% endif %}
+
+<div class="modal fade" id="usageFeedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true"
+    data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="feedbackModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="feedbackModalBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>

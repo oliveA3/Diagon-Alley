@@ -1,0 +1,94 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% load math_filters %} 
+
+{% block head %}
+
+<title>{{ store.name }}</title>
+
+{% endblock %} 
+
+{% block body %}
+
+<header>
+    <a href="{% url 'home' %}">🏠 Volver al Callejón Diagon</a>
+    <h1>{{ store.name }}</h1>
+    <p>{{ store.description }}</p>
+    {% if store.image %}
+    <img
+        src="{{ store.image.url }}"
+        alt="Imagen de {{ store.name }}"
+        style="max-width: 300px"
+    />
+    {% endif %}
+</header>
+
+<main>
+    <h2>Productos disponibles:</h2>
+    <ul class="container-fluid d-flex flex-wrap justify-content-center" style="max-width: 900px;">
+        {% for item in warehouse_items %}
+        <li class="card" style="width: 18rem">
+            <div class="card-body">
+                <h5 class="card-title">{{ item.product.name }}</h5>
+                <h6 class="card-subtitle mb-2 text-body-secondary">{{ item.product.description }}</h6>
+                
+                {% if discount %}
+                <p class="card-text">Precio original: <s>{{ item.product.price }} galeones</s></p>
+                <p class="card-text">
+                    Precio con descuento: {{ item.product.price|mul:0.9 }}
+                    galeones
+                </p>
+                {% else %}
+                <p class="card-text">Precio: {{ item.product.price }} galeones</p>
+                {% endif %}
+
+                <p class="card-text">Duración: {{ item.product.duration_days }} días</p>
+
+                {% if item.product.uses %}
+                <p class="card-text">Usos: {{ item.product.uses }}</p>
+                {% endif %} 
+                
+                {% if item.stock %}
+                <p class="card-text">Stock: {{ item.stock }} restantes</p>
+                {% endif %}
+
+                <p class="card-text">
+                    Estado: {% if item.available %}
+                    <span style="color: green">Disponible</span> <br />
+                    {% else %}
+                    <span style="color: red">No disponible</span> <br />
+                    {% endif %}
+                </p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <input
+                        type="hidden"
+                        name="product_id"
+                        value="{{ item.product.id }}"
+                    />
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        data-title="Confirmación de compra"
+                        data-message="¿Deseas comprar {{ item.product.name }} (Esta acción es irreversible)?"
+                        onclick="showConfirm(this)"
+                    >
+                        Comprar
+                    </button>
+                </form>
+            </div>
+        </li>
+        {% empty %}
+        <li>No hay productos disponibles en esta tienda.</li>
+        {% endfor %}
+    </ul>
+
+    {% include "components/confirm_modal.html" %} 
+    {% include "components/purchase_modal.html" %}
+</main>
+
+<script src="{% static 'js/confirmLogic.js' %}"></script>
+<script src="{% static 'js/purchaseModal.js' %}"></script>
+
+{% endblock %}

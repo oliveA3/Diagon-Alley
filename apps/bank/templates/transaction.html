@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<title>Banco Grigotts</title>
+{% endblock %}
+
+{% block body %}
+
+<main>
+    <a href="{% url 'bank_view' %}">🏠 Volver al Banco Gringotts</a>
+
+    <!-- Transactions -->
+    <div>
+        <ul>Para realizar una transferencia de dinero debe:
+            <li>Transferir mínimo 20 galeones.</li>
+            <li>Contar con la suma a transferir y un +5% de comisión.</li>
+        </ul>
+
+        <p>Solo es válida una transferencia a la semana, de lunes a viernes. Tanto para el que recibe como para el que transfiere.</p>
+    </div> 
+</main>
+
+{% endblock %}
+
+<!-- Modals templates -->
+{% block modals %}
+{{ block.super }}
+{% endblock %}

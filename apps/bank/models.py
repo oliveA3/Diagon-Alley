@@ -4,51 +4,67 @@ from django.utils import timezone
 from apps.users.models import CustomUser
 
 
+from django.db import models
+from datetime import timedelta
+from django.utils import timezone
+from apps.users.models import CustomUser
+
+
 class BankAccount(models.Model):
     id = models.PositiveIntegerField(primary_key=True, unique=True)
     user = models.OneToOneField(
-        CustomUser, on_delete=models.CASCADE, related_name='bank_account')
+        CustomUser, on_delete=models.CASCADE, limit_choices_to={'user_type': 'student'}, related_name='bank_account')
 
-    # Fields for students
-    balance = models.IntegerField(default=0, null=True, blank=True)
-    is_frozen = models.BooleanField(default=False, null=True, blank=True)
+    balance = models.IntegerField(default=20)
+    is_frozen = models.BooleanField(default=False)
 
-    ACCOUNT_CHOICES = [
+    ACCOUNT_TYPES = [
         ('standard', 'Standard'),
         ('premium', 'Premium'),
         ('premium_pro', 'Premium Pro'),
     ]
-    account_type = models.CharField(
-        max_length=20, choices=ACCOUNT_CHOICES, default='standard'
-    )
+    account_type = models.CharField(choices=ACCOUNT_TYPES, default='standard')
 
-    limit = models.PositiveIntegerField(default=200)
-
-    premium_start_date = models.DateField(null=True, blank=True)
+    created_at = models.DateField(auto_now=True)
+    upgraded_at = models.DateField(null=True, blank=True)
 
     daily_transaction_limit = models.PositiveIntegerField(default=1)
     daily_received_limit = models.PositiveIntegerField(default=1)
 
-    def frozen_discount(self):
-        if self.is_frozen:
-            self.balance = int(self.balance * 0.96)
+    @property
+    def current_limit(self):
+        return {
+            'standard': 200,
+            'premium': 300,
+            'premium_pro': 400,
 
-    def check_account_expiration(self):
-        if self.account_type == 'standard':
-            return
+        }.get(self.account_type, 200)
 
-        if not self.premium_start_date:
-            return
+    @property
+    def premium_ex_date(self):
+        if not self.upgraded_at or self.account_type == 'standard':
+            return None
+        
+        if self.account_type == 'premium':
+            return self.upgraded_at + timedelta(days=90)
+        
+        if self.account_type == 'premium_pro':
+            return self.upgraded_at + timedelta(days=180)
+        
+        return None
 
-        now = timezone.now().date()
-        delta = now - self.premium_start_date
+    def check_expiration(self):
+        if self.account_type == 'premium' and self.upgraded_at:
+            if timezone.now().date() > self.upgraded_at + timedelta(days=90):
+                self.account_type = 'standard'
+                self.upgraded_at = None
+                self.save()
 
-        if (self.account_type == 'premium' and delta >= timedelta(days=90)) or (self.account_type == 'premium_pro' and delta >= timedelta(days=180)):
-            self.account_type = 'standard'
-            self.premium_start_date = None
-            self.limit = 200
-            self.balance = min(self.balance, self.limit)
-            self.save()
+        elif self.account_type == 'premium_pro' and self.upgraded_at:
+            if timezone.now().date() > self.upgraded_at + timedelta(days=180):
+                self.account_type = 'standard'
+                self.upgraded_at = None
+                self.save()
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -65,7 +81,7 @@ class Transaction(models.Model):
         CustomUser, on_delete=models.CASCADE, related_name='sent_transactions')
     receiver = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name='received_transactions')
-    amount = models.PositiveIntegerField()
+    amount = models.PositiveIntegerField(default=20)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

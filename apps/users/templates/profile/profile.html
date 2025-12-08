@@ -1,0 +1,127 @@
+{% extends 'base.html' %} 
+{% load static %} 
+
+{% block head %}
+<title>Perfil</title>
+{% endblock %} {% block body %}
+
+<main>
+    <a href="{% url 'home' %}">🏠 Volver al Callejón Diagon</a>
+
+    <!-- Student data -->
+    <div>
+        <h2>{{ user.full_name }}</h2>
+        <ul>
+            <li><strong>Nombre de usuario:</strong> {{ user.username }}</li>
+            <li><strong>Casa de Hogwarts:</strong> {{ user.house|title }}</li>
+            <br />
+
+            <!-- Account data -->
+            <li>
+                <h4><strong>No. de bóveda:</strong> {{ account.id }}</h4>
+                <p><strong>Saldo:</strong> {{ account.balance }} galeones</p>
+                <div>
+                    <strong>Estado de la cuenta:</strong>
+                    {% if account.is_frozen %}
+                    <span style="color: red">Congelada</span>
+                    {% else %}
+                    <span style="color: green">Activa</span>
+                    {% endif %}
+                </div>
+                
+                <!-- Account type info -->
+                <p>Cuenta {{ account.get_account_type_display }}</p>
+                <div>
+                    <strong>Límite:</strong> {{ account.current_limit }} galeones
+                    <p>
+                        Para extender su límite acceda a las cuentas premium del
+                        <a href="{% url 'bank_view' %}">Banco Gringotts</a>
+                    </p>
+
+                    {% if account.expiration_date %}
+                    <p>Su cuenta expira el {{ account.premium_ex_date }}</p>
+                    {% endif %}
+                </div>
+            </li>
+    </div>
+</main>
+
+<!-- Profile options -->
+<div>
+    <a href="{% url 'house_stats' %}">Estadísticas de la casa</a>
+
+    <a href="{% url 'edit_profile' %}">Editar perfil</a>
+
+    <a href="{% url 'update_password' %}">Cambiar contraseña</a>
+</div>
+
+<!-- Logout -->
+<div>
+    <form method="POST" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button
+            type="button"
+            class="btn btn-secondary btn-logout"
+            data-title="Confirmación de cierre de sesión"
+            data-message="¿Está seguro de que desea cerrar la sesión activa?"
+            onclick="showConfirm(this)"
+        >
+            Cerrar sesión
+        </button>
+    </form>
+</div>
+
+<!-- Student inventory -->
+<section class="container-fluid">
+    <h3>Mi inventario:</h3>
+    {% for item in inventory_items %}
+
+    <!-- Inventory Item -->
+    <div
+        class="card container-fluid d-flex flex-wrap justify-content-center"
+        style="max-width: 900px"
+    >
+        <div class="card-body">
+            <h5 class="card-title">{{ item.product.name }}</h5>
+            <h6 class="card-subtitle mb-2 text-body-secondary">
+                {{ item.product.description }}
+            </h6>
+            <p class="card-text">Comprado en: {{ item.pur_date }}</p>
+            <p class="card-text">Expira en: {{ item.ex_date }}</p>
+
+            <!-- Use item form -->
+            {% if item.uses %}
+            <p class="card-text">Usos: {{ item.uses }}</p>
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="item_id" value="{{ item.id }}" />
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-title="Confirmación de uso"
+                    data-message="¿Deseas usar el producto {{ item.product.name }} (Esta acción es irreversible)?"
+                    onclick="showConfirm(this)"
+                >
+                    Usar
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+
+    {% empty %} No tienes productos en tu inventario. 
+    {% endfor %}
+</section>
+
+{% endblock %}
+
+<!-- Modals templates -->
+{% block modals %}
+{{ block.super }}
+{% include "components/modal/usage_modal.html" %} 
+{% endblock %}
+
+<!-- Modals JS -->
+{% block scripts %}
+<script src="{% static 'js/usageModal.js' %}"></script>
+{% endblock %}

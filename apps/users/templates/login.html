@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<title>Inicio de Sesión</title>
+{% endblock %}
+
+{% block body %}
+
+<main>
+    <h2>Inicia sesión para acceder al Callejón Diagon</h2>
+    <!-- StudentLoginForm -->
+    <form method="POST">
+        {% csrf_token %}
+        
+        {% for field in form %}
+            <div>
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                
+                {{ field }}
+                
+                {% for error in field.errors %}
+                    <p style="color: red; font-size: 0.8em;">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        
+        {% if form.non_field_errors %}
+            <div style="border: 1px solid red; padding: 10px; color: red; margin-bottom: 15px;">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <button type="submit">Entrar</button>
+    </form>
+    
+    <p>¿Aún no tienes una cuenta en el Callejón Diagon?
+        <a href="{% url 'register' %}" class="btn-link">Regístrate</a>
+    </p>
+</main>
+
+{% endblock %}

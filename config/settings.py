@@ -26,7 +26,10 @@ SECRET_KEY = 'django-insecure-=g2q1k^lq3mn8u@l*gz$sl!j&=!g8k8t4kn9cxen!ghc0(ubs0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['diagonalley3.pythonanywhere.com']
+if 'PYTHONANYWHERE_DOMAIN' in os.environ:
+    ALLOWED_HOSTS = ['diagonalley3.pythonanywhere.com']
+else:
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -41,7 +44,7 @@ INSTALLED_APPS = [
     'apps.users',
     'apps.stores',
     'apps.bank',
-    'apps.receipts',
+    'apps.utils',
 ]
 
 MIDDLEWARE = [
@@ -127,8 +130,6 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
-
-STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

@@ -1,55 +1,71 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block head %}
 <title>Banco Grigotts</title>
-
 {% endblock %}
+
 {% block body %}
 
 <main>
     <a href="{% url 'home' %}">🏠 Volver al Callejón Diagon</a>
 
-    <h2>Bienvenido(a), {{ user.full_name }} al Banco Gringotts.</h2>
-    <p>Lugar más seguro de todo el mundo mágico.</p>
+    <!-- Bank info -->
+    <div>
+        <h2>Bienvenido, {{ user.full_name }} al Banco Gringotts.</h2>
+        <p>Lugar más seguro de todo el mundo mágico.</p>
 
-    <ul>
-        <li><strong>No. de bóveda:</strong> {{ account.id }}</li>
-        <li><strong>Saldo:</strong> {{ account.balance }} galeones</li>
-        <li><strong>Estado de la cuenta:</strong>
-            {% if account.is_frozen %}
-            <span style="color:red;">Congelada</span>
-            <ul>
-                <li>Para descongelar una cuenta deben comprar un artículo del Callejón Diagon.</li>
-                <li>Mientras la cuenta permanezca congelada se descontará el 4% de su saldo cada día.</li>
-                <li>Las cuentas congeladas con el balance en 0 solicitarán su descongelación al banco.</li>
-            </ul>
-            {% else %}
-            <span style="color:green;">Activa</span>
+        <!-- Account info -->
+        <ul>
+            <li><strong>No. de bóveda:</strong> {{ account.id }}</li>
+            <li><strong>Saldo:</strong> {{ account.balance }} galeones</li>
+
+            <li><strong>Estado de la cuenta:</strong>
+                {% if account.is_frozen %}
+                <span style="color:red;">Congelada</span>
+                <ul>
+                    <li>Para descongelar una cuenta deben comprar un artículo del Callejón Diagon.</li>
+                    <li>Mientras la cuenta permanezca congelada se descontará el 5% de su saldo cada 3 días.</li>
+                    <li>Las cuentas congeladas con el balance en 0 solicitarán su descongelación al banco.</li>
+                </ul>
+
+                {% else %}
+                <span style="color:green;">Activa</span>
+                {% endif %}
+
+                <p>Para evitar que una cuenta se congele te sugerimos comprar un artículo del Callejón Diagon cada copa.</p>
+            </li>
+
+            <!-- Account type info -->
+            <li>Cuenta {{ account.get_account_type_display }}</li>
+            <li>Límite {{ account.current_limit }}</li>
+            {% if account.premium_ex_date %}
+            <li>Su cuenta expira el {{ account.premium_ex_date }}</li>
             {% endif %}
-            <p>Para evitar que una cuenta se congele te sugerimos comprar un artículo del Callejón Diagon cada copa.</p>
-        </li>
-        <li>Cuenta {{ account.account_type }}</li>
-        <li>Límite {{ account.limit }}</li>
-        {% if account.premium_ex_date %}
-        <li>Su cuenta {{ account.account_type }} expira el {{ account.premium_ex_date }}</li>
-        {% endif %}
-    </ul>
+        </ul>
+    </div>
 </main>
 
+<!-- Bank options -->
 <div>
     <a href="{% url 'transaction' %}">Transferir galeones</a>
+
     <a href="{% url 'loan' %}">Pedir préstamo</a>
 </div>
 
+
+<!-- Premium purchase -->
 <section>
     <h4>Cuentas premium</h4>
     <p>¿La cuenta standard limita tus abundantes ganancias? ¿Te ves obligado a gastar dinero en artículos que no quieres
         solo para no perder tu fortuna? ¿No tienes cómo alardear frente a la gente una suma mayor de 200 galeones? Todo
         eso se resuelve con una Cuenta Premium: la opción perfecta para mantener tu estatus de ricachón.</p>
+    
+    <!-- Type Premium -->
     <div>
         <h5>Cuenta Premium</h5>
         <p>Precio: 80 galeones</p>
-        <p>Aumenta el límite de tu cuenta a 400 galeones por 3 meses.</p>
+        <p>Aumenta el límite de tu cuenta a 300 galeones por 3 meses.</p>
         <form method="post">
             {% csrf_token %}
             <input type="hidden" name="account_type" value="premium">
@@ -60,6 +76,8 @@
             </button>
         </form>
     </div>
+
+    <!-- Type Premium Pro -->
     <div>
         <h5>Cuenta Premium Pro</h5>
         <p>Precio: 100 galeones</p>
@@ -74,15 +92,17 @@
             </button>
         </form>
     </div>
-
-    {% include "components/confirm_modal.html" %}
 </section>
 
-{% if messages %}
-{% include "components/success_modal.html" %}
-{% endif %}
+{% endblock %}
 
-<script src="{% static 'js/confirmLogic.js' %}"></script>
-<script src="{% static 'js/successModal.js' %}"></script>
+<!-- Modals templates -->
+{% block modals %}
+{{ block.super }}
+{% include "components/modal/purchase_modal.html" %}
+{% endblock %}
 
+<!-- Modals JS -->
+{% block scripts %}
+<script src="{% static 'js/purchaseModal.js' %}"></script>
 {% endblock %}

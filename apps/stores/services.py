@@ -2,13 +2,13 @@ from datetime import date
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from .models import Store, Product, WarehouseItem, InventoryItem
-from apps.receipts import utils
+from apps.utils import utils
 
 
-def purchase_product(request, user, account, product, store, discount):
+def purchase_product(request, user, account, product: Product, store: Store):
     price_to_pay = product.price
-    if discount:
-        price_to_pay = int(product.price * 0.9)
+    if product.discount != 1.0:
+        price_to_pay = int(product.price - (product.price * product.discount))
 
     if account.balance >= price_to_pay:
         warehouse_item = get_object_or_404(
@@ -51,10 +51,11 @@ def purchase_product(request, user, account, product, store, discount):
                     account.is_frozen = False
 
                 account.save()
-                
-                receipt = utils.generate_purchase_receipt(user, product, price_to_pay)
+
+                receipt = utils.generate_purchase_receipt(
+                    user, product, price_to_pay)
                 message = utils.generate_purchase_message(receipt)
-                
+
                 messages.success(
                     request, f"Has comprado {product.name} por {price_to_pay} galeones.")
                 return message

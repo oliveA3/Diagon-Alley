@@ -1,18 +1,23 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block head %}
 <title>Banco Grigotts</title>
-
 {% endblock %}
+
 {% block body %}
 
+<!-- Loans -->
 <main>
     <a href="{% url 'bank_view' %}">🏠 Volver al Banco Gringotts</a>
 
-    <p>Recuerda que debes de tener más de una copa en Hogwarts para pedir un préstamo y contar con dos codeudores.</p>
+    <p>Recuerda que debes contar con dos codeudores para pedir un préstamo.</p>
 
+    <!-- Codebtors -->
     <form action="POST">
         {% csrf_token %}
+
+        <!-- 1st codebtor -->
         <div>
             <label for="user_a">Primer codeudor</label>
             <input class="form-control" list="user_a" placeholder="Selecciona un codeudor...">
@@ -23,6 +28,7 @@
             </datalist>
         </div>
 
+        <!-- 2nd codebtor -->
         <div>
             <label for="user_b">Segundo codeudor</label>
             <input class="form-control" list="user_b" placeholder="Selecciona un codeudor...">
@@ -33,8 +39,11 @@
             </datalist>
         </div>
 
+        <!-- Loan types -->
         <div>
             <h3>Préstamos<br>(cantidad -- devolución)</h3>
+
+            <!-- Loan type 25 - 30 -->
             <div>
                 <h4>25 galeones -- 30 galeones</h4>
                 <form method="post">
@@ -48,6 +57,7 @@
                 </form>
             </div>
 
+            <!-- Loan type 50 - 60 -->
             <div>
                 <h4>50 galeones -- 60 galeones</h4>
                 <form method="post">
@@ -61,6 +71,7 @@
                 </form>
             </div>
 
+            <!-- Loan type 100 - 120 -->
             <div>
                 <h4>100 galeones -- 120 galeones</h4>
                 <form method="post">
@@ -75,10 +86,17 @@
             </div>
         </div>
     </form>
-
-    {% include "components/confirm_modal.html" %}
 </main>
 
+{% endblock %}
+
+<!-- Modals templates -->
+{% block modals %}
+{{ block.super }}
+{% endblock %}
+
+<!-- Modals JS -->
+{% block scripts %}
 <script src="{% static 'js/dropBox.js' %}"></script>
 <script src="{% static 'js/confirmLogic.js' %}"></script>
 {% endblock %}

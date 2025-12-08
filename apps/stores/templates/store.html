@@ -1,15 +1,14 @@
 {% extends 'base.html' %} 
-{% load static %} 
-{% load math_filters %} 
+{% load static %}
+{% load discount_tags %}
 
 {% block head %}
-
 <title>{{ store.name }}</title>
-
 {% endblock %} 
 
 {% block body %}
 
+<!-- Store info -->
 <header>
     <a href="{% url 'home' %}">🏠 Volver al Callejón Diagon</a>
     <h1>{{ store.name }}</h1>
@@ -23,20 +22,22 @@
     {% endif %}
 </header>
 
+<!-- Store products -->
 <main>
     <h2>Productos disponibles:</h2>
     <ul class="container-fluid d-flex flex-wrap justify-content-center" style="max-width: 900px;">
+
         {% for item in warehouse_items %}
         <li class="card" style="width: 18rem">
             <div class="card-body">
                 <h5 class="card-title">{{ item.product.name }}</h5>
                 <h6 class="card-subtitle mb-2 text-body-secondary">{{ item.product.description }}</h6>
                 
+                <!-- Discount -->
                 {% if discount %}
                 <p class="card-text">Precio original: <s>{{ item.product.price }} galeones</s></p>
                 <p class="card-text">
-                    Precio con descuento: {{ item.product.price|mul:0.9 }}
-                    galeones
+                    Precio con descuento: {{ item.product.price|dis:discount }} galeones
                 </p>
                 {% else %}
                 <p class="card-text">Precio: {{ item.product.price }} galeones</p>
@@ -60,6 +61,7 @@
                     {% endif %}
                 </p>
 
+                <!-- Product purchase -->
                 <form method="post">
                     {% csrf_token %}
                     <input
@@ -79,16 +81,21 @@
                 </form>
             </div>
         </li>
-        {% empty %}
-        <li>No hay productos disponibles en esta tienda.</li>
+
+        {% empty %} <li>No hay productos disponibles en esta tienda.</li>
         {% endfor %}
     </ul>
-
-    {% include "components/confirm_modal.html" %} 
-    {% include "components/purchase_modal.html" %}
 </main>
 
-<script src="{% static 'js/confirmLogic.js' %}"></script>
-<script src="{% static 'js/purchaseModal.js' %}"></script>
+{% endblock %}
 
+<!-- Modals templates -->
+{% block modals %}
+{{ block.super }}
+{% include "components/modal/purchase_modal.html" %}
+{% endblock %}
+
+<!-- Modals JS -->
+{% block scripts %}
+<script src="{% static 'js/purchaseModal.js' %}"></script>
 {% endblock %}

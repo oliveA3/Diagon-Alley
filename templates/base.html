@@ -5,14 +5,37 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        
+        <!-- Static CSS -->
+        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+        <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-        {% block head %} {% endblock %}
+
+        {% block head %} 
+        {% endblock %}
     </head>
 
     <body>
-        {% block body %} {% endblock %}
+        {% block body %}
+        {% endblock %}
+
+        <!-- Modals templates -->
+        {% block modals %}
+        {% include "components/modal/confirm_modal.html" %}
+        {% if message.success %}
+        {% include "components/modal/success_modal.html" %} 
+        {% endif %}
+        {% endblock %}
+
+        <!-- Modals JS -->
+        <script src="{% static 'js/confirmLogic.js' %}"></script>
+        <script src="{% static 'js/successModal.js' %}"></script>
+        {% block scripts %}
+        {% endblock %}
+
+        <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
             crossorigin="anonymous"></script>

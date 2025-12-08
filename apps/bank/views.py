@@ -8,10 +8,6 @@ from django.db.models import Q
 
 def bank_view(request):
     user = request.user
-
-    if user.role != 'student':
-        return render(request, 'bank/bank.html', {'user': user})
-
     account = get_object_or_404(BankAccount, user_id=user.id)
 
     # Premium purchase
@@ -26,11 +22,11 @@ def bank_view(request):
         'account': account,
     }
 
-    return render(request, 'bank/bank.html', context)
+    return render(request, 'bank.html', context)
 
 
 def transactions_view(request):
-    return render(request, 'bank/transaction.html')
+    return render(request, 'transaction.html')
 
 
 LOAN_AMOUNTS = {
@@ -73,4 +69,4 @@ def loans_view(request):
         'accounts': accounts,
     }
 
-    return render(request, 'bank/loan.html', context)
+    return render(request, 'loan.html', context)

@@ -10,15 +10,15 @@ class CustomUser(AbstractUser):
         ('admin', 'Administrador'),
         ('student', 'Estudiante'),
         ('banker', 'Banquero'),
-        ('manager', 'Manager'),
+        ('seller', 'Vendedor'),
     ]
-    role = models.CharField(
-        max_length=20, choices=ROLE_CHOICES, default='student')
+    role = models.CharField(choices=ROLE_CHOICES, default='student')
 
     username = models.CharField(
-        max_length=150,
+        max_length=100,
         unique=True
     )
+
     full_name = models.CharField(max_length=150, unique=True)
 
     HOUSE_CHOICES = [
@@ -27,12 +27,11 @@ class CustomUser(AbstractUser):
         ('ravenclaw', 'Ravenclaw'),
         ('slytherin', 'Slytherin'),
     ]
-    house = models.CharField(max_length=20, null=True,
-                             blank=True, choices=HOUSE_CHOICES)
+    house = models.CharField(null=True, blank=True, choices=HOUSE_CHOICES)
 
 
     def __str__(self):
-            return f"{self.username} ({self.role}, {self.house})"
+            return f"{self.full_name (self.username)} - {self.house})"
         
     def save(self, *args, **kwargs):
         if not self.id:

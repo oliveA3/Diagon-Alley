@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<title>Registro</title>
+{% endblock %}
+
+{% block body %}
+
+<main>
+    <h2>Regístrate para acceder al Callejón Diagon</h2>
+    <!-- StudentRegistrationForm -->
+    <form method="POST">
+        {% csrf_token %}
+        
+        {% for field in form %}
+            <div>
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                
+                {{ field }}
+                
+                {% for error in field.errors %}
+                    <p style="color: red; font-size: 0.8em;">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        
+        {% if form.non_field_errors %}
+            <div style="border: 1px solid red; padding: 10px; color: red; margin-bottom: 15px;">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <button type="submit">Registrarse</button>
+    </form>
+    
+    <p>¿Ya tienes una cuenta en el Callejón Diagon?
+        <a href="{% url 'login' %}" class="btn-link">Inicia sesión</a>
+    </p>
+</main>
+
+{% endblock %}

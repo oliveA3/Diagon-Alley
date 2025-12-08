@@ -10,23 +10,15 @@ PREMIUM_PRICES = {
     'premium_pro': 100,
 }
 
-PREMIUM_LIMITS = {
-    'premium': 300,
-    'premium_pro': 400,
-}
-
-
-def buy_premium(account, new_type):
+def buy_premium(account: BankAccount, new_type: str):
     price = PREMIUM_PRICES[new_type]
-    new_limit = PREMIUM_LIMITS[new_type]
     
     if account.balance < price:
         raise ValueError("No tienes suficientes galeones para esta cuenta.")
 
-    account.balance -= price
     account.account_type = new_type
-    account.premium_start_date = timezone.now().date()
-    account.limit = new_limit
+    account.upgraded_at = timezone.now()
+    account.balance -= price
     account.save()
 
 

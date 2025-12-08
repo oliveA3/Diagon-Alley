@@ -1,13 +1,26 @@
-{% extends 'base.html' %} {% load static %} {% block head %}
-<title>Diagon Alley</title>
+{% extends 'base.html' %} 
+{% load static %} 
 
-{% endblock %} {% block body %} {% if request.user.is_authenticated %}
-<a href="{% url 'profile' %}" class="btn btn-primary">Perfil</a>
-{% else %}
-<a href="{% url 'login' %}" class="btn btn-primary">Iniciar sesión</a>
-{% endif %}
+{% block head %}
+<title>Callejón Diagon</title>
+{% endblock %} 
 
-<div class="container-fluid d-flex justify-content-center" style="max-width: 900px;">
+{% block body %} 
+
+<!-- Upper button (Login or Profile) -->
+<div>
+    {% if request.user.is_authenticated %}
+    <a href="{% url 'profile' %}" class="btn btn-primary">Perfil</a>
+
+    {% else %}
+    <a href="{% url 'login' %}" class="btn btn-primary">Iniciar sesión</a>
+    {% endif %}
+</div>
+
+<!-- Diagon Alley -->
+<main class="container-fluid d-flex justify-content-center" style="max-width: 900px;">
+
+    <!-- Gringotts -->
     <div class="card" style="width: 18rem">
         <img src="..." class="card-img-top" alt="..." />
         <div class="card-body">
@@ -16,6 +29,7 @@
         </div>
     </div>
 
+    <!-- Stores -->
     {% for store in stores %}
     <div class="card" style="width: 18rem">
         <img src="..." class="card-img-top" alt="..." />
@@ -25,5 +39,12 @@
         </div>
     </div>
     {% endfor %}
-</div>
+
+</main>
+
+{% endblock %}
+
+<!-- Modals templates -->
+{% block modals %}
+{{ block.super }}
 {% endblock %}

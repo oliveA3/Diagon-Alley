@@ -66,6 +66,11 @@
                             name="product_id"
                             value="{{ item.product.id }}"
                         />
+                        <input
+                            type="hidden"
+                            name="product_id"
+                            value="{{ item.product.id }}"
+                        />
 
                         <div class="d-flex gap-3">
                             <!-- Purchase -->
@@ -80,15 +85,7 @@
                             </button>
 
                             <!-- Gift -->
-                            <button
-                                type="button"
-                                class="btn btn-primary w-100"
-                                data-title="Confirmación de compra"
-                                data-message="¿Deseas comprar {{ item.product.name }} (Esta acción es irreversible)?"
-                                onclick="showConfirm(this)"
-                            >
-                                Regalar
-                            </button>
+                            <a href="{% url 'gift_view' item.product.id %}" class="btn btn-primary">Regalar</a>
                         </div>
                     </form>
                 </div>

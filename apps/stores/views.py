@@ -1,8 +1,9 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from urllib.parse import quote
+from apps.users.models import CustomUser
 from apps.bank.models import BankAccount
 from .models import Store, Product, WarehouseItem, InventoryItem
-from .services import purchase_product
+from .services import purchase_product, get_discount, gift_product
 from django.db.models import Max
 from datetime import datetime
 
@@ -15,16 +16,7 @@ def store_view(request, store_id):
 
     purchase_message = None
 
-    discounts_qs = InventoryItem.objects.filter(
-        user=request.user,
-        product__discount__isnull=False
-    ).exclude(
-        product__discount=0
-    )
-
-    discount = 1.0
-    if discounts_qs.exists():
-        discount = discounts_qs.aggregate(Max('product__discount'))['product__discount__max']
+    discount = get_discount(request.user)
 
     # Product purchase
     if request.method == 'POST':
@@ -51,3 +43,24 @@ def store_view(request, store_id):
     }
 
     return render(request, 'store.html', context)
+
+def gift_view(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    accounts = BankAccount.objects.exclude(user=request.user)
+
+    discount = get_discount(request.user)
+
+    if request.method == "POST":
+        receiver_id = request.POST.get("receiver_id")
+        receiver = CustomUser.objects.filter(id=receiver_id)
+
+        sender = BankAccount.objects.filter(user=request.user.id)
+
+        gift_product(request, sender, receiver, product, discount)
+
+    context = {
+        'product': product,
+        'accounts' : accounts,
+    }
+
+    return render(request, "gift.html", context)

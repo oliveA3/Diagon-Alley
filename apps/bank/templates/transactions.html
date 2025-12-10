@@ -17,8 +17,8 @@
             {% csrf_token %}
 
             <label for="receiver">Enviar a:</label>
-            <input list="user_a" name="receiver_id" id="receiver" required>
-            <datalist id="user_a">
+            <input list="accounts" name="receiver_id" id="receiver" required>
+            <datalist id="accounts">
                 {% for a in accounts %}
                 <option value="{{ a.id }}">{{ a.user.full_name }}</option>
                 {% endfor %}

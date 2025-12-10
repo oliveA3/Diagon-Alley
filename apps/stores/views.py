@@ -41,8 +41,8 @@ def store_view(request, store_id):
     hour = now.hour
     weekday = now.weekday()  # 0 = monday, 6 = sunday
 
-    # Permitido solo lunes-viernes (0-4) y entre 6am-8pm
-    outside_working_hours = not (0 <= weekday <= 4 and 6 <= hour < 20)
+    # Monday to Friday (0-4) from 6am to 11pm
+    outside_working_hours = not (0 <= weekday <= 4 and 6 <= hour < 23)
 
     context = {
         'store': store,

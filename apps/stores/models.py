@@ -16,11 +16,7 @@ class Store(models.Model):
 
     @property
     def image_url(self):
-        """
-        Returns the image's static root
-        Example: /static/imgs/3.png for store id=3
-        """
-        return static(f"imgs/{self.id}.png")
+        return static(f"imgs/stores/{self.id}.jpg")
 
 
 class Product(models.Model):

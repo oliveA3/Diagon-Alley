@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<title>Banco Gringotts</title>
+{% endblock %}
+
+{% block body %}
+<main>
+    <a href="{% url 'bank_view' %}">🏠 Volver al Banco Gringotts</a>
+
+    <!-- Transaction form -->
+    <div>
+        <h2>Realizar transferencia</h2>
+
+        <form method="post" action="{% url 'transactions' %}">
+            {% csrf_token %}
+
+            <label for="receiver">Enviar a:</label>
+            <input list="user_a" name="receiver_id" id="receiver" required>
+            <datalist id="user_a">
+                {% for a in accounts %}
+                <option value="{{ a.id }}">{{ a.user.full_name }}</option>
+                {% endfor %}
+            </datalist>
+
+            <label for="amount">Cantidad de galeones:</label>
+            <input type="number" name="amount" id="amount" min="20" required>
+
+            <button type="button" class="btn btn-primary"
+                data-title="Confirmación de transferencia"
+                data-message=""
+                onclick="prepareConfirm(this)">
+                    Transferir
+            </button>
+        </form>
+    </div>
+
+    <!-- Transaction rules -->
+    <div class="rules">
+        <ul>
+            <li>Transferir mínimo 20 galeones.</li>
+            <li>Debes tener el monto + 5% de comisión.</li>
+            <li>Solo una transacción por semana, tanto para el remitente como para el receptor.</li>
+            <li>No se permiten transacciones si la cuenta está congelada.</li>
+        </ul>
+    </div>
+</main>
+{% endblock %}
+
+<!-- Modals templates -->
+{% block modals %}
+{{ block.super }}
+{% endblock %}
+
+<!-- Modals JS -->
+{% block scripts %}
+<script>
+function prepareConfirm(button) {
+    const receiverInput = document.getElementById("receiver");
+    const amountInput = document.getElementById("amount");
+
+    const receiverName = receiverInput.value;
+    const amount = amountInput.value;
+
+    button.setAttribute("data-message",
+        `¿Deseas transferir ${amount} galeones a la cuenta No. ${receiverName}? (Esta acción es irreversible)`);
+    showConfirm(button);
+}
+</script>
+{% endblock %}

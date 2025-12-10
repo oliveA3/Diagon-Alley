@@ -3,6 +3,8 @@ from datetime import timedelta
 from .models import Transaction
 from django.contrib import messages
 from .models import BankAccount
+from django.core.exceptions import ValidationError
+from django.db import transaction as db_transaction
 from django.contrib import messages
 
 PREMIUM_PRICES = {
@@ -14,47 +16,53 @@ def buy_premium(account: BankAccount, new_type: str):
     price = PREMIUM_PRICES[new_type]
     
     if account.balance < price:
-        raise ValueError("No tienes suficientes galeones para esta cuenta.")
+        messages.error(request, "No tienes suficientes galeones para esta cuenta.")
 
     account.account_type = new_type
     account.upgraded_at = timezone.now()
     account.balance -= price
     account.save()
 
+    messages.success(request, f"Has comprado una cuenta {account.account_type} por {price} galeones.")
 
-# def can_transact(user, direction='send'):
-#    now = timezone.now()
-#    week_ago = now - timedelta(days=7)
-#
-#    if direction == 'send':
-#        recent = Transaction.objects.filter(
-#            sender=user, timestamp__gte=week_ago)
-#    else:
-#        recent = Transaction.objects.filter(
-#            receiver=user, timestamp__gte=week_ago)
-#
-#    return not recent.exists()
-#
-#
-# def transfer_galleons(sender, receiver, amount):
-#    if sender.is_frozen or receiver.is_frozen:
-#        return "Una de las cuentas está congelada."
-#
-#    if sender.balance < amount:
-#        return "Saldo insuficiente."
-#
-#    if not can_transact(sender, 'send'):
-#        return "Ya enviaste dinero esta semana."
-#
-#    if not can_transact(receiver, 'receive'):
-#        return "Este usuario ya recibió dinero esta semana."
-#
-#    # Ejecutar transacción
-#    sender.balance -= amount
-#    receiver.balance += amount
-#    sender.save()
-#    receiver.save()
-#
-#    Transaction.objects.create(sender=sender, receiver=receiver, amount=amount)
-#    return f"Transferencia exitosa de {amount} galeones a {receiver.username}."
-#
+
+
+def validate_transaction(sender_account, receiver_account, amount):
+    if amount < 20:
+        messages.error(request, "La transferencia mínima es de 20 galeones.")
+
+    if sender_account.is_frozen:
+        messages.error(request, "La cuenta del remitente está congelada.")
+
+    if receiver_account.is_frozen:
+        messages.error(request, "La cuenta del receptor está congelada.")
+
+    total_needed = int(amount * 1.05)
+    if sender_account.balance < total_needed:
+        messages.error(request, "Saldo insuficiente para cubrir: monto + comisión del 5%.")
+
+    if sender_account.weekly_transactions_left <= 0:
+        messages.error(request, "El remitente ya realizó su transferencia semanal.")
+
+    if receiver_account.weekly_transactions_left <= 0:
+        raise ValidationError("El receptor ya recibió su transferencia semanal.")
+
+    return True
+
+
+def execute_transaction(sender_account, receiver_account, amount, tx_instance):
+    validate_transaction(sender_account, receiver_account, amount)
+
+    with db_transaction.atomic():
+        sender_account.balance -= int(amount * 1.05)
+        sender_account.weekly_transactions_left -= 1
+        sender_account.save()
+
+        receiver_account.balance += amount
+        receiver_account.weekly_transactions_left -= 1
+        receiver_account.save()
+
+        tx_instance.save()
+
+        messages.success(request, f"Transferencia exitosa.")
+        return tx_instance

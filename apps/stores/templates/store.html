@@ -22,7 +22,6 @@
 <main class="container my-4">
     <h2 class="text-center mb-4">Productos disponibles:</h2>
 
-    <!-- Usamos row + col para responsividad -->
     <div class="row justify-content-center">
         {% for item in warehouse_items %}
         <div class="col-sm-12 col-md-6 col-lg-4 mb-4">
@@ -59,7 +58,7 @@
                         {% endif %}
                     </p>
 
-                    <!-- Product purchase -->
+                    <!-- Product opions -->
                     <form method="post">
                         {% csrf_token %}
                         <input
@@ -67,6 +66,19 @@
                             name="product_id"
                             value="{{ item.product.id }}"
                         />
+
+                        <!-- Purchase -->
+                        <button
+                            type="button"
+                            class="btn btn-primary w-100"
+                            data-title="Confirmación de compra"
+                            data-message="¿Deseas comprar {{ item.product.name }} (Esta acción es irreversible)?"
+                            onclick="showConfirm(this)"
+                        >
+                            Comprar
+                        </button>
+
+                        <!-- Gift -->
                         <button
                             type="button"
                             class="btn btn-primary w-100"
@@ -95,10 +107,4 @@
 {% if outside_working_hours %}
 {% include "components/modal/store_hours_modal.html" %}
 {% endif %}
-{% endblock %}
-
-<!-- Modals JS -->
-{% block scripts %}
-<script src="{% static 'js/purchaseModal.js' %}"></script>
-<script src="{% static 'js/workingHours.js' %}"></script>
 {% endblock %}

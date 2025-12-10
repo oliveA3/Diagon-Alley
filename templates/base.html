@@ -24,14 +24,14 @@
         <!-- Modals templates -->
         {% block modals %}
         {% include "components/modal/confirm_modal.html" %}
-        {% if message.success %}
+        {% if messages.success %}
         {% include "components/modal/success_modal.html" %} 
         {% endif %}
+        {% if messages.error %}
+        {% include "components/modal/error_modal.html" %} 
+        {% endif %}
         {% endblock %}
-
-        <!-- Modals JS -->
-        <script src="{% static 'js/confirmLogic.js' %}"></script>
-        <script src="{% static 'js/successModal.js' %}"></script>
+        
         {% block scripts %}
         {% endblock %}
 

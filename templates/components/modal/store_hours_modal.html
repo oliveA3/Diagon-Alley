@@ -1,38 +1,31 @@
 <div
-    class="modal fade"
-    id="infoModal"
-    tabindex="-1"
-    aria-labelledby="infoModalLabel"
-    aria-hidden="true"
-    data-bs-backdrop="static"
-    data-bs-keyboard="false"
+    class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"
 >
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-info text-white">
-                <h5 class="modal-title" id="infoModalLabel">
-                    ¡Cerrado!
-                </h5>
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Cerrar"
-                ></button>
+                <h5 class="modal-title" id="infoModalLabel">¡Cerrado!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
                 Horario de trabajo: <br>
                 Lunes a Viernes (6 a.m. - 8 p.m.)
             </div>
             <div class="modal-footer">
-                <button
-                    type="button"
-                    class="btn btn-light"
-                    data-bs-dismiss="modal"
-                >
-                    Cerrar
-                </button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const infoModalEl = document.getElementById("infoModal");
+        const infoModal = new bootstrap.Modal(infoModalEl);
+        infoModal.show();
+        
+        infoModalEl.addEventListener("hidden.bs.modal", function () {
+            window.location.href = "/home";
+        });
+    });
+</script>

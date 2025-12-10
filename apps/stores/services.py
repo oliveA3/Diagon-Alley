@@ -6,6 +6,7 @@ from apps.users.models import CustomUser
 from apps.utils import utils
 from django.db import transaction as db_transaction
 from apps.bank.models import BankAccount
+from django.db.models import Max
 
 
 def get_discount(user):
@@ -16,7 +17,7 @@ def get_discount(user):
         product__discount=0
     )
 
-    discount = 1.0
+    discount = 0.0
     if discounts_qs.exists():
         discount = discounts_qs.aggregate(Max('product__discount'))[
             'product__discount__max']
@@ -24,18 +25,16 @@ def get_discount(user):
     return discount
 
 
-def apply_discount(product: Product, discount):
-    price_to_pay = product.price
-    if discount != 1.0:
-        price_to_pay = int(product.price - (product.price * discount))
+def apply_discount(price, discount):
+    price_to_pay = price
+    if discount != 0.0:
+        price_to_pay = int(price - (price * discount))
 
     return price_to_pay
 
 
 def purchase_product(request, user, account, product: Product, discount, store: Store):
-    price_to_pay = discount(product, discount)
-
-    print(product.discount)
+    price_to_pay = apply_discount(product.price, discount)
 
     if account.balance >= price_to_pay:
         warehouse_item = get_object_or_404(
@@ -106,37 +105,33 @@ def purchase_product(request, user, account, product: Product, discount, store: 
 
 def gift_product(request, sender_account: BankAccount, receiver: CustomUser, product_id: int, discount):
     product = get_object_or_404(Product, id=product_id)
-    total_cost = apply_discount(product.price) + 5
+    total_cost = apply_discount(product.price, discount) + 5
 
     if sender_account.balance < total_cost:
-        messages.error(
-            request, "No tienes suficientes galeones para regalar este producto.")
+        messages.error(request, "No tienes suficientes galeones para regalar este producto.")
         return False
 
-    receiver_item = InventoryItem.objects.filter(
-        user=receiver_account.user, product=product).first()
+    print('hola')
+
+    receiver_item = InventoryItem.objects.filter(user=receiver, product_id=product_id).first()
     if receiver_item and not product.stackable:
-        messages.error(
-            request, "El receptor ya tiene este producto y no es acumulable.")
+        messages.error(request, "El receptor ya tiene este producto y no es acumulable.")
         return False
 
     with db_transaction.atomic():
         sender_account.balance -= total_cost
         sender_account.save()
 
-        # Add product to the receiver's inventory
         if receiver_item:
-            receiver_item.uses += product.uses
+            receiver_item.uses = (receiver_item.uses or 0) + (product.uses or 1)
             receiver_item.save()
-
         else:
             InventoryItem.objects.create(
-                user=receiver_account.user,
+                user=receiver,
                 product=product,
                 store=product.store,
                 uses=product.uses if product.uses else None
             )
 
-        messages.success(
-            request, f"Has regalado {product.name} a {receiver_account.user.get_full_name()}.")
+        messages.success(request, f"Has regalado {product.name} a {receiver.full_name}.")
         return True

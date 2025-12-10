@@ -4,7 +4,6 @@ from apps.users.models import CustomUser
 from apps.bank.models import BankAccount
 from .models import Store, Product, WarehouseItem, InventoryItem
 from .services import purchase_product, get_discount, gift_product
-from django.db.models import Max
 from datetime import datetime
 
 
@@ -52,11 +51,11 @@ def gift_view(request, product_id):
 
     if request.method == "POST":
         receiver_id = request.POST.get("receiver_id")
-        receiver = CustomUser.objects.filter(id=receiver_id)
+        receiver = get_object_or_404(CustomUser, id=receiver_id)
 
-        sender = BankAccount.objects.filter(user=request.user.id)
+        sender = get_object_or_404(BankAccount, user=request.user.id)
 
-        gift_product(request, sender, receiver, product, discount)
+        gift_product(request, sender, receiver, product_id, discount)
 
     context = {
         'product': product,

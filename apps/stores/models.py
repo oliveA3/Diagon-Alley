@@ -67,9 +67,8 @@ class InventoryItem(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.ex_date and self.product.duration_days:
-            self.ex_date = self.pur_date + \
-                timedelta(days=self.product.duration_days)
-
+            self.ex_date = date.today() + timedelta(days=self.product.duration_days)
+        
         super().save(*args, **kwargs)
 
     def use(self):

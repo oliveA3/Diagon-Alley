@@ -1,7 +1,5 @@
 "use strict";
 
-"use strict";
-
 document.addEventListener("DOMContentLoaded", function () {
 	const inputA = document.getElementById("input_user_a");
 	const inputB = document.getElementById("input_user_b");

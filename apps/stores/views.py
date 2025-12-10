@@ -4,6 +4,7 @@ from apps.bank.models import BankAccount
 from .models import Store, Product, WarehouseItem, InventoryItem
 from .services import purchase_product
 from django.db.models import Max
+from datetime import datetime
 
 
 def store_view(request, store_id):
@@ -36,11 +37,19 @@ def store_view(request, store_id):
     if discounts_qs.exists():
         discount = discounts_qs.aggregate(Max('product__discount'))['product__discount__max']
 
+    now = datetime.now()
+    hour = now.hour
+    weekday = now.weekday()  # 0 = monday, 6 = sunday
+
+    # Permitido solo lunes-viernes (0-4) y entre 6am-8pm
+    outside_working_hours = not (0 <= weekday <= 4 and 6 <= hour < 20)
+
     context = {
         'store': store,
         'warehouse_items': warehouse_items,
         'discount': discount,
         'purchase_message': purchase_message,
+        'outside_working_hours': outside_working_hours,
     }
 
     return render(request, 'store.html', context)

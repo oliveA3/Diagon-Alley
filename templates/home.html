@@ -8,38 +8,45 @@
 {% block body %} 
 
 <!-- Upper button (Login or Profile) -->
-<div>
+<div class="mb-3">
     {% if request.user.is_authenticated %}
     <a href="{% url 'profile' %}" class="btn btn-primary">Perfil</a>
-
     {% else %}
     <a href="{% url 'login' %}" class="btn btn-primary">Iniciar sesión</a>
     {% endif %}
 </div>
 
 <!-- Diagon Alley -->
-<main class="container-fluid d-flex justify-content-center" style="max-width: 900px;">
+<main class="container my-4">
 
-    <!-- Gringotts -->
-    <div class="card" style="width: 18rem">
-        <img src="..." class="card-img-top" alt="..." />
-        <div class="card-body">
-            <h5 class="card-title">Banco Gringotts</h5>
-            <a href="{% url 'bank_view' %}" class="btn btn-primary">Entrar</a>
+    <!-- Usamos row + col para responsividad -->
+    <div class="row justify-content-center">
+
+        <!-- Gringotts -->
+        <div class="col-12 col-sm-6 col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="..." class="card-img-top" alt="..." />
+                <div class="card-body">
+                    <h5 class="card-title">Banco Gringotts</h5>
+                    <a href="{% url 'bank_view' %}" class="btn btn-primary w-100">Entrar</a>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <!-- Stores -->
-    {% for store in stores %}
-    <div class="card" style="width: 18rem">
-        <img src="..." class="card-img-top" alt="..." />
-        <div class="card-body">
-            <h5 class="card-title">{{store.name}}</h5>
-            <a href="{% url 'store_view' store.id %}" class="btn btn-primary">Entrar</a>
+        <!-- Stores -->
+        {% for store in stores %}
+        <div class="col-12 col-sm-6 col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="..." class="card-img-top" alt="Imagen de {{store.name}}" />
+                <div class="card-body">
+                    <h5 class="card-title">{{store.name}}</h5>
+                    <a href="{% url 'store_view' store.id %}" class="btn btn-primary w-100">Entrar</a>
+                </div>
+            </div>
         </div>
-    </div>
-    {% endfor %}
+        {% endfor %}
 
+    </div>
 </main>
 
 {% endblock %}

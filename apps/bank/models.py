@@ -4,12 +4,6 @@ from django.utils import timezone
 from apps.users.models import CustomUser
 
 
-from django.db import models
-from datetime import timedelta
-from django.utils import timezone
-from apps.users.models import CustomUser
-
-
 class BankAccount(models.Model):
     id = models.PositiveIntegerField(primary_key=True, unique=True)
     user = models.OneToOneField(
@@ -28,8 +22,7 @@ class BankAccount(models.Model):
     created_at = models.DateField(auto_now=True)
     upgraded_at = models.DateField(null=True, blank=True)
 
-    daily_transaction_limit = models.PositiveIntegerField(default=1)
-    daily_received_limit = models.PositiveIntegerField(default=1)
+    weekly_transactions_left = models.PositiveIntegerField(default=1)
 
     @property
     def current_limit(self):

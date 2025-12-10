@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from datetime import timedelta, date
+from django.templatetags.static import static
 
 User = get_user_model()
 
@@ -9,10 +10,17 @@ User = get_user_model()
 class Store(models.Model):
     name = models.CharField(max_length=150)
     description = models.TextField()
-    image = models.ImageField(upload_to='store_images/', blank=True, null=True)
 
     def __str__(self):
         return self.name
+
+    @property
+    def image_url(self):
+        """
+        Returns the image's static root
+        Example: /static/imgs/3.png for store id=3
+        """
+        return static(f"imgs/{self.id}.png")
 
 
 class Product(models.Model):

@@ -7,7 +7,7 @@ from apps.users.models import CustomUser
 class BankAccount(models.Model):
     id = models.PositiveIntegerField(primary_key=True, unique=True)
     user = models.OneToOneField(
-        CustomUser, on_delete=models.CASCADE, limit_choices_to={'user_type': 'student'}, related_name='bank_account')
+        CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'student'}, related_name='bank_account')
 
     balance = models.IntegerField(default=20)
     is_frozen = models.BooleanField(default=False)

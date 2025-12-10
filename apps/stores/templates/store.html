@@ -31,7 +31,7 @@
                     <h6 class="card-subtitle mb-2 text-body-secondary">{{ item.product.description }}</h6>
                     
                     <!-- Discount -->
-                    {% if discount %}
+                    {% if discount != 1.0 %}
                     <p class="card-text">Precio original: <s>{{ item.product.price }} galeones</s></p>
                     <p class="card-text">
                         Precio con descuento: {{ item.product.price|dis:discount }} galeones
@@ -67,27 +67,29 @@
                             value="{{ item.product.id }}"
                         />
 
-                        <!-- Purchase -->
-                        <button
-                            type="button"
-                            class="btn btn-primary w-100"
-                            data-title="Confirmación de compra"
-                            data-message="¿Deseas comprar {{ item.product.name }} (Esta acción es irreversible)?"
-                            onclick="showConfirm(this)"
-                        >
-                            Comprar
-                        </button>
+                        <div class="d-flex gap-3">
+                            <!-- Purchase -->
+                            <button
+                                type="button"
+                                class="btn btn-primary w-100"
+                                data-title="Confirmación de compra"
+                                data-message="¿Deseas comprar {{ item.product.name }} (Esta acción es irreversible)?"
+                                onclick="showConfirm(this)"
+                            >
+                                Comprar
+                            </button>
 
-                        <!-- Gift -->
-                        <button
-                            type="button"
-                            class="btn btn-primary w-100"
-                            data-title="Confirmación de compra"
-                            data-message="¿Deseas comprar {{ item.product.name }} (Esta acción es irreversible)?"
-                            onclick="showConfirm(this)"
-                        >
-                            Comprar
-                        </button>
+                            <!-- Gift -->
+                            <button
+                                type="button"
+                                class="btn btn-primary w-100"
+                                data-title="Confirmación de compra"
+                                data-message="¿Deseas comprar {{ item.product.name }} (Esta acción es irreversible)?"
+                                onclick="showConfirm(this)"
+                            >
+                                Regalar
+                            </button>
+                        </div>
                     </form>
                 </div>
             </li>

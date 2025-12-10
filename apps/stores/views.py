@@ -15,15 +15,6 @@ def store_view(request, store_id):
 
     purchase_message = None
 
-    # Product purchase
-    if request.method == 'POST':
-        user = request.user
-        product_id = request.POST.get('product_id')
-        product = get_object_or_404(Product, id=product_id)
-
-        purchase_message = purchase_product(
-            request, user, account, product, store)
-
     discounts_qs = InventoryItem.objects.filter(
         user=request.user,
         product__discount__isnull=False
@@ -31,11 +22,18 @@ def store_view(request, store_id):
         product__discount=0
     )
 
-    print(discounts_qs)
-
-    discount = None
+    discount = 1.0
     if discounts_qs.exists():
         discount = discounts_qs.aggregate(Max('product__discount'))['product__discount__max']
+
+    # Product purchase
+    if request.method == 'POST':
+        user = request.user
+        product_id = request.POST.get('product_id')
+        product = get_object_or_404(Product, id=product_id)
+
+        purchase_message = purchase_product(
+            request, user, account, product, discount, store)
 
     now = datetime.now()
     hour = now.hour

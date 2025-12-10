@@ -5,10 +5,12 @@ from .models import Store, Product, WarehouseItem, InventoryItem
 from apps.utils import utils
 
 
-def purchase_product(request, user, account, product: Product, store: Store):
+def purchase_product(request, user, account, product: Product, discount, store: Store):
     price_to_pay = product.price
-    if product.discount != 1.0:
-        price_to_pay = int(product.price - (product.price * product.discount))
+    if discount != 1.0:
+        price_to_pay = int(product.price - (product.price * discount))
+
+    print(product.discount)
 
     if account.balance >= price_to_pay:
         warehouse_item = get_object_or_404(

@@ -31,7 +31,8 @@ class CustomUser(AbstractUser):
 
 
     def __str__(self):
-            return f"{self.full_name (self.username)} - {self.house})"
+        return f"{self.full_name} ({self.username}) - {self.house}"
+
         
     def save(self, *args, **kwargs):
         if not self.id:

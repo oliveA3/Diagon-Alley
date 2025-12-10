@@ -5,6 +5,7 @@ from .services import buy_premium
 from django.contrib import messages
 from django.db.models import Q
 from .services import execute_transaction
+from django.core.exceptions import ValidationError
 
 
 def bank_view(request):
@@ -38,13 +39,7 @@ def transactions_view(request):
 
         tx = Transaction(sender=sender, receiver=receiver, amount=amount)
 
-        try:
-            execute_transaction(sender.bank_account,
-                                receiver.bank_account, amount, tx)
-            messages.success(request, "✅ Transferencia realizada con éxito.")
-
-        except ValidationError as e:
-            messages.error(request, f"❌ Error: {e}")
+        execute_transaction(request, sender.bank_account, receiver.bank_account, amount, tx)
 
         return redirect("transactions")
 

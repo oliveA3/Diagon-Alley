@@ -25,13 +25,13 @@
             </datalist>
 
             <label for="amount">Cantidad de galeones:</label>
-            <input type="number" name="amount" id="amount" min="20" required>
+            <input type="number" name="amount" id="amount" required>
 
             <button type="button" class="btn btn-primary"
-                data-title="Confirmación de transferencia"
-                data-message=""
-                onclick="prepareConfirm(this)">
-                    Transferir
+                    data-title="Confirmación de transferencia"
+                    data-message=""
+                    onclick="return prepareConfirm(this)">
+                Transferir
             </button>
         </form>
     </div>

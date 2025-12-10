@@ -24,12 +24,16 @@
         <!-- Modals templates -->
         {% block modals %}
         {% include "components/modal/confirm_modal.html" %}
-        {% if messages.success %}
-        {% include "components/modal/success_modal.html" %} 
+
+        {% for message in messages %}
+        {% if "success" in message.tags %}
+            {% include "components/modal/success_modal.html" %}
         {% endif %}
-        {% if messages.error %}
-        {% include "components/modal/error_modal.html" %} 
+        {% if "error" in message.tags %}
+            {% include "components/modal/error_modal.html" %}
         {% endif %}
+        {% endfor %}
+
         {% endblock %}
         
         {% block scripts %}

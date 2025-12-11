@@ -2,13 +2,14 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
 from .forms import AdminUserCreationForm
+from apps.bank.models import BankAccount
 
 class CustomUserAdmin(UserAdmin):
     add_form = AdminUserCreationForm
     model = CustomUser
 
     # Qué columnas mostrar en la lista
-    list_display = ("username", "email", "full_name", "house", "role", "is_staff", "is_active")
+    list_display = ("id", "username", "email", "full_name", "house", "role", "is_staff", "is_active")
 
     # Campos que se pueden buscar
     search_fields = ("username", "full_name", "email")
@@ -28,8 +29,13 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             "classes": ("wide",),
-            "fields": ("username", "full_name", "house", "role", "email", "password1", "password2", "is_staff", "is_active"),
+            "fields": ("id", "username", "full_name", "house", "role", "email", "password1", "password2", "is_staff", "is_active"),
         }),
     )
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if not change:  # Solo al crear, no al editar
+            BankAccount.objects.create(user=obj)
 
 admin.site.register(CustomUser, CustomUserAdmin)

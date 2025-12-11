@@ -50,7 +50,7 @@ def login_view(request):
                 if user.role == 'student':
                     return redirect('home')
 
-                return render(request, '{user_type}_dashboard.html')
+                return redirect(f"{user.role}_dashboard")
 
             else:
                 error_message = "Usuario o contraseña incorrectos."

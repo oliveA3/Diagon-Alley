@@ -9,19 +9,56 @@
 
 <!-- Banker dashboard -->
 <main>
+    <!-- Filters -->
+    <form method="get" class="mb-3">
+        <input type="text" name="id" placeholder="Filtrar por ID" value="{{ request.GET.id }}">
+        <input type="text" name="username" placeholder="Filtrar por username" value="{{ request.GET.username }}">
+        <input type="text" name="full_name" placeholder="Filtrar por nombre completo" value="{{ request.GET.full_name }}">
+        <input type="text" name="house" placeholder="Filtrar por casa" value="{{ request.GET.house }}">
+        <button type="submit" class="btn btn-secondary">Filtrar</button>
+
+        <a href="{% url 'banker_dashboard' %}" class="btn btn-light">
+        Limpiar filtros
+        </a>
+    </form>
+
     <form method="post">
         {% csrf_token %}
-        <table>
+
+        <!-- Bulk options -->
+        <div class="d-flex" style="width:400px;">
+            <input type="number" name="amount" placeholder="Cantidad a agregar">
+
+            <button type="button" name="action" value="bulk_add" 
+                    class="btn btn-primary ms-2"
+                    data-title="Agregar galeones"
+                    data-message="¿Desea agregar galeones a las cuentas seleccionadas? (Esta acción es irreversible)?"
+                    onclick="showConfirm(this)">
+                Agregar
+            </button>
+        
+            <button type="button" name="action" value="bulk_delete" 
+                    class="btn btn-danger ms-auto"
+                    data-title="Eliminar usuarios"
+                    data-message="¿Desea eliminar los usuarios seleccionados? (Esta acción es irreversible)?"
+                    onclick="showConfirm(this)">
+                Eliminar
+            </button>
+        </div>
+
+        <table class="table table-striped">
             <!-- Column names -->
             <tr>
                 <th></th>
-                <th>Usuario</th>
+                <th><a href="?order=id">ID</a></th>
+                <th><a href="?order=username">Usuario</a></th>
+                <th><a href="?order=full_name">Nombre completo</a></th>
                 <th>Balance</th>
                 <th>Congelada</th>
                 <th>Tipo</th>
-                <th>Limite</th>
+                <th><a href="?order=current_limit">Límite</a></th>
                 <th>Premium vence</th>
-                <th>Casa</th>
+                <th><a href="?order=house">Casa</a></th>
                 <th>Acciones</th>
             </tr>
 
@@ -29,46 +66,36 @@
             {% for acc in accounts %}
             <tr>
                 <td><input type="checkbox" name="selected_accounts" value="{{ acc.id }}"></td>
+                <td>{{ acc.id }}</td>
                 <td>{{ acc.user.username }}</td>
-                <td><input type="number" name="balance" value="{{ acc.balance }}"></td>
-                <td><input type="checkbox" name="is_frozen" {% if acc.is_frozen %}checked{% endif %}></td>
+                <td>{{ acc.user.full_name }}</td>
+                <td><input type="number" name="balance_{{ acc.id }}" value="{{ acc.balance }}"></td>
+                <td><input type="checkbox" name="is_frozen_{{ acc.id }}" {% if acc.is_frozen %}checked{% endif %}></td>
 
                 <!-- Account type -->
                 <td>
-                    <select name="account_type">
+                    <select name="account_type_{{ acc.id }}">
                         <option value="standard" {% if acc.account_type == "standard" %}selected{% endif %}>Standard</option>
                         <option value="premium" {% if acc.account_type == "premium" %}selected{% endif %}>Premium</option>
                         <option value="premium_pro" {% if acc.account_type == "premium_pro" %}selected{% endif %}>Premium Pro</option>
                     </select>
                 </td>
+
+                <!-- Editable limit -->
                 <td>{{ acc.current_limit }}</td>
 
-                {% if acc.account_type != 'standard' %}
-                <td>{{ acc.upgraded_at }}</td>
-                <td>{{ acc.premium_ex_date }}</td>
-                {% endif %}
+                <!-- Premium info -->
+                <td>{% if acc.account_type != 'standard' %}{{ acc.premium_ex_date }}{% endif %}</td>
 
-                <td>{{ acc.user.house }}</td>
+                <td>{{ acc.user.house|title }}</td>
                 <td>
-                    <button type="button" class="btn btn-primary" data-title="Actualizar datos"
-                        data-message="Esta seguro de que desea actualizar los datos de esta cuenta? (Esta acción es irreversible)?"
-                        onclick="showConfirm(this)">
+                    <button type="submit" name="action" value="update_{{ acc.id }}" class="btn btn-primary">
                         Actualizar
                     </button>
-                    <input type="hidden" name="account_id" value="{{ acc.id }}">
                 </td>
             </tr>
             {% endfor %}
         </table>
-
-        <hr>
-        <input type="number" name="amount" placeholder="Cantidad a agregar">
-        <button type="button" class="btn btn-primary" data-title="Actualizar datos" data-message="Esta seguro de que desea dar galeones a los usuarios seleccionados? (Esta acción es irreversible)?" onclick="showConfirm(this)">
-            Agregar
-        </button>
-        <button type="button" class="btn btn-primary" data-title="Actualizar datos" data-message="Esta seguro de que desea eliminar las cuentas seleccionadas? (Esta acción es irreversible)?" onclick="showConfirm(this)">
-            Eliminar
-        </button>
     </form>
 </main>
 

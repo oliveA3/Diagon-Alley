@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<title>Banquero</title>
+{% endblock %}
+
+{% block body %}
+
+<!-- Banker dashboard -->
+<main>
+    <form method="post">
+        {% csrf_token %}
+        <table>
+            <!-- Column names -->
+            <tr>
+                <th></th>
+                <th>Usuario</th>
+                <th>Balance</th>
+                <th>Congelada</th>
+                <th>Tipo</th>
+                <th>Limite</th>
+                <th>Premium vence</th>
+                <th>Casa</th>
+                <th>Acciones</th>
+            </tr>
+
+            <!-- Accounts -->
+            {% for acc in accounts %}
+            <tr>
+                <td><input type="checkbox" name="selected_accounts" value="{{ acc.id }}"></td>
+                <td>{{ acc.user.username }}</td>
+                <td><input type="number" name="balance" value="{{ acc.balance }}"></td>
+                <td><input type="checkbox" name="is_frozen" {% if acc.is_frozen %}checked{% endif %}></td>
+
+                <!-- Account type -->
+                <td>
+                    <select name="account_type">
+                        <option value="standard" {% if acc.account_type == "standard" %}selected{% endif %}>Standard</option>
+                        <option value="premium" {% if acc.account_type == "premium" %}selected{% endif %}>Premium</option>
+                        <option value="premium_pro" {% if acc.account_type == "premium_pro" %}selected{% endif %}>Premium Pro</option>
+                    </select>
+                </td>
+                <td>{{ acc.current_limit }}</td>
+
+                {% if acc.account_type != 'standard' %}
+                <td>{{ acc.upgraded_at }}</td>
+                <td>{{ acc.premium_ex_date }}</td>
+                {% endif %}
+
+                <td>{{ acc.user.house }}</td>
+                <td>
+                    <button type="button" class="btn btn-primary" data-title="Actualizar datos"
+                        data-message="Esta seguro de que desea actualizar los datos de esta cuenta? (Esta acción es irreversible)?"
+                        onclick="showConfirm(this)">
+                        Actualizar
+                    </button>
+                    <input type="hidden" name="account_id" value="{{ acc.id }}">
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <hr>
+        <input type="number" name="amount" placeholder="Cantidad a agregar">
+        <button type="button" class="btn btn-primary" data-title="Actualizar datos" data-message="Esta seguro de que desea dar galeones a los usuarios seleccionados? (Esta acción es irreversible)?" onclick="showConfirm(this)">
+            Agregar
+        </button>
+        <button type="button" class="btn btn-primary" data-title="Actualizar datos" data-message="Esta seguro de que desea eliminar las cuentas seleccionadas? (Esta acción es irreversible)?" onclick="showConfirm(this)">
+            Eliminar
+        </button>
+    </form>
+</main>
+
+{% endblock %}
+
+<!-- Modals templates -->
+{% block modals %}
+{{ block.super }}
+{% endblock %}
+
+<!-- Modals JS -->
+{% block scripts %}
+{% endblock %}

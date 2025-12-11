@@ -4,7 +4,7 @@ from apps.users.models import CustomUser
 from apps.bank.models import BankAccount
 from .models import Store, Product, WarehouseItem, InventoryItem
 from .services import purchase_product, get_discount, gift_product
-from datetime import datetime
+from apps.utils import utils
 
 
 def store_view(request, store_id):
@@ -26,19 +26,14 @@ def store_view(request, store_id):
         purchase_message = purchase_product(
             request, user, account, product, discount, store)
 
-    now = datetime.now()
-    hour = now.hour
-    weekday = now.weekday()  # 0 = monday, 6 = sunday
-
-    # Monday to Friday (0-4) from 6am to 11pm
-    outside_working_hours = not (0 <= weekday <= 4 and 6 <= hour < 23)
+    working_hours = utils.working_hours()
 
     context = {
         'store': store,
         'warehouse_items': warehouse_items,
         'discount': discount,
         'purchase_message': purchase_message,
-        'outside_working_hours': outside_working_hours,
+        'working_hours': working_hours,
     }
 
     return render(request, 'store.html', context)

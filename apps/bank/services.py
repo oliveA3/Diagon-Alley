@@ -12,7 +12,7 @@ PREMIUM_PRICES = {
     'premium_pro': 100,
 }
 
-def buy_premium(request, account: BankAccount, new_type: str):
+def purchase_premium(request, account: BankAccount, new_type: str):
     price = PREMIUM_PRICES[new_type]
     
     if account.balance >= price:        

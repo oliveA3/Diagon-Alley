@@ -1,11 +1,12 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from apps.users.models import CustomUser
 from .models import BankAccount, Loan, Transaction
-from .services import buy_premium
+from .services import purchase_premium, execute_transaction
 from django.contrib import messages
 from django.db.models import Q
-from .services import execute_transaction
 from django.core.exceptions import ValidationError
+from apps.utils import utils
+from django.contrib.auth.decorators import user_passes_test
 
 
 def bank_view(request):
@@ -15,13 +16,15 @@ def bank_view(request):
     # Premium purchase
     if request.method == 'POST':
         account_type = request.POST.get('account_type')
-        buy_premium(account, account_type)
-        messages.success(request, "Compra de cuenta premium exitosa.")
+        purchase_premium(account, account_type)
         return redirect('bank_view')
+
+    working_hours = utils.working_hours()
 
     context = {
         'user': user,
         'account': account,
+        'working_hours': working_hours, 
     }
 
     return render(request, 'bank.html', context)
@@ -92,3 +95,43 @@ def loans_view(request):
     }
 
     return render(request, 'loan.html', context)
+
+
+def is_banker(user):
+    return user.is_authenticated and user.role == "banker"
+
+@user_passes_test(is_banker)
+def banker_dashboard_view(request):
+    accounts = BankAccount.objects.select_related("user").filter(user__role="student")
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+
+        if action == "bulk_add":
+            ids = request.POST.getlist("selected_accounts")
+            amount = int(request.POST.get("amount", 0))
+            with transaction.atomic():
+                for acc_id in ids:
+                    account = BankAccount.objects.get(id=acc_id)
+                    account.balance += amount
+                    account.save()
+            messages.success(request, f"Se agregaron {amount} galeones a {len(ids)} cuentas.")
+            return redirect("dashboard_view")
+
+        elif action == "bulk_delete":
+            ids = request.POST.getlist("selected_accounts")
+            BankAccount.objects.filter(id__in=ids).delete()
+            messages.success(request, f"Se eliminaron {len(ids)} cuentas.")
+            return redirect("dashboard_view")
+
+        elif action == "update":
+            acc_id = request.POST.get("account_id")
+            account = BankAccount.objects.get(id=acc_id)
+            account.balance = int(request.POST.get("balance", account.balance))
+            account.is_frozen = bool(request.POST.get("is_frozen"))
+            account.account_type = request.POST.get("account_type", account.account_type)
+            account.save()
+            messages.success(request, f"Cuenta {account.user.username} actualizada.")
+            return redirect("dashboard_view")
+
+    return render(request, "banker_dashboard.html", {"accounts": accounts})

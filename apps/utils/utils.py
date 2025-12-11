@@ -1,6 +1,18 @@
 import uuid
 from .models import PurchaseReceipt, UsageReceipt
 from apps.bank.models import BankAccount
+from datetime import datetime
+
+def working_hours():
+    now = datetime.now()
+    hour = now.hour
+    weekday = now.weekday()  # 0 = monday, 6 = sunday
+
+    # Monday to Friday (0-4) from 6am to 11pm
+    working_hours = (0 <= weekday <= 4 and 6 <= hour <= 23)
+
+    return working_hours
+
 
 
 def generate_purchase_receipt(user, product, final_price):

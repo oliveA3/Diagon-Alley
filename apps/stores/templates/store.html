@@ -98,7 +98,7 @@
 {% block modals %}
 {{ block.super }}
 {% include "components/modal/purchase_modal.html" %}
-{% if outside_working_hours %}
+{% if not working_hours %}
 {% include "components/modal/store_hours_modal.html" %}
 {% endif %}
 {% endblock %}

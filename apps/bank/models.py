@@ -5,9 +5,13 @@ from apps.users.models import CustomUser
 
 
 class BankAccount(models.Model):
-    id = models.PositiveIntegerField(primary_key=True, unique=True)
     user = models.OneToOneField(
-        CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'student'}, related_name='bank_account')
+        CustomUser,
+        on_delete=models.CASCADE,
+        limit_choices_to={'role': 'student'},
+        related_name='bank_account',
+        primary_key=True
+    )
 
     balance = models.IntegerField(default=20)
     is_frozen = models.BooleanField(default=False)
@@ -37,13 +41,13 @@ class BankAccount(models.Model):
     def premium_ex_date(self):
         if not self.upgraded_at or self.account_type == 'standard':
             return None
-        
+
         if self.account_type == 'premium':
             return self.upgraded_at + timedelta(days=90)
-        
+
         if self.account_type == 'premium_pro':
             return self.upgraded_at + timedelta(days=180)
-        
+
         return None
 
     def check_expiration(self):
@@ -58,15 +62,6 @@ class BankAccount(models.Model):
                 self.account_type = 'standard'
                 self.upgraded_at = None
                 self.save()
-
-    def save(self, *args, **kwargs):
-        if not self.id:
-            used_ids = set(BankAccount.objects.values_list('id', flat=True))
-            i = 1
-            while i in used_ids:
-                i += 1
-            self.id = i
-        super().save(*args, **kwargs)
 
 
 class Transaction(models.Model):

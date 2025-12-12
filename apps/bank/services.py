@@ -38,7 +38,7 @@ def validate_transaction(request, sender_account, receiver_account, amount):
         return False
 
     if receiver_account.is_frozen:
-        messages.error(request, "La cuenta del receptor está congelada.")
+        messages.error(request, "Tu cuenta está congelada.")
         return False
 
     total_needed = int(amount * 1.05)
@@ -53,6 +53,12 @@ def validate_transaction(request, sender_account, receiver_account, amount):
     if receiver_account.weekly_transactions_left <= 0:
         messages.error(request, "El receptor ya recibió su transferencia semanal.")
         return False
+
+    new_balance = receiver_account.balance + amount
+    if receiver_account.current_limit < new_balance:
+        messages.error(request, "La cantidad de galeones que quieres enviar excede el limite de la cuenta del receptor.")
+        return False
+
 
     return True
 

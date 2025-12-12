@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<title>Préstamos</title>
+{% endblock %}
+
+{% block body %}
+<main>
+    <a href="{% url 'banker_dashboard' %}">🏠 Volver al dashboard</a>
+
+    <!-- Loans list -->
+     <div>
+        <h2 class="mt-3">📜 Historial de préstamos</h2>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Titulos de columnas...</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for l in loans %}
+                <tr>
+                    <td>Dato por columna</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">No hay préstamos registrados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+{% endblock %}
+
+<!-- Modals templates -->
+{% block modals %}
+{{ block.super }}
+{% endblock %}

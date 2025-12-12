@@ -1,0 +1,3 @@
+tr.selected-row td, tr:hover td {
+    background-color: #d0ebff !important;
+}

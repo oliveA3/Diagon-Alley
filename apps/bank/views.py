@@ -7,6 +7,7 @@ from django.db.models import Q
 from django.core.exceptions import ValidationError
 from apps.utils import utils
 from django.contrib.auth.decorators import user_passes_test
+from django.utils import timezone
 
 
 def bank_view(request):
@@ -96,68 +97,3 @@ def loans_view(request):
     }
 
     return render(request, 'loan.html', context)
-
-
-# BANKER DASHBOARD
-
-def is_banker(user):
-    return user.is_authenticated and user.role == "banker"
-
-
-@user_passes_test(is_banker)
-def banker_dashboard_view(request):
-    accounts = BankAccount.objects.select_related(
-        "user").filter(user__role="student")
-
-    # Filters
-    if request.GET.get("id"):
-        accounts = accounts.filter(id=request.GET["id"])
-    if request.GET.get("username"):
-        accounts = accounts.filter(
-            user__username__icontains=request.GET["username"])
-    if request.GET.get("full_name"):
-        accounts = accounts.filter(
-            user__full_name__icontains=request.GET["full_name"])
-    if request.GET.get("house"):
-        accounts = accounts.filter(user__house__icontains=request.GET["house"])
-
-    # Order
-    order = request.GET.get("order")
-    if order:
-        accounts = accounts.order_by(order)
-
-    if request.method == "POST":
-        action = request.POST.get("action")
-
-        if action.startswith("update_"):
-            acc_id = action.split("_")[1]
-            account = BankAccount.objects.get(id=acc_id)
-            account.balance = int(request.POST.get(
-                f"balance_{acc_id}", account.balance))
-            account.is_frozen = f"is_frozen_{acc_id}" in request.POST
-            account.account_type = request.POST.get(
-                f"account_type_{acc_id}", account.account_type)
-            account.current_limit = int(request.POST.get(
-                f"limit_{acc_id}", account.current_limit))
-            account.save()
-            messages.success(
-                request, f"Cuenta {account.user.username} actualizada.")
-
-        elif action == "bulk_add":
-            ids = request.POST.getlist("selected_accounts")
-            amount = int(request.POST.get("amount", 0))
-            for acc_id in ids:
-                account = BankAccount.objects.get(id=acc_id)
-                account.balance += amount
-                account.save()
-            messages.success(
-                request, f"Se agregaron {amount} galeones a {len(ids)} cuentas.")
-
-        elif action == "bulk_delete":
-            ids = request.POST.getlist("selected_accounts")
-            BankAccount.objects.filter(id__in=ids).delete()
-            messages.success(request, f"Se eliminaron {len(ids)} cuentas.")
-
-        return redirect("banker_dashboard")
-
-    return render(request, "banker_dashboard.html", {"accounts": accounts})

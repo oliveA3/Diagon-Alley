@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'apps.users',
     'apps.stores',
     'apps.bank',
+    'apps.dashboards',
     'apps.utils',
 ]
 

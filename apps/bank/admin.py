@@ -2,13 +2,13 @@ from django.contrib import admin
 from .models import BankAccount, Transaction
 
 class BankAccountAdmin(admin.ModelAdmin):
-    list_display = ("id", "get_full_name", "balance", "account_type", "is_frozen", "weekly_transactions_left")
-    search_fields = ("user__username", "user__full_name")
-    ordering = ("id",)
+    list_display = ["user_id_display", "user", "balance", "account_type", "is_frozen"]
 
-    def get_full_name(self, obj):
-        return obj.user.full_name
-    get_full_name.short_description = "Titular"
+    def user_id_display(self, obj):
+        return obj.user.id
+    user_id_display.short_description = "ID Usuario"
+
+    ordering = ["user"]
 
 admin.site.register(BankAccount, BankAccountAdmin)
 

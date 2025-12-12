@@ -12,9 +12,9 @@
     <!-- Filters -->
     <form method="get" class="mb-3">
         <input type="text" name="id" placeholder="Filtrar por ID" value="{{ request.GET.id }}">
-        <input type="text" name="username" placeholder="Filtrar por username" value="{{ request.GET.username }}">
-        <input type="text" name="full_name" placeholder="Filtrar por nombre completo" value="{{ request.GET.full_name }}">
-        <input type="text" name="house" placeholder="Filtrar por casa" value="{{ request.GET.house }}">
+        <input type="text" name="username" placeholder="Filtrar por Usuario" value="{{ request.GET.username }}">
+        <input type="text" name="full_name" placeholder="Filtrar por Nombre mágico" value="{{ request.GET.full_name }}">
+        <input type="text" name="house" placeholder="Filtrar por Casa" value="{{ request.GET.house }}">
         <button type="submit" class="btn btn-secondary">Filtrar</button>
 
         <a href="{% url 'banker_dashboard' %}" class="btn btn-light">
@@ -51,15 +51,15 @@
             <tr>
                 <th></th>
                 <th><a href="?order=id">ID</a></th>
-                <th><a href="?order=username">Usuario</a></th>
-                <th><a href="?order=full_name">Nombre completo</a></th>
+                <th>Usuario</a></th>
+                <th>Nombre mágico</th>
+                <th>Casa</th>
                 <th>Balance</th>
-                <th>Congelada</th>
+                <th><a href="?order=is_frozen">Estado</a></th>
                 <th>Tipo</th>
-                <th><a href="?order=current_limit">Límite</a></th>
+                <th>Límite</th>
                 <th>Premium vence</th>
-                <th><a href="?order=house">Casa</a></th>
-                <th>Acciones</th>
+                <th></th>
             </tr>
 
             <!-- Accounts -->
@@ -69,8 +69,25 @@
                 <td>{{ acc.id }}</td>
                 <td>{{ acc.user.username }}</td>
                 <td>{{ acc.user.full_name }}</td>
+
+                <td>
+                    <select name="house_{{ acc.id }}">
+                        <option value="ravenclaw" {% if acc.user.house == "ravenclaw" %}selected{% endif %}>Ravenclaw</option>
+                        <option value="gryffindor" {% if acc.user.house == "gryffindor" %}selected{% endif %}>Gryffindor</option>
+                        <option value="hufflepuff" {% if acc.user.house == "hufflepuff" %}selected{% endif %}>Hufflepuff</option>
+                        <option value="slytherin" {% if acc.user.house == "slytherin" %}selected{% endif %}>Slytherin</option>
+                    </select>
+                </td>
+
                 <td><input type="number" name="balance_{{ acc.id }}" value="{{ acc.balance }}"></td>
-                <td><input type="checkbox" name="is_frozen_{{ acc.id }}" {% if acc.is_frozen %}checked{% endif %}></td>
+
+                <td><input type="checkbox" name="is_frozen_{{ acc.id }}" {% if acc.is_frozen %}checked{% endif %}>
+                    {% if acc.is_frozen %}
+                    <span style="color: red">Congelada</span>
+                    {% else %}
+                    <span style="color: green">Activa</span>
+                    {% endif %}
+                </td>
 
                 <!-- Account type -->
                 <td>
@@ -80,14 +97,12 @@
                         <option value="premium_pro" {% if acc.account_type == "premium_pro" %}selected{% endif %}>Premium Pro</option>
                     </select>
                 </td>
-
-                <!-- Editable limit -->
+                
                 <td>{{ acc.current_limit }}</td>
 
                 <!-- Premium info -->
                 <td>{% if acc.account_type != 'standard' %}{{ acc.premium_ex_date }}{% endif %}</td>
 
-                <td>{{ acc.user.house|title }}</td>
                 <td>
                     <button type="submit" name="action" value="update_{{ acc.id }}" class="btn btn-primary">
                         Actualizar
@@ -97,6 +112,29 @@
             {% endfor %}
         </table>
     </form>
+
+    <!-- Premium info -->
+    <div>
+        <a href="{% url 'transactions_list' %}">Transacciones</a>
+
+        <a href="{% url 'loans_list' %}">Préstamos</a>
+    </div>
+
+    <!-- Logout -->
+    <div>
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button
+                type="button"
+                class="btn btn-secondary btn-logout"
+                data-title="Confirmación de cierre de sesión"
+                data-message="¿Está seguro de que desea cerrar la sesión activa?"
+                onclick="showConfirm(this)"
+            >
+                Cerrar sesión
+            </button>
+        </form>
+    </div>
 </main>
 
 {% endblock %}
@@ -106,6 +144,20 @@
 {{ block.super }}
 {% endblock %}
 
-<!-- Modals JS -->
 {% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const checkboxes = document.querySelectorAll("input[name='selected_accounts']");
+    checkboxes.forEach(cb => {
+        cb.addEventListener("change", function() {
+            const row = cb.closest("tr");
+            if (cb.checked) {
+                row.classList.add("selected-row");
+            } else {
+                row.classList.remove("selected-row");
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

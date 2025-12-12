@@ -20,7 +20,7 @@
             <input list="accounts" name="receiver_id" id="receiver" required>
             <datalist id="accounts">
                 {% for a in accounts %}
-                <option value="{{ a.id }}">{{ a.user.full_name }}</option>
+                <option value="{{ a.pk }}">{{ a.user.full_name }}</option>
                 {% endfor %}
             </datalist>
 

@@ -22,8 +22,8 @@
             <label for="user_a">Primer codeudor</label>
             <input class="form-control" list="user_a" placeholder="Selecciona un codeudor...">
             <datalist id="user_a">
-                {% for a in accounts %}
-                <option value="{{ a.id }}">{{ a.full_name }}</option>
+                {% for user in users %}
+                <option value="{{ user.i }}">{{ user.full_name }}</option>
                 {% endfor %}
             </datalist>
         </div>
@@ -33,8 +33,8 @@
             <label for="user_b">Segundo codeudor</label>
             <input class="form-control" list="user_b" placeholder="Selecciona un codeudor...">
             <datalist id="user_b">
-                {% for a in accounts %}
-                <option value="{{ a.id }}">{{ a.full_name }}</option>
+                {% for user in users %}
+                <option value="{{ user.id }}">{{ user.full_name }}</option>
                 {% endfor %}
             </datalist>
         </div>

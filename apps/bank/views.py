@@ -64,7 +64,7 @@ LOAN_AMOUNTS = {
 
 def loans_view(request):
     user = request.user
-    accounts = CustomUser.objects.filter(
+    users = CustomUser.objects.filter(
         ~Q(id=request.user.id),
         is_staff=False,
         is_superuser=False,
@@ -93,7 +93,7 @@ def loans_view(request):
 
     context = {
         'user': user,
-        'accounts': accounts,
+        'users': users,
     }
 
     return render(request, 'loan.html', context)

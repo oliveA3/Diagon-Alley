@@ -14,12 +14,11 @@ def is_banker(user):
 
 @user_passes_test(is_banker)
 def banker_dashboard_view(request):
-    accounts = BankAccount.objects.select_related(
-        "user").order_by('is_frozen', 'id').filter(user__role="student")
+    accounts = BankAccount.objects.select_related("user").order_by('is_frozen', 'user').filter(user__role="student")
 
     # Filters
     if request.GET.get("id"):
-        accounts = accounts.filter(id=request.GET["id"])
+        accounts = accounts.filter(user=request.GET["id"])
     if request.GET.get("username"):
         accounts = accounts.filter(
             user__username__icontains=request.GET["username"])
@@ -37,48 +36,75 @@ def banker_dashboard_view(request):
     if request.method == "POST":
         action = request.POST.get("action")
 
-        
-        # Update register
         if action:
-            if action.startswith("update_"):
+            # Bulk add
+            if action == "bulk_add":
+                ids = [i for i in request.POST.getlist("selected_accounts") if i.strip()]
+                amount_raw = request.POST.get("amount", "").strip()
+
+                if not ids:
+                    messages.error(request, "Debe seleccionar al menos una cuenta.")
+
+                elif not amount_raw.isdigit():
+                    messages.error(request, "Debe ingresar una cantidad válida.")
+
+                else:
+                    amount = int(amount_raw)
+                    for acc_id in ids:
+                        try:
+                            account = BankAccount.objects.get(pk=int(acc_id))
+                            account.balance += amount
+
+                            if account.balance > account.current_limit:
+                                account.balance = account.current_limit
+
+                            account.save()
+                        except (ValueError, BankAccount.DoesNotExist):
+                            continue
+                    messages.success(request, f"Se agregaron {amount} galeones a {len(ids)} cuentas.")
+
+            # Bulk delete
+            elif action == "bulk_delete":
+                ids = [int(i) for i in request.POST.getlist("selected_accounts") if i.strip().isdigit()]
+            
+                if not ids:
+                    messages.error(request, "Debe seleccionar al menos una cuenta para eliminar.")
+                else:
+                    # Eliminar usuarios asociados
+                    CustomUser.objects.filter(pk__in=ids).delete()
+                    messages.success(request, f"Se eliminaron {len(ids)} usuarios y sus cuentas.")
+
+
+            # Update register
+            elif action.startswith("update_"):
                 acc_id = action.split("_")[1]
-                account = BankAccount.objects.get(id=acc_id)
+                account = BankAccount.objects.get(pk=int(acc_id))
+
+                # Premium changes
+                new_type = request.POST.get(f"account_type_{acc_id}", account.account_type)
+                if new_type != account.account_type and new_type != "standard":
+                    account.upgraded_at = timezone.now()
+                account.account_type = new_type
+                account.save()
+
+                if account.balance > account.current_limit:
+                    account.balance = account.current_limit
+
+                account.save()
+
+                # House changes
+                account.user.house = request.POST.get(f"house_{acc_id}", account.user.house)
+                account.is_frozen = f"is_frozen_{acc_id}" in request.POST
 
                 new_balance = int(request.POST.get(f"balance_{acc_id}", account.balance))
                 if new_balance <= account.current_limit:
                     account.balance = new_balance
-                    account.is_frozen = f"is_frozen_{acc_id}" in request.POST
-
-                    # Premium changes
-                    new_type = request.POST.get(f"account_type_{acc_id}", account.account_type)
-                    if new_type != account.account_type and new_type != 'standard':
-                        account.upgraded_at = timezone.now()
-                    account.account_type = new_type
-
-                    # House changes
-                    account.user.house = request.POST.get(f"house_{acc_id}", account.user.house)
-                    account.user.save()
-
                     account.save()
-                    messages.success(request, f"Cuenta {account.user.username} actualizada.")
+                    messages.success(request, f"Cuenta de {account.user.username} actualizada.")
+
                 else:
-                    messages.error(request, f"La cantidad de galeones excede el limite de la cuenta.")
+                    messages.error(request, "La cantidad de galeones excede el límite de la cuenta.")
 
-            # Bulk add
-            elif action == "bulk_add":
-                ids = request.POST.getlist("selected_accounts")
-                amount = int(request.POST.get("amount", 0))
-                for acc_id in ids:
-                    account = BankAccount.objects.get(id=acc_id)
-                    account.balance += amount
-                    account.save()
-                messages.success(request, f"Se agregaron {amount} galeones a {len(ids)} cuentas.")
-
-            # Bulk delete
-            elif action == "bulk_delete":
-                ids = request.POST.getlist("selected_accounts")
-                BankAccount.objects.filter(id__in=ids).delete()
-                messages.success(request, f"Se eliminaron {len(ids)} cuentas.")
 
         return redirect("banker_dashboard")
 

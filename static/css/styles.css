@@ -1,3 +1,5 @@
-tr.selected-row td, tr:hover td {
+tr.selected-row td, 
+tr:hover td,
+tr:active td {
     background-color: #d0ebff !important;
 }

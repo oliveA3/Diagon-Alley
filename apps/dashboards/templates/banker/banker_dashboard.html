@@ -29,19 +29,13 @@
         <div class="d-flex" style="width:400px;">
             <input type="number" name="amount" placeholder="Cantidad a agregar">
 
-            <button type="button" name="action" value="bulk_add" 
-                    class="btn btn-primary ms-2"
-                    data-title="Agregar galeones"
-                    data-message="¿Desea agregar galeones a las cuentas seleccionadas? (Esta acción es irreversible)?"
-                    onclick="showConfirm(this)">
+            <button type="submit" name="action" value="bulk_add"
+                    class="btn btn-primary ms-2">
                 Agregar
             </button>
-        
-            <button type="button" name="action" value="bulk_delete" 
-                    class="btn btn-danger ms-auto"
-                    data-title="Eliminar usuarios"
-                    data-message="¿Desea eliminar los usuarios seleccionados? (Esta acción es irreversible)?"
-                    onclick="showConfirm(this)">
+            
+            <button type="submit" name="action" value="bulk_delete"
+                    class="btn btn-danger ms-auto">
                 Eliminar
             </button>
         </div>
@@ -50,7 +44,7 @@
             <!-- Column names -->
             <tr>
                 <th></th>
-                <th><a href="?order=id">ID</a></th>
+                <th><a href="?order=user">ID</a></th>
                 <th>Usuario</a></th>
                 <th>Nombre mágico</th>
                 <th>Casa</th>
@@ -65,13 +59,13 @@
             <!-- Accounts -->
             {% for acc in accounts %}
             <tr>
-                <td><input type="checkbox" name="selected_accounts" value="{{ acc.id }}"></td>
-                <td>{{ acc.id }}</td>
+                <td><input type="checkbox" name="selected_accounts" value="{{ acc.pk }}"></td>
+                <td>{{ acc.pk }}</td>
                 <td>{{ acc.user.username }}</td>
                 <td>{{ acc.user.full_name }}</td>
 
                 <td>
-                    <select name="house_{{ acc.id }}">
+                    <select name="house_{{ acc.pk }}">
                         <option value="ravenclaw" {% if acc.user.house == "ravenclaw" %}selected{% endif %}>Ravenclaw</option>
                         <option value="gryffindor" {% if acc.user.house == "gryffindor" %}selected{% endif %}>Gryffindor</option>
                         <option value="hufflepuff" {% if acc.user.house == "hufflepuff" %}selected{% endif %}>Hufflepuff</option>
@@ -79,9 +73,9 @@
                     </select>
                 </td>
 
-                <td><input type="number" name="balance_{{ acc.id }}" value="{{ acc.balance }}"></td>
+                <td><input type="number" name="balance_{{ acc.pk }}" value="{{ acc.balance }}"></td>
 
-                <td><input type="checkbox" name="is_frozen_{{ acc.id }}" {% if acc.is_frozen %}checked{% endif %}>
+                <td><input type="checkbox" name="is_frozen_{{ acc.pk }}" {% if acc.is_frozen %}checked{% endif %}>
                     {% if acc.is_frozen %}
                     <span style="color: red">Congelada</span>
                     {% else %}
@@ -91,7 +85,7 @@
 
                 <!-- Account type -->
                 <td>
-                    <select name="account_type_{{ acc.id }}">
+                    <select name="account_type_{{ acc.pk }}">
                         <option value="standard" {% if acc.account_type == "standard" %}selected{% endif %}>Standard</option>
                         <option value="premium" {% if acc.account_type == "premium" %}selected{% endif %}>Premium</option>
                         <option value="premium_pro" {% if acc.account_type == "premium_pro" %}selected{% endif %}>Premium Pro</option>
@@ -104,7 +98,7 @@
                 <td>{% if acc.account_type != 'standard' %}{{ acc.premium_ex_date }}{% endif %}</td>
 
                 <td>
-                    <button type="submit" name="action" value="update_{{ acc.id }}" class="btn btn-primary">
+                    <button type="submit" name="action" value="update_{{ acc.pk }}" class="btn btn-primary">
                         Actualizar
                     </button>
                 </td>

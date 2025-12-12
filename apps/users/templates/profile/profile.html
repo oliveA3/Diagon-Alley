@@ -45,6 +45,11 @@
 
                 <p>Transacciones restantes esta semana: {{ account.weekly_transactions_left }}</li>
             </li>
+        </ul>
+
+        {% if pending_loans %}
+        <a href="{% url 'pending_loans' %}" class="btn btn-primary">Préstamos pendientes</a>
+        {% endif %}
     </div>
 </main>
 

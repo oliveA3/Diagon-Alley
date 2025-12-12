@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 from apps.stores.models import Product, InventoryItem
-from apps.bank.models import BankAccount
+from apps.bank.models import BankAccount, Transaction, Loan
 from apps.utils import utils
 
 User = get_user_model()
@@ -66,10 +66,12 @@ def login_view(request):
 def profile_view(request):
     user = request.user
     bank_account = get_object_or_404(BankAccount, user_id=user.id)
+
     inventory_items = InventoryItem.objects.select_related(
         'product').filter(user_id=user.id)
-
     usage_message = None
+
+    pending_loans = Loan.objects.filter(user=user, approved=True, state='pending').exists()
 
     # Use product
     if request.method == 'POST':
@@ -88,6 +90,7 @@ def profile_view(request):
         'account': bank_account,
         'inventory_items': inventory_items,
         'usage_message': usage_message,
+        'pending_loans': pending_loans,
     }
 
     return render(request, 'profile/profile.html', context)

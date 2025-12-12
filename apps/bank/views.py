@@ -13,6 +13,7 @@ from django.utils import timezone
 def bank_view(request):
     user = request.user
     account = get_object_or_404(BankAccount, user_id=user.id)
+    pending_loans = Loan.objects.filter(user=user, approved=True, state='pending').exists()
 
     # Premium purchase
     if request.method == 'POST':
@@ -26,6 +27,7 @@ def bank_view(request):
         'user': user,
         'account': account,
         'working_hours': working_hours,
+        'pending_loans': pending_loans,
     }
 
     return render(request, 'bank.html', context)
@@ -105,4 +107,30 @@ def loans_view(request):
     }
 
     return render(request, 'loans.html', context)
+
+def pending_loans_view(request):
+    user = request.user
+    loans = Loan.objects.filter(user=user, approved=True, state='pending')
+
+    if request.method == "POST":
+        loan_id = request.POST.get("loan_id")
+        loan = Loan.objects.get(id=loan_id, user=user, approved=True, state='pending')
+        account = user.bank_account
+
+        if account.balance >= loan.amount_due:
+            account.balance -= loan.amount_due
+            account.save()
+
+            loan.state = 'paid'
+            loan.save()
+            messages.success(request, f"Has pagado tu préstamo.")
+
+        else:
+            messages.error(request, "No tienes suficiente balance para pagar este préstamo.")
+
+    context = {
+        "user": user,
+        "loans": loans,
+    }
+    return render(request, "pending_loans.html", context)
 

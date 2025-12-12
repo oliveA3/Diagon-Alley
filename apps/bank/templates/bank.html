@@ -44,6 +44,10 @@
             {% endif %}
             <li>Transacciones disponibles esta semana: {{ account.weekly_transactions_left }}</li>
         </ul>
+
+        {% if pending_loans %}
+        <a href="{% url 'pending_loans' %}" class="btn btn-primary">Préstamos pendientes</a>
+        {% endif %}
     </div>
 </main>
 
@@ -51,7 +55,7 @@
 <div>
     <a href="{% url 'transactions' %}">Transferir galeones</a>
 
-    <a href="{% url 'loan' %}">Pedir préstamo</a>
+    <a href="{% url 'loans' %}">Pedir préstamo</a>
 </div>
 
 

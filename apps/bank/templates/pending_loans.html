@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<title>Pendientes</title>
+{% endblock %}
+
+{% block body %}
+
+<main>
+    <a href="{% url 'bank_view' %}">🏠 Volver al Banco Gringotts</a>
+
+    <!-- Pending loans -->
+    <div>
+        {% if loans %}
+        <h3>Préstamos pendientes</h3>
+        <table class="table">
+            <tr>
+                <th>Monto solicitado</th>
+                <th>Monto a devolver</th>
+                <th></th>
+            </tr>
+
+            {% for loan in loans %}
+            <tr>
+                <td>{{ loan.amount_requested }}</td>
+                <td>{{ loan.amount_due }}</td>
+                <td>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="loan_id" value="{{ loan.id }}">
+                        <button type="button" class="btn btn-primary" data-title="Confirmación de pago"
+                            data-message="¿Está seguro de que desea pagar el monto debido ({{ loan.amount_due }} galeones)? (Esta acción es irreversible)?"
+                            onclick="showConfirm(this)">
+                            Pagar
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        {% else %}
+            <p>No tienes préstamos pendientes.</p>
+        {% endif %}
+    </div>
+</main>
+
+{% endblock %}
+
+<!-- Modals templates -->
+{% block modals %}
+{{ block.super }}
+{% endblock %}

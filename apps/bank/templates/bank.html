@@ -42,6 +42,7 @@
             {% if account.premium_ex_date %}
             <li>Su cuenta expira el {{ account.premium_ex_date }}</li>
             {% endif %}
+            <li>Transacciones disponibles esta semana: {{ account.weekly_transactions_left }}</li>
         </ul>
     </div>
 </main>

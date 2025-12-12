@@ -1,24 +1,27 @@
 "use strict";
 
-const userASelect = document.getElementById("user_a");
-const userBSelect = document.getElementById("user_b");
+document.addEventListener("DOMContentLoaded", function () {
+    const selectA = document.getElementById("user_a");
+    const selectB = document.getElementById("user_b");
 
-function updateUserBOptions() {
-	const selectedA = userASelect.value;
+    function updateOptions() {
+        const selectedA = selectA.value;
+        const selectedB = selectB.value;
 
-	for (let option of userBSelect.options) {
-		option.disabled = option.value === selectedA;
-	}
-}
-function updateUserAOptions() {
-	const selectedB = userBSelect.value;
+        [...selectA.options].forEach(opt => opt.disabled = false);
+        [...selectB.options].forEach(opt => opt.disabled = false);
 
-	for (let option of userASelect.options) {
-		option.disabled = option.value === selectedB;
-	}
-}
+        if (selectedA) {
+            const optB = selectB.querySelector(`option[value="${selectedA}"]`);
+            if (optB) optB.disabled = true;
+        }
 
-userASelect.addEventListener("change", updateUserBOptions);
-userBSelect.addEventListener("change", updateUserAOptions);
-window.addEventListener("DOMContentLoaded", updateUserBOptions);
-window.addEventListener("DOMContentLoaded", updateUserAOptions);
+        if (selectedB) {
+            const optA = selectA.querySelector(`option[value="${selectedB}"]`);
+            if (optA) optA.disabled = true;
+        }
+    }
+
+    selectA.addEventListener("change", updateOptions);
+    selectB.addEventListener("change", updateOptions);
+});

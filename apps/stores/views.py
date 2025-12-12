@@ -41,6 +41,7 @@ def store_view(request, store_id):
 def gift_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     accounts = BankAccount.objects.exclude(user=request.user)
+    store = product.store_id
 
     discount = get_discount(request.user)
 
@@ -50,7 +51,7 @@ def gift_view(request, product_id):
 
         sender = get_object_or_404(BankAccount, user=request.user.id)
 
-        gift_product(request, sender, receiver, product_id, discount)
+        gift_product(request, sender, receiver, product_id, discount, store)
 
     context = {
         'product': product,

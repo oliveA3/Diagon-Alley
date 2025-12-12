@@ -74,37 +74,29 @@ class Transaction(models.Model):
 
 
 class Loan(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='loans_requested')
+    codebtor_a = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='loans_as_codebtor_a')
+    codebtor_b = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='loans_as_codebtor_b')
+
     LOAN_CHOICES = [
-        (0, "25 galeones → 30 galeones"),
-        (1, "50 galeones → 60 galeones"),
-        (2, "100 galeones → 120 galeones"),
+        (0, "25 → 30"),
+        (1, "50 → 60"),
+        (2, "100 → 120"),
     ]
     loan_type = models.IntegerField(choices=LOAN_CHOICES)
 
-    user = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name='loans_requested'
-    )
-    codebtor_a = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name='loans_as_codebtor_a'
-    )
-    codebtor_b = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name='loans_as_codebtor_b'
-    )
-
     amount_requested = models.PositiveIntegerField()
     amount_due = models.PositiveIntegerField()
-    approved = models.BooleanField(default=False)
+
     created_at = models.DateTimeField(auto_now_add=True)
-    due_date = models.DateField(null=True, blank=True)
+    approved = models.BooleanField(default=False)
 
-    def approve(self):
-        self.approved = True
-        self.due_date = timezone.now().date() + timezone.timedelta(days=30)
-        self.save()
-
-        account = BankAccount.objects.get(user=self.user)
-        account.balance += self.amount_requested
-        account.save()
+    STATES = [
+        ('pending', "Pendiente"),
+        ('paid', "Pagado"),
+    ]
+    state = models.CharField(choices=STATES, default='pending')
 
     def __str__(self):
         return f"Préstamo de {self.amount_requested} galeones a {self.user.full_name}"
+

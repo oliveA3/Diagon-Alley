@@ -8,13 +8,15 @@ from django.utils import timezone
 
 # BANKER DASHBOARD
 
+
 def is_banker(user):
     return user.is_authenticated and user.role == "banker"
 
 
 @user_passes_test(is_banker)
 def banker_dashboard_view(request):
-    accounts = BankAccount.objects.select_related("user").order_by('is_frozen', 'user').filter(user__role="student")
+    accounts = BankAccount.objects.select_related("user").order_by(
+        'is_frozen', 'user').filter(user__role="student")
 
     # Filters
     if request.GET.get("id"):
@@ -39,14 +41,17 @@ def banker_dashboard_view(request):
         if action:
             # Bulk add
             if action == "bulk_add":
-                ids = [i for i in request.POST.getlist("selected_accounts") if i.strip()]
+                ids = [i for i in request.POST.getlist(
+                    "selected_accounts") if i.strip()]
                 amount_raw = request.POST.get("amount", "").strip()
 
                 if not ids:
-                    messages.error(request, "Debe seleccionar al menos una cuenta.")
+                    messages.error(
+                        request, "Debe seleccionar al menos una cuenta.")
 
                 elif not amount_raw.isdigit():
-                    messages.error(request, "Debe ingresar una cantidad válida.")
+                    messages.error(
+                        request, "Debe ingresar una cantidad válida.")
 
                 else:
                     amount = int(amount_raw)
@@ -61,19 +66,22 @@ def banker_dashboard_view(request):
                             account.save()
                         except (ValueError, BankAccount.DoesNotExist):
                             continue
-                    messages.success(request, f"Se agregaron {amount} galeones a {len(ids)} cuentas.")
+                    messages.success(
+                        request, f"Se agregaron {amount} galeones a {len(ids)} cuentas.")
 
             # Bulk delete
             elif action == "bulk_delete":
-                ids = [int(i) for i in request.POST.getlist("selected_accounts") if i.strip().isdigit()]
-            
+                ids = [int(i) for i in request.POST.getlist(
+                    "selected_accounts") if i.strip().isdigit()]
+
                 if not ids:
-                    messages.error(request, "Debe seleccionar al menos una cuenta para eliminar.")
+                    messages.error(
+                        request, "Debe seleccionar al menos una cuenta para eliminar.")
                 else:
                     # Eliminar usuarios asociados
                     CustomUser.objects.filter(pk__in=ids).delete()
-                    messages.success(request, f"Se eliminaron {len(ids)} usuarios y sus cuentas.")
-
+                    messages.success(
+                        request, f"Se eliminaron {len(ids)} usuarios y sus cuentas.")
 
             # Update register
             elif action.startswith("update_"):
@@ -81,7 +89,8 @@ def banker_dashboard_view(request):
                 account = BankAccount.objects.get(pk=int(acc_id))
 
                 # Premium changes
-                new_type = request.POST.get(f"account_type_{acc_id}", account.account_type)
+                new_type = request.POST.get(
+                    f"account_type_{acc_id}", account.account_type)
                 if new_type != account.account_type and new_type != "standard":
                     account.upgraded_at = timezone.now()
                 account.account_type = new_type
@@ -93,18 +102,21 @@ def banker_dashboard_view(request):
                 account.save()
 
                 # House changes
-                account.user.house = request.POST.get(f"house_{acc_id}", account.user.house)
+                account.user.house = request.POST.get(
+                    f"house_{acc_id}", account.user.house)
                 account.is_frozen = f"is_frozen_{acc_id}" in request.POST
 
-                new_balance = int(request.POST.get(f"balance_{acc_id}", account.balance))
+                new_balance = int(request.POST.get(
+                    f"balance_{acc_id}", account.balance))
                 if new_balance <= account.current_limit:
                     account.balance = new_balance
                     account.save()
-                    messages.success(request, f"Cuenta de {account.user.username} actualizada.")
+                    messages.success(
+                        request, f"Cuenta de {account.user.username} actualizada.")
 
                 else:
-                    messages.error(request, "La cantidad de galeones excede el límite de la cuenta.")
-
+                    messages.error(
+                        request, "La cantidad de galeones excede el límite de la cuenta.")
 
         return redirect("banker_dashboard")
 
@@ -113,7 +125,8 @@ def banker_dashboard_view(request):
 
 @user_passes_test(is_banker)
 def transactions_list_view(request):
-    transactions = Transaction.objects.select_related("sender", "receiver").order_by("-created_at")
+    transactions = Transaction.objects.select_related(
+        "sender", "receiver").order_by("-created_at")
 
     context = {
         'transactions': transactions,
@@ -124,10 +137,41 @@ def transactions_list_view(request):
 
 @user_passes_test(is_banker)
 def loans_list_view(request):
-    loans = Loan.objects.all()
+    loans_to_approve = Loan.objects.order_by('user').filter(approved=False)
+    loans_log = Loan.objects.order_by('user').filter(approved=True)
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+        loan_id = request.POST.get("loan_id")
+
+        loan = Loan.objects.get(id=loan_id)
+        account = get_object_or_404(BankAccount, user=loan.user)
+
+        if action == "approve":
+            new_balance = account.balance + loan.amount_requested
+            if new_balance <= account.current_limit:
+                loan.approved = True
+                loan.save()
+
+                account.balance = new_balance
+                account.save()
+                messages.success(
+                    request, f"Préstamo de {loan.user.username} aprobado y balance actualizado.")
+
+            else:
+                messages.error(
+                    request, f"Este préstamo excede el limite de la cuenta de {loan.user.username}.")
+
+        elif action == "reject":
+            loan.delete()
+            messages.success(
+                request, f"Préstamo de {loan.user.username} rechazado y eliminado.")
+
+        return redirect("loans_list")
 
     context = {
-        'loans': loans,
+        'loans_to_approve': loans_to_approve,
+        'loans_log': loans_log,
     }
 
     return render(request, 'banker/loans_list.html', context)

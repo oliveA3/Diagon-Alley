@@ -9,27 +9,74 @@
 <main>
     <a href="{% url 'banker_dashboard' %}">🏠 Volver al dashboard</a>
 
-    <!-- Loans list -->
+    <!-- Loans to approve list -->
      <div>
-        <h2 class="mt-3">📜 Historial de préstamos</h2>
+        <h2>Préstamos por aprobar</h2>
+        <table class="table">
+            <tr>
+                <th>Usuario</th>
+                <th>Casa</th>
+                <th>Codeudor A</th>
+                <th>Codeudor B</th>
+                <th>Monto</th>
+                <th>Devolver</th>
+                <th></th>
+            </tr>
+            {% for loan in loans_to_approve %}
+            <tr>
+                <td>(No. {{loan.user.id}}) {{ loan.user.full_name }}</td>
+                <td>{{ loan.user.house|title }}</td>
+                <td>{{ loan.codebtor_a.full_name }}</td>
+                <td>{{ loan.codebtor_b.full_name }}</td>
+                <td>{{ loan.amount_requested }}</td>
+                <td>{{ loan.amount_due }}</td>
+                <td>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="loan_id" value="{{ loan.id }}">
+                        <button type="submit" name="action" value="approve" class="btn btn-success">Aprobar</button>
+                        <button type="submit" name="action" value="reject" class="btn btn-danger">Rechazar</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">No hay préstamos para aprobar.</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Titulos de columnas...</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for l in loans %}
-                <tr>
-                    <td>Dato por columna</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5" class="text-center">No hay préstamos registrados.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
+    <!-- Loans list log -->
+     <div>
+        <h2>Registro de préstamos</h2>
+        <table class="table">
+            <tr>
+                <th>Usuario</th>
+                <th>Casa</th>
+                <th>Codeudor A</th>
+                <th>Codeudor B</th>
+                <th>Monto</th>
+                <th>Devolver</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+            </tr>
+            {% for loan in loans_log %}
+            <tr>
+                <td>(No. {{loan.user.id}}) {{ loan.user.full_name }}</td>
+                <td>{{ loan.user.house|title }}</td>
+                <td>{{ loan.codebtor_a.full_name }}</td>
+                <td>{{ loan.codebtor_b.full_name }}</td>
+                <td>{{ loan.amount_requested }}</td>
+                <td>{{ loan.amount_due }}</td>
+                <td>{{ loan.created_at }}</td>
+                <td>{{ loan.get_state_display }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">No hay préstamos registrados.</td>
+            </tr>
+            {% endfor %}
         </table>
     </div>
 </main>

@@ -13,7 +13,8 @@ from django.utils import timezone
 def bank_view(request):
     user = request.user
     account = get_object_or_404(BankAccount, user_id=user.id)
-    pending_loans = Loan.objects.filter(user=user, approved=True, state='pending').exists()
+    pending_loans = Loan.objects.filter(
+        user=user, approved=True, state='pending').exists()
 
     # Premium purchase
     if request.method == 'POST':
@@ -63,6 +64,7 @@ LOAN_AMOUNTS = {
     2: (100, 120),
 }
 
+
 def loans_view(request):
     user = request.user
     users = CustomUser.objects.order_by('full_name').filter(
@@ -78,43 +80,58 @@ def loans_view(request):
         user_a_id = request.POST.get('codebtor_a')
         user_b_id = request.POST.get('codebtor_b')
 
+        amount_requested, amount_due = LOAN_AMOUNTS[loan_type]
+
         # Validations
-        if not user_a_id or not user_b_id:
-            messages.error(request, "Debe seleccionar dos codeudores.")
+        if not user_a_id and not user_b_id:
+            messages.error(request, "Debe seleccionar al menos un codeudor.")
 
-        elif user_a_id == user_b_id:
-            messages.error(request, "Los codeudores no pueden ser iguales.")
-
-        # Request loan
         else:
-            codebtor_a = CustomUser.objects.get(id=user_a_id)
-            codebtor_b = CustomUser.objects.get(id=user_b_id)
-            
-            amount_requested, amount_due = LOAN_AMOUNTS[loan_type]
-            Loan.objects.create(
-                user=user,
-                codebtor_a=codebtor_a,
-                codebtor_b=codebtor_b,
-                loan_type=loan_type,
-                amount_requested=amount_requested,
-                amount_due=amount_due,
-            )
-            messages.success(request, "Préstamo solicitado. Espera aprobación del banquero.")
+            codebtor_a = CustomUser.objects.get(
+                id=user_a_id)
+            codebtor_b = CustomUser.objects.get(
+                id=user_b_id)
+
+            # Available balance
+            balance_total = 0
+            if codebtor_a:
+                balance_total += codebtor_a.bank_account.balance
+
+            if codebtor_b:
+                balance_total += codebtor_b.bank_account.balance
+
+            if balance_total < amount_due:
+                messages.error(
+                    request, "Los codeudores no tienen suficientes galeones para respaldar este préstamo.")
+
+            else:
+                Loan.objects.create(
+                    user=user,
+                    codebtor_a=codebtor_a,
+                    codebtor_b=codebtor_b,
+                    loan_type=loan_type,
+                    amount_requested=amount_requested,
+                    amount_due=amount_due,
+                )
+                messages.success(
+                    request, "Préstamo solicitado. Espera aprobación del banquero.")
 
     context = {
         'user': user,
         'users': users,
     }
-
     return render(request, 'loans.html', context)
+
 
 def pending_loans_view(request):
     user = request.user
-    pending_loans = Loan.objects.filter(user=user, approved=True, state='pending')
+    pending_loans = Loan.objects.filter(
+        user=user, approved=True, state='pending')
 
     if request.method == "POST":
         loan_id = request.POST.get("loan_id")
-        loan = Loan.objects.get(id=loan_id, user=user, approved=True, state='pending')
+        loan = Loan.objects.get(id=loan_id, user=user,
+                                approved=True, state='pending')
         account = user.bank_account
 
         if account.balance >= loan.amount_due:
@@ -126,11 +143,11 @@ def pending_loans_view(request):
             messages.success(request, f"Has pagado tu préstamo.")
 
         else:
-            messages.error(request, "No tienes suficiente balance para pagar este préstamo.")
+            messages.error(
+                request, "No tienes suficientes galeones para pagar este préstamo.")
 
     context = {
         "user": user,
         "pending_loans": pending_loans,
     }
     return render(request, "pending_loans.html", context)
-

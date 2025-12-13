@@ -43,26 +43,35 @@
             <h3>Préstamos (cantidad -- devolución)</h3>
             <input type="hidden" name="loan_type" id="loan_type_field">
 
-            <button type="button" name="loan_type" value="0" class="btn btn-primary"
-                    data-title="Confirmación de préstamo"
-                    data-message="¿Deseas pedir un préstamo de 25 galeones a devolver 30?"
-                    onclick="showConfirm(this)">
-                Pedir préstamo 25 → 30
-            </button>
+            <div>
+                <p>Préstamo de 25 galeones (devolver 30) por un mes.</p>
+                <button type="button" name="loan_type" value="0" class="btn btn-primary"
+                        data-title="Confirmación de préstamo"
+                        data-message="¿Deseas pedir un préstamo de 25 galeones a devolver 30?"
+                        onclick="showConfirm(this)">
+                    Pedir préstamo
+                </button>
+            </div>
         
-            <button type="button" name="loan_type" value="1" class="btn btn-primary"
-                    data-title="Confirmación de préstamo"
-                    data-message="¿Deseas pedir un préstamo de 50 galeones a devolver 60?"
-                    onclick="showConfirm(this)">
-                Pedir préstamo 50 → 60
-            </button>
+            <div>
+                <p>Préstamo de 50 galeones (devolver 60) por dos meses.</p>
+                <button type="button" name="loan_type" value="1" class="btn btn-primary"
+                        data-title="Confirmación de préstamo"
+                        data-message="¿Deseas pedir un préstamo de 50 galeones a devolver 60?"
+                        onclick="showConfirm(this)">
+                    Pedir préstamo
+                </button>
+            </div>
         
-            <button type="button" name="loan_type" value="2" class="btn btn-primary"
-                    data-title="Confirmación de préstamo"
-                    data-message="¿Deseas pedir un préstamo de 100 galeones a devolver 120?"
-                    onclick="showConfirm(this)">
-                Pedir préstamo 100 → 120
-            </button>
+            <div>
+                <p>Préstamo de 100 galeones (devolver 120) por tres meses.</p>
+                <button type="button" name="loan_type" value="2" class="btn btn-primary"
+                        data-title="Confirmación de préstamo"
+                        data-message="¿Deseas pedir un préstamo de 100 galeones a devolver 120?"
+                        onclick="showConfirm(this)">
+                    Pedir préstamo
+                </button>
+            </div>
         </div>
     </form>
 </main>

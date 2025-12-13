@@ -10,8 +10,9 @@
     <a href="{% url 'banker_dashboard' %}">🏠 Volver al dashboard</a>
 
     <!-- Loans to approve list -->
-     <div>
+    <div>
         <h2>Préstamos por aprobar</h2>
+        {% if loans_to_approve %}
         <table class="table">
             <tr>
                 <th>Usuario</th>
@@ -39,45 +40,71 @@
                     </form>
                 </td>
             </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5" class="text-center">No hay préstamos para aprobar.</td>
-            </tr>
             {% endfor %}
         </table>
+        {% else %}
+        <div>
+            <p colspan="5" class="text-center">No hay préstamos para aprobar.</p>
+        </div>
+        {% endif %}
     </div>
 
     <!-- Loans list log -->
-     <div>
+    <div>
         <h2>Registro de préstamos</h2>
+        {% if loans_log %}
         <table class="table">
             <tr>
                 <th>Usuario</th>
                 <th>Casa</th>
+                <th>Balance</th>
                 <th>Codeudor A</th>
                 <th>Codeudor B</th>
+                <th>Estado de la cuenta</th>
                 <th>Monto</th>
                 <th>Devolver</th>
-                <th>Fecha</th>
-                <th>Estado</th>
+                <th>Fecha de aprobacion</th>
+                <th>Fecha de devolución</th>
+                <th>Estado del préstamo</th>
+                <th></th>
             </tr>
             {% for loan in loans_log %}
             <tr>
                 <td>(No. {{loan.user.id}}) {{ loan.user.full_name }}</td>
                 <td>{{ loan.user.house|title }}</td>
+                <td>{{ loan.user.bank_account.balance }}</td>
                 <td>{{ loan.codebtor_a.full_name }}</td>
                 <td>{{ loan.codebtor_b.full_name }}</td>
+                <td>{{ loan.user.bank_account.is_frozen }}</td>
                 <td>{{ loan.amount_requested }}</td>
                 <td>{{ loan.amount_due }}</td>
-                <td>{{ loan.created_at }}</td>
+                <td>{{ loan.approved_at }}</td>
+                <td
+                    {% if loan.is_overdue %} style="color:red; font-weight:bold"
+                    {% elif loan.is_near_due %} style="color:orange; font-weight:bold"
+                    {% endif %}>
+                    {{ loan.due_date }}
+                </td>
                 <td>{{ loan.get_state_display }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5" class="text-center">No hay préstamos registrados.</td>
+                <td>
+                    {% if loan.state == 'pending' %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="loan_id" value="{{ loan.id }}">
+                        <button type="submit" name="action" value="mark_paid" class="btn btn-success">
+                            Marcar como pagado
+                        </button>
+                    </form>
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </table>
+        {% else %}
+        <div>
+            <p colspan="5" class="text-center">No hay préstamos registrados.</p>
+        </div>
+         {% endif %}
     </div>
 </main>
 {% endblock %}

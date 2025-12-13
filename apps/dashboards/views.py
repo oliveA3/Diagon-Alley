@@ -98,13 +98,15 @@ def banker_dashboard_view(request):
 
                 if account.balance > account.current_limit:
                     account.balance = account.current_limit
-
                 account.save()
 
                 # House changes
                 account.user.house = request.POST.get(
                     f"house_{acc_id}", account.user.house)
-                account.is_frozen = f"is_frozen_{acc_id}" in request.POST
+
+                frozen = request.POST.get(f"is_frozen_{acc_id}")
+                account.is_frozen = not frozen
+                account.save()
 
                 new_balance = int(request.POST.get(
                     f"balance_{acc_id}", account.balance))
@@ -151,6 +153,7 @@ def loans_list_view(request):
             new_balance = account.balance + loan.amount_requested
             if new_balance <= account.current_limit:
                 loan.approved = True
+                loan.approved_at = timezone.now()
                 loan.save()
 
                 account.balance = new_balance
@@ -166,6 +169,11 @@ def loans_list_view(request):
             loan.delete()
             messages.success(
                 request, f"Préstamo de {loan.user.username} rechazado y eliminado.")
+
+        elif action == "mark_paid" and loan.state == 'pending':
+            loan.state = 'paid'
+            loan.save()
+            messages.success(request, f"El préstamo de {loan.user.full_name} fue marcado como pagado.")
 
         return redirect("loans_list")
 

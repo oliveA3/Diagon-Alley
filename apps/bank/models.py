@@ -50,6 +50,7 @@ class BankAccount(models.Model):
 
         return None
 
+
     def check_expiration(self):
         if self.account_type == 'premium' and self.upgraded_at:
             if timezone.now().date() > self.upgraded_at + timedelta(days=90):
@@ -88,15 +89,38 @@ class Loan(models.Model):
     amount_requested = models.PositiveIntegerField()
     amount_due = models.PositiveIntegerField()
 
-    created_at = models.DateTimeField(auto_now_add=True)
     approved = models.BooleanField(default=False)
+    approved_at = models.DateTimeField(null=True, blank=True)
 
     STATES = [
         ('pending', "Pendiente"),
         ('paid', "Pagado"),
     ]
-    state = models.CharField(choices=STATES, default='pending')
+    state = models.CharField(max_length=10, choices=STATES, default='pending')
 
     def __str__(self):
         return f"Préstamo de {self.amount_requested} galeones a {self.user.full_name}"
 
+    @property
+    def due_date(self):
+        if not self.approved_at:
+            return None
+
+        if self.loan_type == 0:
+            return self.approved_at + timedelta(days=30)
+        elif self.loan_type == 1:
+            return self.approved_at + timedelta(days=60)
+        elif self.loan_type == 2:
+            return self.approved_at + timedelta(days=90)
+
+    @property
+    def is_overdue(self):
+        return self.due_date and timezone.now() > self.due_date
+
+    @property
+    def is_near_due(self):
+        if not self.due_date:
+            return False
+    
+        delta = self.due_date - timezone.now()
+        return 0 <= delta.days <= 4

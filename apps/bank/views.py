@@ -18,7 +18,7 @@ def bank_view(request):
     # Premium purchase
     if request.method == 'POST':
         account_type = request.POST.get('account_type')
-        purchase_premium(account, account_type)
+        purchase_premium(request, account, account_type)
         return redirect('bank_view')
 
     working_hours = utils.working_hours()
@@ -110,7 +110,7 @@ def loans_view(request):
 
 def pending_loans_view(request):
     user = request.user
-    loans = Loan.objects.filter(user=user, approved=True, state='pending')
+    pending_loans = Loan.objects.filter(user=user, approved=True, state='pending')
 
     if request.method == "POST":
         loan_id = request.POST.get("loan_id")
@@ -130,7 +130,7 @@ def pending_loans_view(request):
 
     context = {
         "user": user,
-        "loans": loans,
+        "pending_loans": pending_loans,
     }
     return render(request, "pending_loans.html", context)
 

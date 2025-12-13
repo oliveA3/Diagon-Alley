@@ -75,12 +75,13 @@
 
                 <td><input type="number" name="balance_{{ acc.pk }}" value="{{ acc.balance }}"></td>
 
-                <td><input type="checkbox" name="is_frozen_{{ acc.pk }}" {% if acc.is_frozen %}checked{% endif %}>
-                    {% if acc.is_frozen %}
-                    <span style="color: red">Congelada</span>
-                    {% else %}
-                    <span style="color: green">Activa</span>
-                    {% endif %}
+                <td>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="is_frozen_{{ acc.pk }}" {% if not acc.is_frozen %}checked{% endif %}>
+                        <label class="form-check-label">
+                            {% if acc.is_frozen %}<span style="color:red">Congelada</span>{% else %}<span style="color:green">Activa</span>{% endif %}
+                        </label>
+                    </div>
                 </td>
 
                 <!-- Account type -->

@@ -19,49 +19,43 @@ class BankAccount(models.Model):
     ACCOUNT_TYPES = [
         ('standard', 'Standard'),
         ('premium', 'Premium'),
-        ('premium_pro', 'Premium Pro'),
+        ('vip', 'VIP'),
     ]
     account_type = models.CharField(choices=ACCOUNT_TYPES, default='standard')
 
     created_at = models.DateField(auto_now_add=True)
     upgraded_at = models.DateField(null=True, blank=True)
+    # Just for premium
+    duration_days = models.PositiveIntegerField(null=True, blank=True)
 
     weekly_transactions_left = models.PositiveIntegerField(default=1)
 
     @property
     def current_limit(self):
+        if self.account_type == 'vip':
+            return None
         return {
             'standard': 200,
-            'premium': 300,
-            'premium_pro': 400,
-
+            'premium': 400,
         }.get(self.account_type, 200)
 
     @property
     def premium_ex_date(self):
-        if not self.upgraded_at or self.account_type == 'standard':
+        if self.account_type == 'vip' or self.account_type == 'standard':
             return None
-
-        if self.account_type == 'premium':
-            return self.upgraded_at + timedelta(days=90)
-
-        if self.account_type == 'premium_pro':
-            return self.upgraded_at + timedelta(days=180)
-
+        elif self.account_type == 'premium':
+            return self.upgraded_at + timedelta(days=self.duration_days)
         return None
 
-
-    def check_expiration(self):
-        if self.account_type == 'premium' and self.upgraded_at:
-            if timezone.now().date() > self.upgraded_at + timedelta(days=90):
+    def downgrade_if_due(self):
+        if self.account_type == 'vip':
+            return
+            
+        if self.account_type == 'premium' and self.upgraded_at and self.duration_days:
+            if timezone.now().date() > self.upgraded_at + timedelta(days=self.duration_days):
                 self.account_type = 'standard'
                 self.upgraded_at = None
-                self.save()
-
-        elif self.account_type == 'premium_pro' and self.upgraded_at:
-            if timezone.now().date() > self.upgraded_at + timedelta(days=180):
-                self.account_type = 'standard'
-                self.upgraded_at = None
+                self.duration_days = None
                 self.save()
 
 

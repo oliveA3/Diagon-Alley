@@ -18,8 +18,8 @@ def bank_view(request):
 
     # Premium purchase
     if request.method == 'POST':
-        account_type = request.POST.get('account_type')
-        purchase_premium(request, account, account_type)
+        duration_days = request.POST.get('account_duration')
+        purchase_premium(request, account, duration_days)
         return redirect('bank_view')
 
     working_hours = utils.working_hours()

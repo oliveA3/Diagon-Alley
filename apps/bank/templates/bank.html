@@ -38,7 +38,10 @@
 
             <!-- Account type info -->
             <li>Cuenta {{ account.get_account_type_display }}</li>
+            {% if account.current_limit %}
             <li>Límite {{ account.current_limit }}</li>
+            {% endif %}
+            
             {% if account.premium_ex_date %}
             <li>Su cuenta expira el {{ account.premium_ex_date }}</li>
             {% endif %}

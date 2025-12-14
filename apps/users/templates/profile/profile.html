@@ -31,6 +31,7 @@
                 
                 <!-- Account type info -->
                 <p>Cuenta {{ account.get_account_type_display }}</p>
+                {% if account.current_limit %}
                 <div>
                     <strong>Límite:</strong> {{ account.current_limit }} galeones
                     <p>
@@ -42,6 +43,7 @@
                     <p>Su cuenta expira el {{ account.premium_ex_date }}</p>
                     {% endif %}
                 </div>
+                {% endif %}
 
                 <p>Transacciones restantes esta semana: {{ account.weekly_transactions_left }}</li>
             </li>

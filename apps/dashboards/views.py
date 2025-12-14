@@ -22,7 +22,7 @@ def has_niffler(request, amount: int, user: CustomUser):
 
         if new_amount != amount:
             messages.success(
-            request, f"Se otorgaron {new_amount} galeones extra a la cuenta de { user.username } por tener un escarbato.")
+            request, f"Se otorgaron {new_amount} galeones a la cuenta de {user.username} por tener un escarbato.")
 
     return new_amount
 
@@ -78,8 +78,9 @@ def banker_dashboard_view(request):
                             account = BankAccount.objects.get(pk=int(acc_id))
                             account.balance += has_niffler(request, amount, account.user)
 
-                            if account.balance > account.current_limit:
-                                account.balance = account.current_limit
+                            if account.current_limit:
+                                if account.balance > account.current_limit:
+                                    account.balance = account.current_limit
 
                             account.save()
                         except (ValueError, BankAccount.DoesNotExist):

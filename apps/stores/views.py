@@ -35,27 +35,28 @@ def store_view(request, store_id):
     return render(request, 'store.html', context)
 
 
+from django.shortcuts import redirect
+
 def gift_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     accounts = BankAccount.objects.exclude(user=request.user)
-    store = product.store_id
-
     discount = get_discount(request.user)
 
     if request.method == "POST":
         receiver_id = request.POST.get("receiver_id")
         receiver = get_object_or_404(CustomUser, id=receiver_id)
-
         sender = get_object_or_404(BankAccount, user=request.user.id)
 
         gift_product(request, sender, receiver, product_id, discount)
+        
+        return redirect("store", store_id=product.store_id)
 
     context = {
         'product': product,
         'accounts': accounts,
     }
-
     return render(request, "gift.html", context)
+
 
 
 def product_owners_view(request, product_id):

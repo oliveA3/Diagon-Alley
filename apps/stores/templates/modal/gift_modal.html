@@ -1,0 +1,30 @@
+<div class="modal fade" id="giftModal" tabindex="-1" aria-labelledby="giftModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="giftModalLabel">Regalar artículo</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body" id="giftModalBody">
+        <!-- gift.html -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var giftModal = document.getElementById('giftModal');
+    giftModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var productId = button.getAttribute('data-product-id');
+        var url = button.getAttribute('data-url');
+
+        fetch(url)
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById("giftModalBody").innerHTML = html;
+        });
+    });
+});
+</script>

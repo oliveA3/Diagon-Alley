@@ -1,17 +1,8 @@
-{% extends 'base.html' %} 
-{% load static %}
-
-{% block head %}
-<title>Callejón Diagon</title>
-{% endblock %} 
-
-{% block body %}
-
 <!-- Gift -->
 <main class="container my-4">
     <h2>Regalar {{ product.name }}</h2>
 
-    <form method="post">
+    <form method="post" action="{% url 'gift' product.id %}">
         {% csrf_token %}
         <input type="hidden" name="product_id" value="{{ product.id }}">
 
@@ -25,6 +16,7 @@
 
         <button type="button"
                 class="btn btn-primary mt-3"
+                data-bs-dismiss="modal"
                 data-title="Confirmación de regalo"
                 data-message="¿Deseas regalar {{ product.name }}? (Se te cobrará una comisión de 5 galones)"
                 onclick="showConfirm(this)">
@@ -32,9 +24,3 @@
         </button>
     </form>
 </main>
-
-{% endblock %}
-
-{% block modals %}
-{{ block.super }}
-{% endblock %}

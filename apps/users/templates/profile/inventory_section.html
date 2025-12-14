@@ -1,0 +1,27 @@
+<div class="card" style="flex: 1 1 250px; max-width: 300px;">
+    <div class="card-body">
+        <h5 class="card-title">{{ item.product.name }}</h5>
+        <h6 class="card-subtitle mb-2 text-body-secondary">{{ item.product.description }}</h6>
+        <p class="card-text">Comprado en: {{ item.pur_date }}</p>
+        <p class="card-text"
+           {% if item.is_near_ex %}
+           style="color:orange; font-weight:bold"
+           {% endif %}>
+           Expira en: {{ item.ex_date }}
+        </p>
+
+        {% if item.uses %}
+        <p class="card-text">Usos: {{ item.uses }}</p>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="item_id" value="{{ item.id }}" />
+            <button type="button" class="btn btn-primary"
+                    data-title="Confirmación de uso"
+                    data-message="¿Deseas usar el producto {{ item.product.name }} (Esta acción es irreversible)?"
+                    onclick="showConfirm(this)">
+                Usar
+            </button>
+        </form>
+        {% endif %}
+    </div>
+</div>

@@ -59,11 +59,13 @@
         Estadísticas de la casa
     </button>
 
-    <a href="{% url 'house_stats' %}">Estadísticas de la casa</a>
+    <a type="button" class="btn btn-primary" href="{% url 'edit_profile' %}">
+        Editar perfil
+    </a>
 
-    <a href="{% url 'edit_profile' %}">Editar perfil</a>
-
-    <a href="{% url 'update_password' %}">Cambiar contraseña</a>
+    <a type="button" class="btn btn-primary" href="{% url 'update_password' %}">
+        Cambiar contraseña
+    </a>
 </div>
 
 <!-- Logout -->
@@ -84,49 +86,59 @@
 
 <!-- Student inventory -->
 <section class="container-fluid">
-    <h3>Mi inventario:</h3>
-    {% for item in inventory_items %}
-
-    <!-- Inventory Item -->
-    <div
-        class="card container-fluid d-flex flex-wrap justify-content-center"
-        style="max-width: 900px"
-    >
-        <div class="card-body">
-            <h5 class="card-title">{{ item.product.name }}</h5>
-            <h6 class="card-subtitle mb-2 text-body-secondary">
-                {{ item.product.description }}
-            </h6>
-            <p class="card-text">Comprado en: {{ item.pur_date }}</p>
-            <p class="card-text"
-                {% if item.is_near_ex %}
-                style="color:orange; font-weight:bold"
-                {% endif %}>
-                Expira en: {{ item.ex_date }}
-            </p>
-
-            <!-- Use item form -->
-            {% if item.uses %}
-            <p class="card-text">Usos: {{ item.uses }}</p>
-            <form method="POST">
-                {% csrf_token %}
-                <input type="hidden" name="item_id" value="{{ item.id }}" />
-                <button
-                    type="button"
-                    class="btn btn-primary"
-                    data-title="Confirmación de uso"
-                    data-message="¿Deseas usar el producto {{ item.product.name }} (Esta acción es irreversible)?"
-                    onclick="showConfirm(this)"
-                >
-                    Usar
-                </button>
-            </form>
-            {% endif %}
-        </div>
+    <div>
+        <h3>Mi inventario</h3>
+        <form method="GET" class="d-flex" style="gap: 5px;">
+            <input type="text" name="q" value="{{ query|default_if_none:'' }}" class="form-control" placeholder="Buscar producto...">
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </form>
     </div>
 
-    {% empty %} No tienes productos en tu inventario. 
-    {% endfor %}
+    {% if not wands and not brooms and not pets and not wheezes %}
+    <p>No tienes artículos en tu inventario{% if query %} que coincidan con "{{ query }}"{% endif %}.</p>
+    {% else %}
+
+    <!-- Wands -->
+    <h4 class="text-center">Varitas</h4>
+    <div class="d-flex flex-wrap justify-content-center gap-3">
+        {% for item in wands %}
+        {% include "profile/inventory_section.html" with item=item %}
+        {% empty %}
+        <p class="text-center">No tienes varitas en tu inventario{% if query %} que coincidan con "{{ query }}"{% endif %}.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Brooms -->
+    <h4 class="text-center">Escobas</h4>
+    <div class="d-flex flex-wrap justify-content-center gap-3">
+        {% for item in brooms %}
+        {% include "profile/inventory_section.html" with item=item %}
+        {% empty %}
+        <p class="text-center">No tienes escobas en tu inventario{% if query %} que coincidan con "{{ query }}"{% endif %}.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Pets -->
+    <h4 class="text-center">Mascotas</h4>
+    <div class="d-flex flex-wrap justify-content-center gap-3">
+        {% for item in pets %}
+        {% include "profile/inventory_section.html" with item=item %}
+        {% empty %}
+        <p class="text-center">No has comprado ninguna mascota{% if query %} que coincida con "{{ query }}"{% endif %}.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Wheezes -->
+    <h4 class="text-center">Sortilegios</h4>
+    <div class="d-flex flex-wrap justify-content-center gap-3">
+        {% for item in wheezes %}
+        {% include "profile/inventory_section.html" with item=item %}
+        {% empty %}
+        <p class="text-center">No tienes artículos de Sortilegios Weasley en tu inventario{% if query %} que coincidan con "{{ query }}"{% endif %}.</p>
+        {% endfor %}
+    </div>
+
+    {% endif %}
 </section>
 
 {% endblock %}

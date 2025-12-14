@@ -9,6 +9,7 @@ from django.contrib.auth import get_user_model
 from django.contrib import messages
 from apps.stores.models import Product, InventoryItem
 from apps.bank.models import BankAccount, Transaction, Loan
+from .models import CustomUser
 from apps.utils import utils
 
 User = get_user_model()
@@ -67,13 +68,24 @@ def profile_view(request):
     user = request.user
     bank_account = get_object_or_404(BankAccount, user_id=user.id)
 
-    inventory_items = InventoryItem.objects.select_related(
-        'product').filter(user_id=user.id)
-    usage_message = None
+    # Inventory
+    wands = InventoryItem.objects.select_related('product').filter(user_id=user.id, product__product_type='wand')
+    brooms = InventoryItem.objects.select_related('product').filter(user_id=user.id, product__product_type='broom')
+    pets = InventoryItem.objects.select_related('product').filter(user_id=user.id, product__product_type='pet')
+    wheezes = InventoryItem.objects.select_related('product').filter(user_id=user.id, product__product_type='wheezes')
 
+    # Search by name
+    query = request.GET.get("q")
+    if query:
+        wands = wands.filter(product__name__icontains=query)
+        brooms = brooms.filter(product__name__icontains=query)
+        pets = pets.filter(product__name__icontains=query)
+        wheezes = wheezes.filter(product__name__icontains=query)
+
+    usage_message = None
     pending_loans = Loan.objects.filter(user=user, approved=True, state='pending').exists()
 
-    # Use product
+    # Use inventory item
     if request.method == 'POST':
         item_id = request.POST.get('item_id')
         item = get_object_or_404(InventoryItem, id=item_id)
@@ -88,12 +100,17 @@ def profile_view(request):
     context = {
         'user': user,
         'account': bank_account,
-        'inventory_items': inventory_items,
+        'wands': wands,
+        'brooms': brooms,
+        'pets': pets,
+        'wheezes': wheezes,
+        'query': query,
         'usage_message': usage_message,
         'pending_loans': pending_loans,
     }
 
     return render(request, 'profile/profile.html', context)
+
 
 
 @login_required
@@ -108,6 +125,9 @@ def house_stats_view(request):
         house=user.house,
         inventory_items__product__product_type='broom'
     ).distinct()
+
+    print(users_with_brooms)
+    print(users_with_wands)
 
     return render(request, "profile/house_stats.html", {
         "users_with_wands": users_with_wands,

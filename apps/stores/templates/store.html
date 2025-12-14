@@ -16,6 +16,12 @@
     {% if store.image_url %}
     <img src="{{ store.image_url }}" alt="Imagen de {{ store.name }}" class="img-fluid" style="max-width: 300px"/>
     {% endif %}
+
+    {% if store.store_type == 'wand' %}
+    <p>Usa el emoji ➖ para representar varitas en actividades del colegio.</p>
+    {% elif store.store_type == 'broom' %}
+    <p>Usa el emoji 🧹 para representar escobas en actividades del colegio.</p>
+    {% endif %}
 </header>
 
 <!-- Store products -->
@@ -88,7 +94,7 @@
                             </button>
 
                             <!-- Gift -->
-                            <button type="button" class="btn btn-primary"
+                            <button type="button" class="btn btn-primar55y"
                                 data-bs-toggle="modal"
                                 data-bs-target="#giftModal"
                                 data-url="{% url 'gift' item.product.id %}">

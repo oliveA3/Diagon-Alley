@@ -99,20 +99,21 @@ def profile_view(request):
 @login_required
 def house_stats_view(request):
     user = request.user
-    house = user.house
+    users_with_wands = CustomUser.objects.filter(
+        house=user.house,
+        inventory_items__product__product_type='wand'
+    ).distinct()
 
-    wands = InventoryItem.objects.filter(product__store_id=3).select_related(
-        'user').filter(user__house=user.house).values_list('user__full_name', flat=True).distinct()
+    users_with_brooms = CustomUser.objects.filter(
+        house=user.house,
+        inventory_items__product__product_type='broom'
+    ).distinct()
 
-    brooms = InventoryItem.objects.filter(product__store_id=1).select_related(
-        'user').filter(user__house=user.house).values_list('user__full_name', flat=True).distinct()
-
-    context = {
-        'users_with_wands': wands,
-        'users_with_brooms': brooms,
-    }
-
-    return render(request, 'profile/house_stats.html', context)
+    return render(request, "profile/house_stats.html", {
+        "users_with_wands": users_with_wands,
+        "users_with_brooms": users_with_brooms,
+        "user": user,
+    })
 
 
 @login_required

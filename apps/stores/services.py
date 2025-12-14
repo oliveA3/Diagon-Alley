@@ -9,149 +9,109 @@ from apps.bank.models import BankAccount
 from django.db.models import Max
 
 
+def add_product_to_inventory(request, user: CustomUser, product: Product):
+    warehouse_i = WarehouseItem.objects.get(product_id=product.id)
+    inventory_i = InventoryItem.objects.filter(
+        user_id=user.id, product_id=product.id).first()
+    added = False
+
+    if warehouse_i and warehouse_i.available:
+        # It's already in the inventory
+        if inventory_i:
+            if product.product_type in ['broom', 'wand']:
+                inventory_i.uses += product.uses
+                inventory_i.pur_date = date.today()
+                inventory_i.save()
+
+                added = True
+
+            elif product.product_type in ['pet', 'wheezes']:
+                if request.user == user:
+                    messages.error(
+                        request, f"Solo puedes tener uno de estos artículos en tu inventario.")
+
+                else:
+                    messages.error(
+                        request, f"Este artículo ya está en el inventario de {user.username} y no es acumulable.")
+                return added
+
+        # Not in the inventory
+        else:
+            InventoryItem.objects.create(
+                user=user,
+                product=product,
+                store=product.store,
+                pur_date=date.today(),
+                uses=product.uses,
+            )
+            added = True
+
+        if added and warehouse_i.stock and warehouse_i.stock > 0:
+            warehouse_i.stock -= 1
+            if warehouse_i.stock == 0:
+                warehouse_i.available = False
+            warehouse_i.save()
+        return added
+
+    else:
+        messages.error(
+            request, "Este artículo no está disponible por hoy.")
+        return added
+
+
 def get_discount(user):
     discounts_qs = InventoryItem.objects.filter(
         user=user,
         product__discount__isnull=False
-    ).exclude(
-        product__discount=0
-    )
+    ).exclude(product__discount=0)
 
-    discount = 0.0
     if discounts_qs.exists():
-        discount = discounts_qs.aggregate(Max('product__discount'))[
-            'product__discount__max']
+        return discounts_qs.aggregate(Max('product__discount'))['product__discount__max'] or Decimal('0.0')
 
-    return discount
+    return Decimal('0.0')
 
 
 def apply_discount(price, discount):
     price_to_pay = price
-    if discount != 0.0:
+    if discount > 0:
         price_to_pay = int(price - (price * discount))
 
     return price_to_pay
 
 
-def purchase_product(request, user, account, product: Product, discount, store: Store):
+def purchase_product(request, user, account, product: Product, discount):
     price_to_pay = apply_discount(product.price, discount)
 
     if account.balance >= price_to_pay:
         with db_transaction.atomic():
-            warehouse_item = get_object_or_404(
-                WarehouseItem, product_id=product.id, store_id=store.id)
-            inventory_items = InventoryItem.objects.select_related(
-                'product').filter(user_id=user.id)
+            if add_product_to_inventory(request, user, product):
+                account.balance -= price_to_pay
+                if account.is_frozen:
+                    account.is_frozen = False
+                account.save()
 
-            if warehouse_item.available:
-                in_inventory = False
-                new_uses = product.uses
-
-                try:
-                    old_item = inventory_items.get(product_id=product.id)
-                    in_inventory = True
-                except InventoryItem.DoesNotExist:
-                    old_item = None
-
-                if not in_inventory or (in_inventory and product.stackable):
-                    if in_inventory and product.stackable:
-                        new_uses += old_item.uses
-                        old_item.delete()
-
-                    InventoryItem.objects.create(
-                        user_id=request.user.id,
-                        product_id=product.id,
-                        store_id=store.id,
-                        pur_date=date.today(),
-                        uses=new_uses,
-                    )
-
-                    if warehouse_item.stock:
-                        warehouse_item.stock -= 1
-                        if warehouse_item.stock == 0:
-                            warehouse_item.available = False
-                        warehouse_item.save()
-
-                    account.balance -= price_to_pay
-                    if account.is_frozen:
-                        account.is_frozen = False
-                    account.save()
-
-                    receipt = utils.generate_purchase_receipt(
-                        user, product, price_to_pay)
-                    message = utils.generate_purchase_message(receipt)
-
-                    messages.success(
-                        request, f"Has comprado {product.name} por {price_to_pay} galeones.")
-                    return message
-
-                elif in_inventory and not product.stackable:
-                    messages.error(
-                        request, "Solo puedes tener uno de estos artículos en tu inventario.")
-
-            else:
-                messages.error(
-                    request, "Este artículo ya no está disponible hoy.")
+                messages.success(
+                    request, f"Has comprado {product.name} por {price_to_pay} galeones.")
     else:
         messages.error(
             request, "No tienes suficientes galeones para comprar este artículo.")
 
 
-def gift_product(request, sender_account: BankAccount, receiver: CustomUser, product_id: int, discount, store: Store):
+def gift_product(request, sender_account: BankAccount, receiver: CustomUser, product_id: int, discount):
     product = get_object_or_404(Product, id=product_id)
     total_cost = apply_discount(product.price, discount) + 5
 
     if sender_account.balance >= total_cost:
         with db_transaction.atomic():
-            warehouse_item = get_object_or_404(
-                WarehouseItem, product_id=product_id, store_id=store.id)
-            inventory_items = InventoryItem.objects.select_related(
-                'product').filter(user_id=receiver.id)
+            if add_product_to_inventory(request, receiver, product):
+                sender_account.balance -= total_cost
+                if sender_account.is_frozen:
+                    sender_account.is_frozen = False
 
-            if warehouse_item.available:
-                in_inventory = False
-                new_uses = product.uses
+                sender_account.save()
+                messages.success(
+                    request, f"Has regalado {product.name} a {receiver.username} (Cuenta No. {receiver.id}).")
 
-                try:
-                    old_item = inventory_items.get(product_id=product_id)
-                    in_inventory = True
-                except InventoryItem.DoesNotExist:
-                    old_item = None
-
-                if not in_inventory or (in_inventory and product.stackable):
-                    if in_inventory and product.stackable:
-                        new_uses += old_item.uses
-                        old_item.delete()
-
-                    InventoryItem.objects.create(
-                        user_id=receiver.id,
-                        product_id=product_id,
-                        store_id=store.id,
-                        uses=new_uses,
-                    )
-
-                    if warehouse_item.stock:
-                        warehouse_item.stock -= 1
-                        if warehouse_item.stock == 0:
-                            warehouse_item.available = False
-                        warehouse_item.save()
-
-                    sender_account.balance -= price_to_pay
-                    if sender_account.is_frozen:
-                        sender_account.is_frozen = False
-                    sender_account.save()
-
-                    messages.success(
-                        request, f"Has regalado {product.name} a {receiver.username} (Cuenta No. {receiver.id}).")
-                    return message
-
-                elif in_inventory and not product.stackable:
-                    messages.error(
-                        request, "El usuario seleccionado ya tiene este artículo en su inventario y no es acumulable.")
-
-            else:
-                messages.error(
-                    request, "Este artículo ya no está disponible hoy.")
     else:
         messages.error(
             request, "No tienes suficientes galeones para regalar este artículo.")

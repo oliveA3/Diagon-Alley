@@ -104,10 +104,7 @@
 <!-- Modals templates -->
 {% block modals %}
 {{ block.super }}
-{% include "components/modal/purchase_modal.html" %}
-{% endblock %}
-
-<!-- Modals JS -->
-{% block scripts %}
-<script src="{% static 'js/purchaseModal.js' %}"></script>
+{% if not working_hours %}
+{% include "components/modal/working_hours_modal.html" %}
+{% endif %}
 {% endblock %}

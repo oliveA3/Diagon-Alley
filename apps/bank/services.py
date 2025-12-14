@@ -68,7 +68,7 @@ def validate_transaction(request, sender_account, receiver_account, amount):
         return False
 
     if receiver_account.is_frozen:
-        messages.error(request, "Tu cuenta está congelada.")
+        messages.error(request, "Alguna de las cuentas está congelada.")
         return False
 
     total_needed = int(amount * 1.05)

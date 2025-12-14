@@ -1,0 +1,30 @@
+<div class="modal fade" id="usersModal" tabindex="-1" aria-labelledby="usersModalLabel" aria-hidden="true">
+  	<div class="modal-dialog">
+  	  	<div class="modal-content">
+  	  	  	<div class="modal-header">
+  	  	  	  	<h5 class="modal-title" id="usersModalLabel">Usuarios con <span id="modalProductName"></span></h5>
+  	  	  	  	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+  	  	  	</div>
+  	  	  	<div class="modal-body" id="usersListContainer">
+  	  	  	  	<!-- Users list -->
+  	  	  	</div>
+  	  	</div>
+  	</div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var usersModal = document.getElementById('usersModal');
+    usersModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var productId = button.getAttribute('data-product-id');
+        var productName = button.getAttribute('data-product-name');
+
+        document.getElementById("modalProductName").textContent = productName;
+
+        fetch(`/stores/product_owners/${productId}/`).then(response => response.text()).then(html => {
+        	document.getElementById("usersListContainer").innerHTML = html;
+    	});
+    });
+});
+</script>

@@ -23,7 +23,7 @@ class BankAccount(models.Model):
     ]
     account_type = models.CharField(choices=ACCOUNT_TYPES, default='standard')
 
-    created_at = models.DateField(auto_now=True)
+    created_at = models.DateField(auto_now_add=True)
     upgraded_at = models.DateField(null=True, blank=True)
 
     weekly_transactions_left = models.PositiveIntegerField(default=1)

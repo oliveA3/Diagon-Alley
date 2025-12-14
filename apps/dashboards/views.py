@@ -58,7 +58,21 @@ def banker_dashboard_view(request):
                     for acc_id in ids:
                         try:
                             account = BankAccount.objects.get(pk=int(acc_id))
-                            account.balance += amount
+
+                            # 2 per each 5 if Niffler
+                            has_niffler = InventoryItem.objects.filter(user=account.user, product=4).exists()
+                            if has_niffler:
+                                new_amount = amount
+                                fives = new_amount // 5
+                                bonus = fives * 2
+                                new_amount += bonus
+
+                                account.balance += new_amount
+                                messages.success(
+                                    request, f"Se otorgaron {new_amount} galeones extra a la cuenta No. {account.pk} por tener un escarbato.")
+
+                            else:
+                                account.balance += amount
 
                             if account.balance > account.current_limit:
                                 account.balance = account.current_limit
@@ -67,7 +81,7 @@ def banker_dashboard_view(request):
                         except (ValueError, BankAccount.DoesNotExist):
                             continue
                     messages.success(
-                        request, f"Se agregaron {amount} galeones a {len(ids)} cuentas.")
+                        request, f"Se agregaron {amount} galeones a {len(ids)} las cuentas seleccionadas correctamente.")
 
             # Bulk delete
             elif action == "bulk_delete":
@@ -81,12 +95,16 @@ def banker_dashboard_view(request):
                     # Eliminar usuarios asociados
                     CustomUser.objects.filter(pk__in=ids).delete()
                     messages.success(
-                        request, f"Se eliminaron {len(ids)} usuarios y sus cuentas.")
+                        request, f"Se eliminaron {len(ids)} usuarios seleccionados y sus cuentas.")
 
             # Update register
             elif action.startswith("update_"):
                 acc_id = action.split("_")[1]
                 account = BankAccount.objects.get(pk=int(acc_id))
+                
+                # House changes
+                account.user.house = request.POST.get(
+                    f"house_{acc_id}", account.user.house)
 
                 # Premium changes
                 new_type = request.POST.get(
@@ -100,16 +118,22 @@ def banker_dashboard_view(request):
                     account.balance = account.current_limit
                 account.save()
 
-                # House changes
-                account.user.house = request.POST.get(
-                    f"house_{acc_id}", account.user.house)
-
                 frozen = request.POST.get(f"is_frozen_{acc_id}")
                 account.is_frozen = not frozen
                 account.save()
 
                 new_balance = int(request.POST.get(
                     f"balance_{acc_id}", account.balance))
+
+                # 2 per each 5 if Niffler
+                has_niffler = InventoryItem.objects.filter(user=account.user, product=4).exists()
+                if has_niffler:
+                    fives = new_balance // 5
+                    bonus = fives * 2
+                    new_balance += bonus
+                    messages.success(
+                        request, f"Galeones extra por el escarbato.")
+
                 if new_balance <= account.current_limit:
                     account.balance = new_balance
                     account.save()

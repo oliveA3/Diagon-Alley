@@ -13,8 +13,6 @@ def store_view(request, store_id):
         'product').filter(store_id=store_id)
     account = BankAccount.objects.get(user_id=request.user.id)
 
-    purchase_message = None
-
     discount = get_discount(request.user)
 
     # Product purchase
@@ -23,8 +21,7 @@ def store_view(request, store_id):
         product_id = request.POST.get('product_id')
         product = get_object_or_404(Product, id=product_id)
 
-        purchase_message = purchase_product(
-            request, user, account, product, discount, store)
+        purchase_product(request, user, account, product, discount)
 
     working_hours = utils.working_hours()
 
@@ -32,11 +29,11 @@ def store_view(request, store_id):
         'store': store,
         'warehouse_items': warehouse_items,
         'discount': discount,
-        'purchase_message': purchase_message,
         'working_hours': working_hours,
     }
 
     return render(request, 'store.html', context)
+
 
 def gift_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -51,11 +48,18 @@ def gift_view(request, product_id):
 
         sender = get_object_or_404(BankAccount, user=request.user.id)
 
-        gift_product(request, sender, receiver, product_id, discount, store)
+        gift_product(request, sender, receiver, product_id, discount)
 
     context = {
         'product': product,
-        'accounts' : accounts,
+        'accounts': accounts,
     }
 
     return render(request, "gift.html", context)
+
+
+def product_owners_view(request, product_id):
+    users = CustomUser.objects.filter(
+        inventory_items__product_id=product_id
+    ).distinct()
+    return render(request, "product_owners.html", {"users": users})

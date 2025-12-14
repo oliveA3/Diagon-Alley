@@ -126,9 +126,6 @@ def house_stats_view(request):
         inventory_items__product__product_type='broom'
     ).distinct()
 
-    print(users_with_brooms)
-    print(users_with_wands)
-
     return render(request, "profile/house_stats.html", {
         "users_with_wands": users_with_wands,
         "users_with_brooms": users_with_brooms,

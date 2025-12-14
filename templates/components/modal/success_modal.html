@@ -21,9 +21,13 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-    	const modal = new bootstrap.Modal(
-    		document.getElementById("successModal")
-    	);
+        var modalEl = document.getElementById("successModal");
+        var modal = new bootstrap.Modal(modalEl);
         modal.show();
+
+        modalEl.addEventListener("hidden.bs.modal", function () {
+            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+            document.body.classList.remove('modal-open');
+        });
     });
 </script>

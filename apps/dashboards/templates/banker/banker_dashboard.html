@@ -89,14 +89,22 @@
                     <select name="account_type_{{ acc.pk }}">
                         <option value="standard" {% if acc.account_type == "standard" %}selected{% endif %}>Standard</option>
                         <option value="premium" {% if acc.account_type == "premium" %}selected{% endif %}>Premium</option>
-                        <option value="premium_pro" {% if acc.account_type == "premium_pro" %}selected{% endif %}>Premium Pro</option>
+                        <option value="vip" {% if acc.account_type == "vip" %}selected{% endif %} disabled>VIP</option>
                     </select>
                 </td>
                 
-                <td>{{ acc.current_limit }}</td>
+                <td>
+                    {% if acc.current_limit %}
+                    {{ acc.current_limit }}
+                    {% endif %}
+                </td>
 
                 <!-- Premium info -->
-                <td>{% if acc.account_type != 'standard' %}{{ acc.premium_ex_date }}{% endif %}</td>
+                <td>
+                    {% if acc.account_type == 'premium' and acc.premium_ex_date %}
+                    {{ acc.premium_ex_date }}
+                    {% endif %}
+                </td>
 
                 <td>
                     <button type="submit" name="action" value="update_{{ acc.pk }}" class="btn btn-primary">

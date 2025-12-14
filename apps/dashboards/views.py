@@ -1,12 +1,30 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from apps.users.models import CustomUser
 from apps.bank.models import BankAccount, Loan, Transaction
+from apps.stores.models import InventoryItem
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import user_passes_test
 from django.utils import timezone
 
 # BANKER DASHBOARD
+
+
+def has_niffler(request, amount: int, user: CustomUser):
+    has_niffler = InventoryItem.objects.filter(
+        user=user, product=4).exists()
+    new_amount = amount
+
+    if has_niffler:
+        fives = new_amount // 5
+        bonus = fives * 2
+        new_amount += bonus
+
+        if new_amount != amount:
+            messages.success(
+            request, f"Se otorgaron {new_amount} galeones extra a la cuenta de { user.username } por tener un escarbato.")
+
+    return new_amount
 
 
 def is_banker(user):
@@ -58,21 +76,7 @@ def banker_dashboard_view(request):
                     for acc_id in ids:
                         try:
                             account = BankAccount.objects.get(pk=int(acc_id))
-
-                            # 2 per each 5 if Niffler
-                            has_niffler = InventoryItem.objects.filter(user=account.user, product=4).exists()
-                            if has_niffler:
-                                new_amount = amount
-                                fives = new_amount // 5
-                                bonus = fives * 2
-                                new_amount += bonus
-
-                                account.balance += new_amount
-                                messages.success(
-                                    request, f"Se otorgaron {new_amount} galeones extra a la cuenta No. {account.pk} por tener un escarbato.")
-
-                            else:
-                                account.balance += amount
+                            account.balance += has_niffler(request, amount, account.user)
 
                             if account.balance > account.current_limit:
                                 account.balance = account.current_limit
@@ -101,7 +105,7 @@ def banker_dashboard_view(request):
             elif action.startswith("update_"):
                 acc_id = action.split("_")[1]
                 account = BankAccount.objects.get(pk=int(acc_id))
-                
+
                 # House changes
                 account.user.house = request.POST.get(
                     f"house_{acc_id}", account.user.house)
@@ -124,15 +128,9 @@ def banker_dashboard_view(request):
 
                 new_balance = int(request.POST.get(
                     f"balance_{acc_id}", account.balance))
+                added_amount = new_balance - account.balance
 
-                # 2 per each 5 if Niffler
-                has_niffler = InventoryItem.objects.filter(user=account.user, product=4).exists()
-                if has_niffler:
-                    fives = new_balance // 5
-                    bonus = fives * 2
-                    new_balance += bonus
-                    messages.success(
-                        request, f"Galeones extra por el escarbato.")
+                new_balance += has_niffler(request, added_amount, account.user)
 
                 if new_balance <= account.current_limit:
                     account.balance = new_balance
@@ -197,7 +195,8 @@ def loans_list_view(request):
         elif action == "mark_paid" and loan.state == 'pending':
             loan.state = 'paid'
             loan.save()
-            messages.success(request, f"El préstamo de {loan.user.full_name} fue marcado como pagado.")
+            messages.success(
+                request, f"El préstamo de {loan.user.full_name} fue marcado como pagado.")
 
         return redirect("loans_list")
 

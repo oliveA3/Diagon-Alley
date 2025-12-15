@@ -71,10 +71,9 @@
     </p>
     
     <!-- Select duration-->
-    <form method="post">
-        {% csrf_token %}
-        
-        <div>
+    <div>
+        <form method="post">
+            {% csrf_token %}
             <h5>Cuenta Premium por 3 meses</h5>
             <p>Precio: 80 galeones</p>
             <input type="hidden" name="account_duration" value="60">
@@ -83,9 +82,10 @@
                 onclick="showConfirm(this)">
                 Comprar
             </button>
-        </div>
+        </form>
 
-        <div>
+        <form method="post">
+            {% csrf_token %}
             <h5>Cuenta Premium por 6 meses</h5>
             <p>Precio: 100 galeones</p>
             <input type="hidden" name="account_duration" value="90">
@@ -94,8 +94,8 @@
                 onclick="showConfirm(this)">
                 Comprar
             </button>
-        </div>
-    </form>
+        </form>
+    </div>
 </section>
 
 {% endblock %}

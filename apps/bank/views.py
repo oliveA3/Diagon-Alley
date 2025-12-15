@@ -18,7 +18,7 @@ def bank_view(request):
 
     # Premium purchase
     if request.method == 'POST':
-        duration_days = request.POST.get('account_duration')
+        duration_days = int(request.POST.get('account_duration'))
         purchase_premium(request, account, duration_days)
         return redirect('bank_view')
 

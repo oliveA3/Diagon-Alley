@@ -45,12 +45,13 @@ def purchase_premium(request, account: BankAccount, duration_days: int):
     price = PREMIUM_PRICES[duration_days]
 
     if account.balance >= price:
+        account.account_type = 'premium'
         account.duration_days = duration_days
         account.upgraded_at = timezone.now()
         account.balance -= price
         account.save()
 
-        string = "3 meses" if duration_days == 30 else "6 meses"
+        string = "3 meses" if duration_days == 60 else "6 meses"
 
         messages.success(
             request, f"Has comprado una Cuenta Premium durante {string} por {price} galeones.")

@@ -9,7 +9,7 @@ def working_hours():
     weekday = now.weekday()  # 0 = monday, 6 = sunday
 
     # Monday to Friday (0-4) from 6am to 11pm
-    working_hours = (0 <= weekday <= 6 and 6 <= hour <= 23)
+    working_hours = (0 <= weekday <= 4 and 6 <= hour <= 23)
 
     return working_hours
 
@@ -39,7 +39,7 @@ def generate_usage_message(receipt):
         f"💳 No. de cuenta: {account.pk}\n"
         f"🪄 Producto: {receipt.product.name}\n"
         f"🚀 Usos restantes: {receipt.uses_left}\n"
-        f"🗓 Fecha: {receipt.created_at.strftime('%d/%m/%Y %H:%M')}"
+        f"🗓 Fecha: {receipt.created_at.strftime('%d/%m/%Y %H:%M')}\n"
         "    •🪙💰🪙💰🪙💰🪙💰🪙💰🪙•\n"
         "🧙‍♂🪄🧙‍♂🪄🧙‍♂🪄🧙‍♂🪄🧙‍♂🪄🧙‍♂🪄🧙‍♂"
     )

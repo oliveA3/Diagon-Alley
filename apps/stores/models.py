@@ -84,7 +84,7 @@ class Product(models.Model):
 
             if self.stackable:
                 errors['stackable'] = "Los sortilegios no pueden ser stackable."
-                
+
         if errors:
             raise ValidationError(errors)
 
@@ -114,9 +114,12 @@ class WarehouseItem(models.Model):
 
 
 class InventoryItem(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='inventory_items')
-    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='inventory_items')
-    store = models.ForeignKey('Store', on_delete=models.CASCADE, related_name='inventory_items')
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='inventory_items')
+    product = models.ForeignKey(
+        'Product', on_delete=models.CASCADE, related_name='inventory_items')
+    store = models.ForeignKey(
+        'Store', on_delete=models.CASCADE, related_name='inventory_items')
 
     uses = models.PositiveIntegerField(null=True, blank=True)
     pur_date = models.DateField(auto_now_add=True)
@@ -131,16 +134,10 @@ class InventoryItem(models.Model):
     def is_near_ex(self):
         if not self.ex_date:
             return False
-            
+
         today = timezone.now().date()
         delta_days = (self.ex_date - today).days
-        return 0 <= delta_days <= 3  
-
-    def save(self, *args, **kwargs):
-        if not self.ex_date and self.product.duration_days:
-            self.ex_date = date.today() + timedelta(days=self.product.duration_days)
-
-        super().save(*args, **kwargs)
+        return 0 <= delta_days <= 3
 
     def use(self):
         if self.uses > 0:

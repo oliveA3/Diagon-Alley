@@ -1,13 +1,9 @@
-from django.utils import timezone
-from apps.stores.models import InventoryItem
+from django.core.management.base import BaseCommand
+from apps.maintenance import tasks
 
-def clear_inventory():
-    today = timezone.now().date()
-    expired_items = [
-        item for item in InventoryItem.objects.all()
-        if item.ex_date and item.ex_date < today
-    ]
-    count = len(expired_items)
-    for item in expired_items:
-        item.delete()
-    return count
+class Command(BaseCommand):
+    help = "Elimina productos expirados de los inventarios"
+
+    def handle(self, *args, **kwargs):
+        count = tasks.clear_inventory()
+        self.stdout.write(self.style.SUCCESS(f"Se eliminaron {count} productos expirados"))

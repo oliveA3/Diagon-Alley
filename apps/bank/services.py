@@ -101,14 +101,17 @@ def validate_transaction(request, sender_account, receiver_account, amount):
 
 def execute_transaction(request, sender_account, receiver_account, amount, tx_instance):
     if validate_transaction(request, sender_account, receiver_account, amount):
+        today = timezone.now().date()
 
         with db_transaction.atomic():
             sender_account.balance -= int(amount * 1.05)
             sender_account.weekly_transactions_left -= 1
+            sender_account.last_trans_date = today
             sender_account.save()
 
             receiver_account.balance += amount
             receiver_account.weekly_transactions_left -= 1
+            receiver_account.last_trans_date = today
             receiver_account.save()
 
             tx_instance.save()

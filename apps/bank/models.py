@@ -14,7 +14,10 @@ class BankAccount(models.Model):
     )
 
     balance = models.IntegerField(default=20)
+    last_pur_date = models.CharField(null=True, blank=True)
+    
     is_frozen = models.BooleanField(default=False)
+    frozen_date = models.DateField(null=True, blank=True)
 
     ACCOUNT_TYPES = [
         ('standard', 'Standard'),
@@ -29,6 +32,7 @@ class BankAccount(models.Model):
     duration_days = models.PositiveIntegerField(null=True, blank=True)
 
     weekly_transactions_left = models.PositiveIntegerField(default=1)
+    last_trans_date = models.DateField(null=True, blank=True)
 
     @property
     def current_limit(self):
@@ -46,17 +50,6 @@ class BankAccount(models.Model):
         elif self.account_type == 'premium':
             return self.upgraded_at + timedelta(days=self.duration_days)
         return None
-
-    def downgrade_if_due(self):
-        if self.account_type == 'vip':
-            return
-            
-        if self.account_type == 'premium' and self.upgraded_at and self.duration_days:
-            if timezone.now().date() > self.upgraded_at + timedelta(days=self.duration_days):
-                self.account_type = 'standard'
-                self.upgraded_at = None
-                self.duration_days = None
-                self.save()
 
 
 class Transaction(models.Model):

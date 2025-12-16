@@ -113,11 +113,11 @@ def banker_dashboard_view(request):
                 account.user.house = request.POST.get(
                     f"house_{acc_id}", account.user.house)
 
-                # Premium changes
-                new_type = request.POST.get(f"account_type_{acc_id}")
-                if new_type == "premium":
-                    account.upgraded_at = timezone.now()
-                account.account_type = new_type
+                # Balance changes
+                new_balance = int(request.POST.get(f"balance_{acc_id}"))
+                added_amount = new_balance - account.balance
+                new_balance += has_niffler(request, added_amount, account.user)
+                account.balance = new_balance
                 account.save()
 
                 # Frozen changes
@@ -125,10 +125,12 @@ def banker_dashboard_view(request):
                 account.is_frozen = not frozen
                 account.save()
 
-                new_balance = int(request.POST.get(f"balance_{acc_id}"))
-                added_amount = new_balance - account.balance
-
-                new_balance += has_niffler(request, added_amount, account.user)
+                # Premium changes
+                new_type = request.POST.get(f"account_type_{acc_id}")
+                if new_type == "premium":
+                    account.upgraded_at = timezone.now()
+                account.account_type = new_type
+                account.save()
 
                 if account.current_limit and new_balance <= account.current_limit:
                     account.balance = new_balance
@@ -137,9 +139,12 @@ def banker_dashboard_view(request):
                     messages.success(
                         request, f"Cuenta de {account.user.username} actualizada.")
 
-                else:
+                elif account.current_limit and new_balance > account.current_limit:
+                    account.balance = account.current_limit
+                    account.save()
+
                     messages.error(
-                        request, "La cantidad de galeones excede el límite de la cuenta.")
+                        request, "La cantidad de galeones excede el límite de la cuenta así que pudo haber perdido galeones.")
 
         return redirect("banker_dashboard")
 

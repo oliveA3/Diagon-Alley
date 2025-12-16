@@ -12,6 +12,11 @@ def clear_inventory():
         if item.ex_date and item.ex_date < today:
             item.delete()
 
+        Notification.objects.create(
+            user=item.user,
+            message=(f"El artículo {item.name} fue eliminado de tu inventario.")
+        )
+
 
 # Reset stock to 10 on WarehouseItems (reset every day)
 def reset_stock():
@@ -28,6 +33,11 @@ def freeze_account():
             acc.is_frozen = True
             acc.frozen_date = today
             acc.save()
+
+            Notification.objects.create(
+                user=acc.user,
+                message=("Tu cuenta ha sido congelada por falta de uso, para descongelarla compra un artículo en el Callejón Diagon. Tras 6 meses de inactividad la cuenta será eliminada.")
+            )
 
 
 # Delete frozen accounts after 6 months of being frozen (except pk=1) (check every day)
@@ -98,4 +108,6 @@ def penalize_frozen_accounts():
 
 # Delete paid loans after 30 days (every month)
 def delete_paid_loans():
-    Loan.objects.filter(state='paid').delete()
+    today = timezone.now().date()
+    if today.day == 1:
+        Loan.objects.filter(state='paid').delete()

@@ -1,7 +1,10 @@
 import uuid
-from .models import UsageReceipt
+from apps.users.models import CustomUser
+from apps.stores.models import Product, InventoryItem
+from .models import PurchaseReceipt, UsageReceipt
 from apps.bank.models import BankAccount
 from datetime import datetime
+
 
 def working_hours():
     now = datetime.now()
@@ -14,7 +17,20 @@ def working_hours():
     return working_hours
 
 
-def generate_usage_receipt(user, inventory_item):
+def generate_purchase_receipt(user: CustomUser, product: Product, p_type: str):
+    receipt_code = str(uuid.uuid4())[:8].upper()
+
+    receipt = PurchaseReceipt.objects.create(
+        code=receipt_code,
+        user=user,
+        product_id=product.id,
+        p_type=str
+    )
+
+    return receipt
+
+
+def generate_usage_receipt(user: CustomUser, inventory_item: InventoryItem):
     receipt_code = str(uuid.uuid4())[:8].upper()
 
     receipt = UsageReceipt.objects.create(

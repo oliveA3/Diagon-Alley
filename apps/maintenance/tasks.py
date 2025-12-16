@@ -2,7 +2,7 @@ from django.utils import timezone
 from datetime import timedelta
 from apps.stores.models import WarehouseItem, InventoryItem
 from apps.bank.models import BankAccount, Loan, Transaction
-from apps.utils.models import Notification, UsageReceipt
+from apps.utils.models import Notification, UsageReceipt, PurchaseReceipt
 
 
 # Delete expired items on user's inventories (check every day)
@@ -102,8 +102,14 @@ def delete_paid_loans():
     Loan.objects.filter(state='paid', paid_date__lte=cutoff).delete()
 
 
-# Delete receipts after 30 days
-def delete_old_receipts():
+# Delete purchase receipts after 30 days
+def delete_old_purchase_receipts():
+    cutoff = timezone.now().date() - timedelta(days=30)
+    PurchaseReceipt.objects.filter(created_at__lte=cutoff).delete()
+
+
+# Delete usage receipts after 30 days
+def delete_old_usage_receipts():
     cutoff = timezone.now().date() - timedelta(days=30)
     UsageReceipt.objects.filter(created_at__lte=cutoff).delete()
 

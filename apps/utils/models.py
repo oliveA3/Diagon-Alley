@@ -19,6 +19,17 @@ class BaseReceipt(models.Model):
         abstract = True
 
 
+class PurchaseReceipt(BaseReceipt):
+    product = models.ForeignKey(
+        'stores.Product', on_delete=models.SET_NULL, null=True, blank=True)
+    
+    PURCHASE_TYPES = {
+        'purchase': 'Compra',
+        'gift': 'Regalo',
+    }
+    purchase_type = models.CharField(choices=PURCHASE_TYPES)
+
+
 class UsageReceipt(BaseReceipt):
     product = models.ForeignKey(
         'stores.Product', on_delete=models.SET_NULL, null=True)

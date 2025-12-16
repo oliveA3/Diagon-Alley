@@ -1,3 +1,4 @@
+from django.shortcuts import redirect
 from django.shortcuts import redirect, render, get_object_or_404
 from urllib.parse import quote
 from apps.users.models import CustomUser
@@ -23,7 +24,10 @@ def store_view(request, store_id):
         product = get_object_or_404(Product, id=product_id)
 
         purchase_product(request, user, account, product, discount)
+        utils.generate_purchase_receipt(user, product, 'purchase')
+
         account.last_pur_date = timezone.now().date()
+        account.save()
 
     working_hours = utils.working_hours()
 
@@ -37,8 +41,6 @@ def store_view(request, store_id):
     return render(request, 'store.html', context)
 
 
-from django.shortcuts import redirect
-
 def gift_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     accounts = BankAccount.objects.exclude(user=request.user)
@@ -50,9 +52,11 @@ def gift_view(request, product_id):
         sender = get_object_or_404(BankAccount, user=request.user.id)
 
         gift_product(request, sender, receiver, product_id, discount)
+        utils.generate_purchase_receipt(user, product, 'gift')
+
         sender.last_pur_date = timezone.now().date()
         sender.save()
-        
+
         return redirect("store", store_id=product.store_id)
 
     context = {
@@ -60,7 +64,6 @@ def gift_view(request, product_id):
         'accounts': accounts,
     }
     return render(request, "gift.html", context)
-
 
 
 def product_owners_view(request, product_id):

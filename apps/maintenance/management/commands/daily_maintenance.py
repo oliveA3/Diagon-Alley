@@ -19,7 +19,8 @@ class Command(BaseCommand):
         tasks.reset_weekly_transactions()
         tasks.delete_old_transactions()
         tasks.delete_paid_loans()
-        tasks.delete_old_receipts()
+        tasks.delete_old_purchase_receipts()
+        tasks.delete_old_usage_receipts()
         tasks.delete_notifications()
 
        

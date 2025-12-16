@@ -14,7 +14,7 @@ def clear_inventory():
 
         Notification.objects.create(
             user=item.user,
-            message=(f"El artículo {item.name} fue eliminado de tu inventario.")
+            message=(f"El artículo {item.product.name} fue eliminado de tu inventario.")
         )
 
 

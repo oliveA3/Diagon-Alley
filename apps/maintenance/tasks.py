@@ -2,7 +2,7 @@ from django.utils import timezone
 from datetime import timedelta
 from apps.stores.models import WarehouseItem, InventoryItem
 from apps.bank.models import BankAccount, Loan, Transaction
-from apps.utils.models import Notification
+from apps.utils.models import Notification, UsageReceipt
 
 
 # Delete expired items on user's inventories (check every day)
@@ -12,10 +12,11 @@ def clear_inventory():
         if item.ex_date and item.ex_date < today:
             item.delete()
 
-        Notification.objects.create(
-            user=item.user,
-            message=(f"El artículo {item.product.name} fue eliminado de tu inventario.")
-        )
+            Notification.objects.create(
+                user=item.user,
+                message=(
+                    f"El artículo {item.product.name} fue eliminado de tu inventario.")
+            )
 
 
 # Reset stock to 10 on WarehouseItems (reset every day)
@@ -38,6 +39,16 @@ def freeze_account():
                 user=acc.user,
                 message=("Tu cuenta ha sido congelada por falta de uso, para descongelarla compra un artículo en el Callejón Diagon. Tras 6 meses de inactividad la cuenta será eliminada.")
             )
+
+
+# Penalize frozen accounts (-5%) (penalize every 3 days)
+def penalize_frozen_accounts():
+    today = timezone.now().date()
+    for acc in BankAccount.objects.filter(is_frozen=True).exclude(pk=1):
+        if acc.balance > 0:
+            penalty = int(acc.balance * 0.05)
+            acc.balance -= penalty
+            acc.save()
 
 
 # Delete frozen accounts after 6 months of being frozen (except pk=1) (check every day)
@@ -78,36 +89,26 @@ def reset_weekly_transactions():
                 acc.save()
 
 
-# Delete notifications after a week (check every day)
-def delete_notifications():
-    today = timezone.now().date()
-    for n in Notification.objects.all():
-        if n.created_at:
-            delta = today - n.created_at
-            if delta.days >= 14:
-                n.delete()
-
-
 # Delete transactions 30 days after the creation date (check every day)
 def delete_old_transactions():
-    today = timezone.now().date()
-    for tx in Transaction.objects.all():
-        if tx.created_at and tx.created_at.date() <= today - timedelta(days=30):
-            tx.delete()
-
-
-# Penalize frozen accounts (-5%) (penalize every 3 days)
-def penalize_frozen_accounts():
-    today = timezone.now().date()
-    for acc in BankAccount.objects.filter(is_frozen=True).exclude(pk=1):
-        if acc.balance > 0:
-            penalty = int(acc.balance * 0.05)
-            acc.balance -= penalty
-            acc.save()
+    cutoff = timezone.now().date() - timedelta(days=30)
+    Transaction.objects.filter(created_at__lte=cutoff).delete()
 
 
 # Delete paid loans after 30 days (every month)
 def delete_paid_loans():
     today = timezone.now().date()
-    if today.day == 1:
-        Loan.objects.filter(state='paid').delete()
+    cutoff = today - timedelta(days=30)
+    Loan.objects.filter(state='paid', paid_date__lte=cutoff).delete()
+
+
+# Delete receipts after 30 days
+def delete_old_receipts():
+    cutoff = timezone.now().date() - timedelta(days=30)
+    UsageReceipt.objects.filter(created_at__lte=cutoff).delete()
+
+
+# Delete notifications after two weeks (check every day)
+def delete_notifications():
+    cutoff = timezone.now().date() - timedelta(days=14)
+    Notification.objects.filter(created_at__lte=cutoff).delete()

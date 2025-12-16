@@ -73,6 +73,7 @@ def login_view(request):
 def profile_view(request):
     user = request.user
     bank_account = get_object_or_404(BankAccount, user_id=user.id)
+    notifications = Notification.objects.filter(user=user).order_by('-created_at')
 
     # Inventory
     wands = InventoryItem.objects.select_related('product').filter(user_id=user.id, product__product_type='wand')
@@ -106,6 +107,7 @@ def profile_view(request):
     context = {
         'user': user,
         'account': bank_account,
+        'notifications': notifications,
         'wands': wands,
         'brooms': brooms,
         'pets': pets,

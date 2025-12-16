@@ -1,5 +1,5 @@
 import uuid
-from .models import PurchaseReceipt, UsageReceipt
+from .models import UsageReceipt
 from apps.bank.models import BankAccount
 from datetime import datetime
 
@@ -32,15 +32,15 @@ def generate_usage_message(receipt):
 
     message = (
         "🧙‍♂🪄🧙‍♂🪄🧙‍♂🪄🧙‍♂🪄🧙‍♂🪄🧙‍♂🪄🧙‍♂\n"
-        "    •🪙💰🪙💰🪙💰🪙💰🪙💰🪙• \n\n"
+        "•🪙💰🪙💰🪙💰🪙💰🪙💰🪙• \n\n"
         f"Ticket de Uso\n"
         f"🧾 Código: {receipt.code}\n"
         f"✅ Dueño: {receipt.user.full_name}\n"
         f"💳 No. de cuenta: {account.pk}\n"
         f"🪄 Producto: {receipt.product.name}\n"
         f"🚀 Usos restantes: {receipt.uses_left}\n"
-        f"🗓 Fecha: {receipt.created_at.strftime('%d/%m/%Y %H:%M')}\n"
-        "    •🪙💰🪙💰🪙💰🪙💰🪙💰🪙•\n"
+        f"🗓 Fecha: {receipt.created_at.strftime('%d/%m/%Y %H:%M')}\n\n"
+        "•🪙💰🪙💰🪙💰🪙💰🪙💰🪙•\n"
         "🧙‍♂🪄🧙‍♂🪄🧙‍♂🪄🧙‍♂🪄🧙‍♂🪄🧙‍♂🪄🧙‍♂"
     )
 

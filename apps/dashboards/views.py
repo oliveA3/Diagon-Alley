@@ -11,7 +11,7 @@ from apps.utils.models import Notification
 # BANKER DASHBOARD
 
 
-def has_niffler(request, amount: int, user: CustomUser):
+def get_amount_if_niffler(request, amount: int, user: CustomUser):
     has_niffler = InventoryItem.objects.filter(
         user=user, product=4).exists()
     new_amount = amount
@@ -23,7 +23,7 @@ def has_niffler(request, amount: int, user: CustomUser):
 
         if new_amount != amount:
             messages.success(
-            request, f"Se otorgaron {new_amount} galeones a la cuenta de {user.username} por tener un escarbato.")
+                request, f"Se otorgaron {new_amount} galeones a la cuenta de {user.username} por tener un escarbato.")
 
     return new_amount
 
@@ -77,7 +77,9 @@ def banker_dashboard_view(request):
                     for acc_id in ids:
                         try:
                             account = BankAccount.objects.get(pk=int(acc_id))
-                            account.balance += has_niffler(request, amount, account.user)
+                            account.balance += get_amount_if_niffler(
+                                request, amount, account.user)
+                            account.save()
 
                             if account.current_limit and account.balance > account.current_limit:
                                 account.balance = account.current_limit
@@ -86,7 +88,7 @@ def banker_dashboard_view(request):
                         except (ValueError, BankAccount.DoesNotExist):
                             continue
                     messages.success(
-                        request, f"Se agregaron {amount} galeones a {len(ids)} las cuentas seleccionadas correctamente.")
+                        request, f"Se agregaron galeones a las cuentas seleccionadas.")
 
             # Bulk delete
             elif action == "bulk_delete":
@@ -112,23 +114,18 @@ def banker_dashboard_view(request):
                     f"house_{acc_id}", account.user.house)
 
                 # Premium changes
-                new_type = request.POST.get(
-                    f"account_type_{acc_id}", account.account_type)
-                if new_type != account.account_type and new_type != "standard":
+                new_type = request.POST.get(f"account_type_{acc_id}")
+                if new_type == "premium":
                     account.upgraded_at = timezone.now()
                 account.account_type = new_type
                 account.save()
 
-                if account.current_limit and account.balance > account.current_limit:
-                    account.balance = account.current_limit
-                account.save()
-
+                # Frozen changes
                 frozen = request.POST.get(f"is_frozen_{acc_id}")
                 account.is_frozen = not frozen
                 account.save()
 
-                new_balance = int(request.POST.get(
-                    f"balance_{acc_id}", account.balance))
+                new_balance = int(request.POST.get(f"balance_{acc_id}"))
                 added_amount = new_balance - account.balance
 
                 new_balance += has_niffler(request, added_amount, account.user)
@@ -136,6 +133,7 @@ def banker_dashboard_view(request):
                 if account.current_limit and new_balance <= account.current_limit:
                     account.balance = new_balance
                     account.save()
+
                     messages.success(
                         request, f"Cuenta de {account.user.username} actualizada.")
 
@@ -172,6 +170,7 @@ def loans_list_view(request):
         loan = Loan.objects.get(id=loan_id)
         account = get_object_or_404(BankAccount, user=loan.user)
 
+        # Approve loan
         if action == "approve":
             new_balance = account.balance + loan.amount_requested
             if account.current_limit and new_balance <= account.current_limit:
@@ -198,18 +197,18 @@ def loans_list_view(request):
                 messages.error(
                     request, f"Este préstamo excede el limite de la cuenta de {loan.user.username}.")
 
+        # Not approve loan
         elif action == "reject":
             loan.delete()
             messages.success(
                 request, f"Préstamo de {loan.user.username} rechazado y eliminado.")
 
+        # Mark loan as paid
         elif action == "mark_paid" and loan.state == 'pending':
+            today = timezone.now().date()
+            loan.paid_date = today
             loan.state = 'paid'
             loan.save()
-            messages.success(
-                request, f"El préstamo de {loan.user.full_name} fue marcado como pagado.")
-
-        return redirect("loans_list")
 
     context = {
         'loans_to_approve': loans_to_approve,

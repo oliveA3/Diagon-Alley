@@ -58,7 +58,7 @@ class Transaction(models.Model):
     receiver = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name='received_transactions')
     amount = models.PositiveIntegerField(default=20)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateField(auto_now_add=True)
 
 
 class Loan(models.Model):
@@ -85,7 +85,8 @@ class Loan(models.Model):
     amount_due = models.PositiveIntegerField()
 
     approved = models.BooleanField(default=False)
-    approved_at = models.DateTimeField(null=True, blank=True)
+    approved_at = models.DateField(null=True, blank=True)
+    paid_date = models.DateField(null=True, blank=True)
 
     STATES = [
         ('pending', "Pendiente"),

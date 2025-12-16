@@ -23,6 +23,7 @@ def clear_inventory():
 def reset_stock():
     for item in WarehouseItem.objects.all():
         item.stock = 10
+        item.available = True
         item.save()
 
 

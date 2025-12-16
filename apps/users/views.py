@@ -31,7 +31,8 @@ def register_view(request):
 
             Notification.objects.create(
                 user=user,
-                message=(f"¡Bienvenido/a al Callejón Diagon! Da un paseo por nuestras tiendas y guarda tus galeones en el Banco Gringotts.")
+                message=(
+                    f"¡Bienvenido/a al Callejón Diagon! Da un paseo por nuestras tiendas y guarda tus galeones en el Banco Gringotts.")
             )
 
             return redirect('login')
@@ -73,13 +74,17 @@ def login_view(request):
 def profile_view(request):
     user = request.user
     bank_account = get_object_or_404(BankAccount, user_id=user.id)
-    notifications = Notification.objects.filter(user=user).order_by('-created_at')
+    notifications = Notification.objects.filter(user=user, read=False).exists()
 
     # Inventory
-    wands = InventoryItem.objects.select_related('product').filter(user_id=user.id, product__product_type='wand')
-    brooms = InventoryItem.objects.select_related('product').filter(user_id=user.id, product__product_type='broom')
-    pets = InventoryItem.objects.select_related('product').filter(user_id=user.id, product__product_type='pet')
-    wheezes = InventoryItem.objects.select_related('product').filter(user_id=user.id, product__product_type='wheezes')
+    wands = InventoryItem.objects.select_related('product').filter(
+        user_id=user.id, product__product_type='wand')
+    brooms = InventoryItem.objects.select_related('product').filter(
+        user_id=user.id, product__product_type='broom')
+    pets = InventoryItem.objects.select_related('product').filter(
+        user_id=user.id, product__product_type='pet')
+    wheezes = InventoryItem.objects.select_related('product').filter(
+        user_id=user.id, product__product_type='wheezes')
 
     # Search by name
     query = request.GET.get("q")
@@ -90,7 +95,8 @@ def profile_view(request):
         wheezes = wheezes.filter(product__name__icontains=query)
 
     usage_message = None
-    pending_loans = Loan.objects.filter(user=user, approved=True, state='pending').exists()
+    pending_loans = Loan.objects.filter(
+        user=user, approved=True, state='pending').exists()
 
     # Use inventory item
     if request.method == 'POST':
@@ -119,13 +125,27 @@ def profile_view(request):
 
     return render(request, 'profile/profile.html', context)
 
+
 @login_required
 def notifications_view(request):
-    notifications = Notification.objects.filter(user=request.user)
+    notifications = Notification.objects.filter(
+        user=request.user).order_by('-created_at')
 
     context = {
-        'notifications': notifications,
+        "notifications": notifications
     }
+
+    if request.method == "POST":
+        # Read all
+        if "mark_all" in request.POST:
+            Notification.objects.filter(
+                user=request.user, read=False).update(read=True)
+
+        # Delete all
+        if "delete_all" in request.POST:
+            Notification.objects.filter(user=request.user).delete()
+
+        return redirect('profile')
 
     return render(request, 'profile/notifications.html', context)
 
@@ -152,17 +172,18 @@ def house_stats_view(request):
 
 @login_required
 def edit_profile_view(request):
-    user = request.user 
+    user = request.user
 
     if request.method == 'POST':
-        form = EditProfileForm(request.POST, instance=user) 
-        
+        form = EditProfileForm(request.POST, instance=user)
+
         if form.is_valid():
             form.save()
-            messages.success(request, "¡Tu perfil mágico ha sido actualizado con éxito!")
-            
-            return redirect('profile') 
-            
+            messages.success(
+                request, "¡Tu perfil mágico ha sido actualizado con éxito!")
+
+            return redirect('profile')
+
     else:
         form = EditProfileForm(instance=user)
 
@@ -170,7 +191,7 @@ def edit_profile_view(request):
         'form': form,
         'user': user,
     }
-    
+
     return render(request, 'profile/edit_profile.html', context)
 
 

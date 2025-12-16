@@ -1,8 +1,26 @@
 <h5>Notificaciones</h5>
+
+<!-- Mark all as read -->
+{% if notifications %}
+<form method="post" action="{% url 'notifications' %}" class="mb-3">
+    {% csrf_token %}
+    <button type="submit" name="mark_all" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#notificationsModal">
+        Marcar todas como leídas
+    </button>
+    <button type="submit" name="delete_all" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#notificationsModal">
+        Eliminar todas
+    </button>
+</form>
+{% endif %}
+
 <ul class="list-group mb-3">
     {% for n in notifications %}
-    <li class="list-group-item">({{ n.created_at }}) {{ n.message }}</li>
+    <li class="list-group-item d-flex justify-content-between align-items-center {% if not n.read %}fw-bold{% endif %}">
+        ({{ n.created_at }}) {{ n.message }}
+    </li>
     {% empty %}
     <li class="list-group-item">No tienes notificaciones.</li>
     {% endfor %}
 </ul>
+
+<p>Todas las notificaciones serán eliminadas automáticamente despues de 2 semanas.</p>

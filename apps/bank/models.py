@@ -111,12 +111,12 @@ class Loan(models.Model):
 
     @property
     def is_overdue(self):
-        return self.due_date and timezone.now() > self.due_date
-
+        return self.due_date and timezone.now().date() > self.due_date
+    
     @property
     def is_near_due(self):
         if not self.due_date:
             return False
-    
-        delta = self.due_date - timezone.now()
+        
+        delta = self.due_date - timezone.now().date()
         return 0 <= delta.days <= 4

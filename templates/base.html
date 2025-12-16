@@ -17,14 +17,13 @@
         {% endblock %}
     </head>
 
-    <body>
+    <body class="{% block body_class %}{% endblock %}">
         {% block body %}
         {% endblock %}
 
         <!-- Modals templates -->
         {% block modals %}
         {% include "components/modal/confirm_modal.html" %}
-        {% include "components/modal/notifications_modal.html" %}
 
         {% for message in messages %}
         {% if "success" in message.tags %}

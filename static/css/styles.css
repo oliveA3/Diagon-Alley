@@ -1,4 +1,4 @@
-body {
+body:not(.dashboard-body) {
     max-width: 900px;
     margin: auto;
 }

@@ -7,6 +7,7 @@ from apps.utils import utils
 from django.db import transaction as db_transaction
 from apps.bank.models import BankAccount
 from django.db.models import Max
+from decimal import Decimal
 
 
 def add_product_to_inventory(request, user: CustomUser, product: Product):

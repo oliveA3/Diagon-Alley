@@ -8,6 +8,10 @@
 <main>
     <a href="{% url 'home' %}">🏠 Volver al Callejón Diagon</a>
 
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#notificationsModal">
+        Notificaciones
+    </button>
+
     <!-- Student data -->
     <div>
         <h2>{{ user.full_name }}</h2>

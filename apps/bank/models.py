@@ -63,8 +63,16 @@ class Transaction(models.Model):
 
 class Loan(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='loans_requested')
-    codebtor_a = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='loans_as_codebtor_a')
-    codebtor_b = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='loans_as_codebtor_b')
+    codebtor_a = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE,
+        related_name='loans_as_codebtor_a',
+        null=True, blank=True
+    )
+    codebtor_b = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE,
+        related_name='loans_as_codebtor_b',
+        null=True, blank=True
+    )
 
     LOAN_CHOICES = [
         (0, "25 → 30"),

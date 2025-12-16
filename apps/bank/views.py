@@ -85,27 +85,26 @@ def loans_view(request):
         # Validations
         if not user_a_id and not user_b_id:
             messages.error(request, "Debe seleccionar al menos un codeudor.")
-
         else:
-            codebtor_a = CustomUser.objects.get(
-                id=user_a_id)
-            codebtor_b = CustomUser.objects.get(
-                id=user_b_id)
+            balance_total = 0
+            codebtor_a = None
+            codebtor_b = None
 
             # Available balance
-            balance_total = 0
-            if codebtor_a:
+            if user_a_id:
+                codebtor_a = CustomUser.objects.get(id=user_a_id)
                 balance_total += codebtor_a.bank_account.balance
 
-            if codebtor_b:
+            if user_b_id:
+                codebtor_b = CustomUser.objects.get(id=user_b_id)
                 balance_total += codebtor_b.bank_account.balance
 
             if balance_total < amount_due:
                 messages.error(
-                    request, "Los codeudores no tienen suficientes galeones para respaldar este préstamo.")
-
+                    request, "Los codeudores no tienen suficientes galeones para respaldar este préstamo."
+                )
             else:
-                Loan.objects.create(
+                loan = Loan.objects.create(
                     user=user,
                     codebtor_a=codebtor_a,
                     codebtor_b=codebtor_b,
@@ -113,6 +112,7 @@ def loans_view(request):
                     amount_requested=amount_requested,
                     amount_due=amount_due,
                 )
+                
                 messages.success(
                     request, "Préstamo solicitado. Espera aprobación del banquero.")
 

@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import user_passes_test
 from django.utils import timezone
+from apps.utils.models import Notification
 
 # BANKER DASHBOARD
 
@@ -78,9 +79,8 @@ def banker_dashboard_view(request):
                             account = BankAccount.objects.get(pk=int(acc_id))
                             account.balance += has_niffler(request, amount, account.user)
 
-                            if account.current_limit:
-                                if account.balance > account.current_limit:
-                                    account.balance = account.current_limit
+                            if account.current_limit and account.balance > account.current_limit:
+                                account.balance = account.current_limit
 
                             account.save()
                         except (ValueError, BankAccount.DoesNotExist):
@@ -119,7 +119,7 @@ def banker_dashboard_view(request):
                 account.account_type = new_type
                 account.save()
 
-                if account.balance > account.current_limit:
+                if account.current_limit and account.balance > account.current_limit:
                     account.balance = account.current_limit
                 account.save()
 
@@ -133,7 +133,7 @@ def banker_dashboard_view(request):
 
                 new_balance += has_niffler(request, added_amount, account.user)
 
-                if new_balance <= account.current_limit:
+                if account.current_limit and new_balance <= account.current_limit:
                     account.balance = new_balance
                     account.save()
                     messages.success(
@@ -174,13 +174,23 @@ def loans_list_view(request):
 
         if action == "approve":
             new_balance = account.balance + loan.amount_requested
-            if new_balance <= account.current_limit:
+            if account.current_limit and new_balance <= account.current_limit:
                 loan.approved = True
                 loan.approved_at = timezone.now()
                 loan.save()
 
                 account.balance = new_balance
                 account.save()
+
+                due_str = loan.due_date.strftime("%d/%m/%Y")
+                Notification.objects.create(
+                    user=account.user,
+                    message=(
+                        f"¡Préstamo aprobado! Ahora cuentas con {loan.amount_requested} galeones, "
+                        f"para pagar {loan.amount_due} antes de {due_str}"
+                    )
+                )
+
                 messages.success(
                     request, f"Préstamo de {loan.user.username} aprobado y balance actualizado.")
 

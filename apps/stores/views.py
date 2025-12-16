@@ -5,6 +5,7 @@ from apps.bank.models import BankAccount
 from .models import Store, Product, WarehouseItem, InventoryItem
 from .services import purchase_product, get_discount, gift_product
 from apps.utils import utils
+from django.utils import timezone
 
 
 def store_view(request, store_id):

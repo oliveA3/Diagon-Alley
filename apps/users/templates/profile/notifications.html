@@ -1,0 +1,8 @@
+<h5>Notificaciones</h5>
+<ul class="list-group mb-3">
+    {% for n in notifications %}
+    <li class="list-group-item">({{ n.created_at }}) {{ n.message }}</li>
+    {% empty %}
+    <li class="list-group-item">No tienes notificaciones.</li>
+    {% endfor %}
+</ul>

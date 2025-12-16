@@ -1,0 +1,27 @@
+<div class="modal fade" id="notificationsModal" tabindex="-1" aria-labelledby="notificationsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="notificationsModalLabel">Notificaciones</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body" id="notificationsModalContainer">
+        <!-- Notifications -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  	var notificationsModal = document.getElementById('notificationsModal');
+  	notificationsModal.addEventListener('show.bs.modal', function () {
+  	  	fetch("{% url 'notifications' %}")
+  	    .then(response => response.text())
+  	    .then(html => {
+  	      	document.getElementById("notificationsModalContainer").innerHTML = html;
+  	    });
+  	});
+});
+</script>

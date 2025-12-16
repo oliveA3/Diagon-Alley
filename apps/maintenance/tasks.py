@@ -2,6 +2,7 @@ from django.utils import timezone
 from datetime import timedelta
 from apps.stores.models import WarehouseItem, InventoryItem
 from apps.bank.models import BankAccount
+from apps.utils.models import Notification
 
 # Delete expired items on user's inventories (check every day)
 def clear_inventory():
@@ -58,7 +59,7 @@ def downgrade_premium():
         acc.upgraded_at = None
         acc.duration_days = None
         acc.save()
-        if acc.balance > acc.current_limit:
+        if acc.current_limit and acc.balance > acc.current_limit:
             acc.balance = acc.current_limit
         acc.save()
 
@@ -72,3 +73,13 @@ def reset_weekly_transactions():
             if delta.days >= 7:
                 acc.weekly_transactions_left = 1
                 acc.save()
+
+                
+# Delete notifications after a week (check every day)
+def delete_notifications():
+    today = timezone.now().date()
+    for n in Notification.objects.all():
+        if n.created_at:
+            delta = today - n.created_at
+            if delta.days >= 7:
+                n.delete()

@@ -8,33 +8,6 @@ from django.db import transaction as db_transaction
 from django.contrib import messages
 
 
-def update_balance(self, amount):
-    """
-    amount > 0 → agregar galeones
-    amount < 0 → retirar galeones
-    """
-
-    if self.is_frozen:
-        messages.error(
-            request, "Su cuenta está congelada y no puede recibir galeones.")
-        return False
-
-    new_balance = self.balance + amount
-
-    if new_balance < 0:
-        messages.error(request, "No cuenta con galeones suficientes.")
-        return False
-
-    if new_balance > self.current_limit:
-        messages.error(
-            request, "Esta cantidad de galeones excede el límite de su cuenta.")
-        return False
-
-    self.balance = new_balance
-    self.save()
-    return True
-
-
 PREMIUM_PRICES = {
     60: 80,
     90: 100,
@@ -91,7 +64,7 @@ def validate_transaction(request, sender_account, receiver_account, amount):
         return False
 
     new_balance = receiver_account.balance + amount
-    if receiver_account.current_limit < new_balance:
+    if receiver_account.current_limit and receiver_account.current_limit < new_balance:
         messages.error(
             request, "La cantidad de galeones que quieres enviar excede el limite de la cuenta del receptor.")
         return False

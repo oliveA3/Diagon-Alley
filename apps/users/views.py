@@ -9,6 +9,7 @@ from django.contrib.auth import get_user_model
 from django.contrib import messages
 from apps.stores.models import Product, InventoryItem
 from apps.bank.models import BankAccount, Transaction, Loan
+from apps.utils.models import Notification
 from .models import CustomUser
 from apps.utils import utils
 
@@ -111,6 +112,15 @@ def profile_view(request):
 
     return render(request, 'profile/profile.html', context)
 
+@login_required
+def notifications_view(request):
+    notifications = Notification.objects.filter(user=request.user)
+
+    context = {
+        'notifications': notifications,
+    }
+
+    return render(request, 'profile/notifications.html', context)
 
 
 @login_required

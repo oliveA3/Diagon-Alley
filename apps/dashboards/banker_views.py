@@ -7,25 +7,9 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import user_passes_test
 from django.utils import timezone
 from apps.utils.models import Notification
+from .banker_services import bulk_add, update_account
 
 # BANKER DASHBOARD
-
-
-def get_amount_if_niffler(request, amount: int, user: CustomUser):
-    has_niffler = InventoryItem.objects.filter(
-        user=user, product=4).exists()
-    new_amount = amount
-
-    if has_niffler:
-        fives = new_amount // 5
-        bonus = fives * 2
-        new_amount += bonus
-
-        if new_amount != amount:
-            messages.success(
-                request, f"Se otorgaron {new_amount} galeones a la cuenta de {user.username} por tener un escarbato.")
-
-    return new_amount
 
 
 def is_banker(user):
@@ -74,19 +58,8 @@ def banker_dashboard_view(request):
 
                 else:
                     amount = int(amount_raw)
-                    for acc_id in ids:
-                        try:
-                            account = BankAccount.objects.get(pk=int(acc_id))
-                            account.balance += get_amount_if_niffler(
-                                request, amount, account.user)
-                            account.save()
-
-                            if account.current_limit and account.balance > account.current_limit:
-                                account.balance = account.current_limit
-
-                            account.save()
-                        except (ValueError, BankAccount.DoesNotExist):
-                            continue
+                    bulk_add(ids, amount)
+                    
                     messages.success(
                         request, f"Se agregaron galeones a las cuentas seleccionadas.")
 
@@ -109,42 +82,12 @@ def banker_dashboard_view(request):
                 acc_id = action.split("_")[1]
                 account = BankAccount.objects.get(pk=int(acc_id))
 
-                # House changes
-                account.user.house = request.POST.get(
-                    f"house_{acc_id}", account.user.house)
-
-                # Balance changes
+                house = request.POST.get(f"house_{acc_id}", account.user.house)
                 new_balance = int(request.POST.get(f"balance_{acc_id}"))
-                added_amount = new_balance - account.balance
-                new_balance += has_niffler(request, added_amount, account.user)
-                account.balance = new_balance
-                account.save()
-
-                # Frozen changes
                 frozen = request.POST.get(f"is_frozen_{acc_id}")
-                account.is_frozen = not frozen
-                account.save()
-
-                # Premium changes
                 new_type = request.POST.get(f"account_type_{acc_id}")
-                if new_type == "premium":
-                    account.upgraded_at = timezone.now()
-                account.account_type = new_type
-                account.save()
 
-                if account.current_limit and new_balance <= account.current_limit:
-                    account.balance = new_balance
-                    account.save()
-
-                    messages.success(
-                        request, f"Cuenta de {account.user.username} actualizada.")
-
-                elif account.current_limit and new_balance > account.current_limit:
-                    account.balance = account.current_limit
-                    account.save()
-
-                    messages.error(
-                        request, "La cantidad de galeones excede el límite de la cuenta así que pudo haber perdido galeones.")
+                update_account(account, house, new_balance, frozen, new_type, request)
 
         return redirect("banker_dashboard")
 

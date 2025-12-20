@@ -35,7 +35,8 @@ class CustomUserAdmin(UserAdmin):
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
-        if not change:  # Solo al crear, no al editar
-            BankAccount.objects.create(user=obj)
+        if not change:
+            if obj.role == 'student':
+                BankAccount.objects.create(user=obj)
 
 admin.site.register(CustomUser, CustomUserAdmin)

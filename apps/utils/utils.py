@@ -17,14 +17,15 @@ def working_hours():
     return working_hours
 
 
-def generate_purchase_receipt(user: CustomUser, product: Product, p_type: str):
+def generate_purchase_receipt(user: CustomUser, product: Product, p_type: str, price: int):
     receipt_code = str(uuid.uuid4())[:8].upper()
 
     receipt = PurchaseReceipt.objects.create(
         code=receipt_code,
         user=user,
         product_id=product.id,
-        p_type=str
+        purchase_type=p_type,
+        price=price
     )
 
     return receipt

@@ -24,10 +24,6 @@ def store_view(request, store_id):
         product = get_object_or_404(Product, id=product_id)
 
         purchase_product(request, user, account, product, discount)
-        utils.generate_purchase_receipt(user, product, 'purchase')
-
-        account.last_pur_date = timezone.now().date()
-        account.save()
 
     working_hours = utils.working_hours()
 
@@ -52,10 +48,6 @@ def gift_view(request, product_id):
         sender = get_object_or_404(BankAccount, user=request.user.id)
 
         gift_product(request, sender, receiver, product_id, discount)
-        utils.generate_purchase_receipt(user, product, 'gift')
-
-        sender.last_pur_date = timezone.now().date()
-        sender.save()
 
         return redirect("store", store_id=product.store_id)
 

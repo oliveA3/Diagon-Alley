@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<title>Dependiente</title>
+{% endblock %}
+
+{% block body_class %}dashboard-body{% endblock %}
+
+{% block body %}
+
+<h1>hello world</h1>
+<!-- Logout -->
+<div>
+    <form method="POST" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button
+            type="button"
+            class="btn btn-secondary btn-logout"
+            data-title="Confirmación de cierre de sesión"
+            data-message="¿Está seguro de que desea cerrar la sesión activa?"
+            onclick="showConfirm(this)"
+        >
+            Cerrar sesión
+        </button>
+    </form>
+</div>
+
+{% endblock %}

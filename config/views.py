@@ -9,8 +9,8 @@ def home_view(request):
     if user.role == 'banker':
         return redirect('banker_dashboard')
 
-    #if user.role == 'shopkeeper':
-    #    return redirect(shopkeeper_dashboard)
+    if user.role == 'shopkeeper':
+        return redirect(shopkeeper_dashboard)
 
     stores = Store.objects.all()
     return render(request, 'home.html', {'stores': stores})

@@ -75,9 +75,6 @@ class Product(models.Model):
             if self.stackable:
                 errors['stackable'] = "Las mascotas no pueden ser stackable."
 
-            if self.uses is not None:
-                errors['uses'] = "Las mascotas no deben tener usos."
-
         elif self.product_type == 'wheezes':
             if self.uses != 1:
                 errors['uses'] = "Los sortilegios deben tener exactamente 1 uso."

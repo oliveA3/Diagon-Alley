@@ -28,6 +28,7 @@ class PurchaseReceipt(BaseReceipt):
         'gift': 'Regalo',
     }
     purchase_type = models.CharField(choices=PURCHASE_TYPES)
+    price = models.PositiveIntegerField()
 
 
 class UsageReceipt(BaseReceipt):

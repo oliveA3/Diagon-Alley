@@ -1,4 +1,3 @@
-# views.py
 from .forms import StudentLoginForm, StudentRegistrationForm, CustomPasswordChangeForm, EditProfileForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required

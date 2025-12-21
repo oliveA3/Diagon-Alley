@@ -8,9 +8,9 @@ from django.contrib.auth.decorators import user_passes_test
 from django.utils import timezone
 from apps.utils.models import Notification
 from .banker_services import bulk_add, update_account
+from django.contrib.auth.decorators import login_required
 
 # BANKER DASHBOARD
-
 
 def is_banker(user):
     return user.is_authenticated and user.role == "banker"

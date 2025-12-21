@@ -8,8 +8,9 @@ from django.core.exceptions import ValidationError
 from apps.utils import utils
 from django.contrib.auth.decorators import user_passes_test
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
-
+@login_required
 def bank_view(request):
     user = request.user
     account = get_object_or_404(BankAccount, user_id=user.id)
@@ -33,7 +34,7 @@ def bank_view(request):
 
     return render(request, 'bank.html', context)
 
-
+@login_required
 def transactions_view(request):
     accounts = BankAccount.objects.exclude(user=request.user)
 
@@ -64,7 +65,7 @@ LOAN_AMOUNTS = {
     2: (100, 120),
 }
 
-
+@login_required
 def loans_view(request):
     user = request.user
     users = CustomUser.objects.order_by('full_name').filter(

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load percentage %}
 
 {% block head %}
 <title>Dependiente</title>
@@ -9,21 +10,145 @@
 
 {% block body %}
 
-<h1>hello world</h1>
-<!-- Logout -->
-<div>
-    <form method="POST" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button
-            type="button"
-            class="btn btn-secondary btn-logout"
-            data-title="Confirmación de cierre de sesión"
-            data-message="¿Está seguro de que desea cerrar la sesión activa?"
-            onclick="showConfirm(this)"
-        >
-            Cerrar sesión
-        </button>
-    </form>
-</div>
+<main>
+    <h2>Dashboard de Tiendas</h2>
 
+    <!-- Options -->
+    <div>
+        <a href="" class="btn btn-success mb-3">Agregar Tienda</a>
+
+        <a href="{% url 'purchase_list' %}" class="btn btn-primary mb-3">Recibos de compra</a>
+
+        <a href="{% url 'usage_list' %}" class="btn btn-primary mb-3">Recibos de uso</a>
+
+        <!-- <a href="{% url 'usage_list' %}" class="btn btn-success mb-3">Editar inventario</a> -->
+
+        <!-- Logout -->
+        <div>
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button
+                    type="button"
+                    class="btn btn-secondary btn-logout"
+                    data-title="Confirmación de cierre de sesión"
+                    data-message="¿Está seguro de que desea cerrar la sesión activa?"
+                    onclick="showConfirm(this)"
+                >
+                    Cerrar sesión
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Shopkeeper Dashboard -->
+    <table class="table table-striped">
+
+        <!-- Stores table -->
+        {% for store in stores %}
+        <thead>
+            <tr>
+                <th>
+                    <p><h3>{{ store.name }}</h3>{{ store.description }}</p>
+                    <div>
+                        <a href="" class="btn btn-sm btn-warning">Editar tienda</a>
+                        <a href="" class="btn btn-sm btn-success">Agregar Producto</a>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        
+        <tbody>
+           <!-- Products table -->
+            <tr>
+                <td colspan="4">
+                    <h5>Productos de {{ store.name }}</h5>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Precio</th>
+                                <th>Descuento</th>
+                                <th>Duración</th>
+                                <th>Usos</th>
+                                <th>Stock</th>
+                                <th>Disponibilidad</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in store.products.all %}
+                            {% with warehouse=product.warehouse_product.first %}
+                            <tr>
+                                <td>{{ product.name }}</td>
+                                <td>{{ product.price }}</td>
+
+                                <td>
+                                    {% if product.discount > 0 %}
+                                    {{ product.discount|percentage }}
+                                    {% else %}
+                                      ̶            
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if product.duration_days %}
+                                    {{ product.duration_days }} días
+                                    {% else %}
+                                    ̶ 
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if product.uses %}
+                                    {{ product.uses }}
+                                    {% else %}
+                                    ̶ 
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if product.stock %}
+                                    {{ warehouse.stock }}
+                                    {% else %}
+                                    ̶ 
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" name="available_{{ product.pk }}" {% if warehouse.available %}checked{% endif %}>
+                                        <label class="form-check-label">
+                                            {% if warehouse.available %}
+                                                <span style="color:green">Disponible</span>
+                                            {% else %}
+                                                <span style="color:red">No disponible</span>
+                                            {% endif %}
+                                        </label>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <a href="" class="btn btn-sm btn-warning">Editar</a>
+                                </td>
+                            </tr>
+                            {% endwith %}
+                            {% empty %}
+                            <tr>
+                                <td colspan="6">No hay productos en esta tienda.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</main>
+
+{% endblock %}
+
+<!-- Modals templates -->
+{% block modals %}
+{{ block.super }}
 {% endblock %}

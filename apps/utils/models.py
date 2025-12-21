@@ -13,7 +13,7 @@ class Notification(models.Model):
 class BaseReceipt(models.Model):
     code = models.CharField(max_length=8, unique=True)
     user = models.ForeignKey('users.CustomUser', on_delete=models.CASCADE)
-    created_at = models.DateField(default=timezone.now)
+    created_at = models.DateField(auto_now_add=True)
 
     class Meta:
         abstract = True

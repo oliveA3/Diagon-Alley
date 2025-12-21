@@ -22,9 +22,10 @@ def clear_inventory():
 # Reset stock to 10 on WarehouseItems (reset every day)
 def reset_stock():
     for item in WarehouseItem.objects.all():
-        item.stock = 10
-        item.available = True
-        item.save()
+        if item.stock:
+            item.stock = 10
+            item.available = True
+            item.save()
 
 
 # Freeze account after 30 days of the last purchase (check every day)

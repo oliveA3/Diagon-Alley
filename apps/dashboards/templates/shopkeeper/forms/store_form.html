@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>{% if form.instance.pk %}Editar Tienda{% else %}Agregar Tienda{% endif %}</title>
+{% endblock %}
+
+{% block body %}
+<main class="container mt-4">
+    <h2 class="mb-3">
+        {% if form.instance.pk %}Editar Tienda{% else %}Agregar Tienda{% endif %}
+    </h2>
+
+    <form method="post" class="card p-3 shadow-sm">
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ form.name.label_tag }}
+            {{ form.name|add_class:"form-control" }}
+        </div>
+        <div class="mb-3">
+            {{ form.description.label_tag }}
+            {{ form.description|add_class:"form-control" }}
+        </div>
+        <div class="mb-3">
+            {{ form.store_type.label_tag }}
+            {{ form.store_type|add_class:"form-select" }}
+        </div>
+        <button type="submit" class="btn btn-primary">
+            Guardar
+        </button>
+    </form>
+</main>
+
+{% endblock %}
+
+<!-- Modals templates -->
+{% block modals %}
+{{ block.super }}
+{% endblock %}

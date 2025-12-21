@@ -13,15 +13,94 @@ from django.contrib.auth.decorators import login_required
 
 # SHOPKEEPER DASHBOARD
 
+
 def is_shopkeeper(user):
     return user.is_authenticated and user.role == "shopkeeper"
 
 
 @user_passes_test(is_shopkeeper)
 def shop_dashboard_view(request):
-    stores = Store.objects.prefetch_related("products", "warehouse_store").all()
+    stores = Store.objects.prefetch_related(
+        "products", "warehouse_store").all()
 
     return render(request, "shopkeeper/shop_dashboard.html", {"stores": stores})
+
+
+# Dashboard options
+
+@user_passes_test(is_shopkeeper)
+def create_store_view(request):
+    if request.method == "POST":
+        form = StoreCreationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Tienda creada correctamente.")
+            return redirect("shopkeeper_dashboard")
+
+    else:
+        form = StoreCreationForm()
+
+    return render(request, "shopkeeper/forms/store_form.html", {"form": form})
+
+
+@user_passes_test(is_shopkeeper)
+def update_store_view(request, pk):
+    store = get_object_or_404(Store, pk=pk)
+    if request.method == "POST":
+        form = StoreUpdateForm(request.POST, instance=store)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Tienda actualizada correctamente.")
+            return redirect("shopkeeper_dashboard")
+
+    else:
+        form = StoreUpdateForm(instance=store)
+
+    return render(request, "shopkeeper/forms/store_form.html", {"form": form})
+
+
+@user_passes_test(is_shopkeeper)
+def create_product_view(request, store_id):
+    store = get_object_or_404(Store, pk=store_id)
+    if request.method == "POST":
+        form = ProductCreateForm(request.POST)
+
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.store = store
+            product.save()
+            form.save(commit=True)
+
+            messages.success(request, "Producto creado correctamente.")
+            return redirect("shopkeeper_dashboard")
+
+    else:
+        form = ProductCreateForm()
+
+    return render(request, "shopkeeper/forms/product_form.html", {"form": form, "store": store})
+
+
+@login_required
+def update_product_view(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == "POST":
+        form = ProductUpdateForm(request.POST, instance=product)
+
+        if form.is_valid():
+            form.save()
+
+            messages.success(request, "Producto actualizado correctamente.")
+            return redirect("shopkeeper_dashboard")
+
+    else:
+        form = ProductUpdateForm(instance=product)
+
+    return render(request, "shopkeeper/forms/product_form.html", {"form": form, "product": product})
+
+
+# Receipts lists
 
 @user_passes_test(is_shopkeeper)
 def purchase_list_view(request):

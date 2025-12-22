@@ -14,7 +14,7 @@ class BankAccount(models.Model):
     )
 
     balance = models.IntegerField(default=20)
-    last_pur_date = models.CharField(null=True, blank=True)
+    last_pur_date = models.DateField(null=True, blank=True)
     
     is_frozen = models.BooleanField(default=False)
     frozen_date = models.DateField(null=True, blank=True)

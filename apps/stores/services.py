@@ -115,6 +115,11 @@ def gift_product(request, sender_account: BankAccount, receiver: CustomUser, pro
                 if sender_account.is_frozen:
                     sender_account.is_frozen = False
                 sender_account.save()
+
+                receiver_account = receiver.bank_account
+                if receiver_account.is_frozen:
+                    receiver_account.is_frozen = False
+                    receiver_account.save()
                 
                 messages.success(
                     request, f"Has regalado {product.name} a {receiver.username} (Cuenta No. {receiver.id}).")

@@ -38,7 +38,7 @@ def update_account(request, account: BankAccount, house: str, new_balance: int, 
         account.user.house = house
 
         added_amount = new_balance - account.balance
-        new_balance += has_niffler(request, added_amount, account.user)
+        new_balance += get_amount_if_niffler(request, added_amount, account.user)
         account.balance = new_balance
         account.save()
         

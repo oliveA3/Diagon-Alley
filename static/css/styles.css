@@ -3,8 +3,14 @@ body:not(.dashboard-body) {
     margin: auto;
 }
 
-tr.selected-row td, 
-tr:hover td,
-tr:active td {
+table table tr.selected-row td,
+table table tr:hover td,
+table table tr:active td {
+    background-color: #d0ebff !important;
+}
+
+table:not(:has(table)) tr.selected-row td,
+table:not(:has(table)) tr:hover td,
+table:not(:has(table)) tr:active td {
     background-color: #d0ebff !important;
 }

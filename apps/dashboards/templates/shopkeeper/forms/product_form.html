@@ -1,10 +1,14 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block head %}
 <title>{% if form.instance.pk %}Editar Producto{% else %}Agregar Producto{% endif %}</title>
 {% endblock %}
 
+{% block body_class %}dashboard-body{% endblock %}
+
 {% block body %}
+
 <main class="container mt-4">
     <h2 class="mb-3">
         {% if form.instance.pk %}Editar Producto{% else %}Agregar Producto{% endif %}
@@ -12,42 +16,18 @@
 
     <form method="post" class="card p-3 shadow-sm">
         {% csrf_token %}
-        <div class="mb-3">
-            {{ form.name.label_tag }}
-            {{ form.name|add_class:"form-control" }}
+        {{ form.as_p }}
+        
+        <div>
+            <button type="button" class="btn btn-primary" data-title="Guardar cambios"
+                data-message="¿Desea guardar los cambios a este producto?"
+                onclick="showConfirm(this)">
+                Guardar
+            </button>
+            <a href="{% url 'shopkeeper_dashboard' %}" class="btn btn-secondary">
+                Cancelar
+            </a>
         </div>
-        <div class="mb-3">
-            {{ form.description.label_tag }}
-            {{ form.description|add_class:"form-control" }}
-        </div>
-        <div class="mb-3">
-            {{ form.price.label_tag }}
-            {{ form.price|add_class:"form-control" }}
-        </div>
-        <div class="mb-3">
-            {{ form.discount.label_tag }}
-            {{ form.discount|add_class:"form-control" }}
-        </div>
-        <div class="mb-3">
-            {{ form.duration_days.label_tag }}
-            {{ form.duration_days|add_class:"form-control" }}
-        </div>
-        <div class="mb-3">
-            {{ form.uses.label_tag }}
-            {{ form.uses|add_class:"form-control" }}
-        </div>
-        <div class="mb-3">
-            {{ form.stock.label_tag }}
-            {{ form.stock|add_class:"form-control" }}
-        </div>
-        <div class="form-check form-switch mb-3">
-            {{ form.available }}
-            <label class="form-check-label">Disponible</label>
-        </div>
-
-        <button type="submit" class="btn btn-primary">
-            Guardar
-        </button>
     </form>
 </main>
 

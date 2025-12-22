@@ -1,32 +1,31 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block head %}
-<title>{% if form.instance.pk %}Editar Tienda{% else %}Agregar Tienda{% endif %}</title>
+<title>Editar Tienda</title>
 {% endblock %}
 
+{% block body_class %}dashboard-body{% endblock %}
+
 {% block body %}
+
 <main class="container mt-4">
-    <h2 class="mb-3">
-        {% if form.instance.pk %}Editar Tienda{% else %}Agregar Tienda{% endif %}
-    </h2>
+    <h2 class="mb-3">Editar Tienda</h2>
 
     <form method="post" class="card p-3 shadow-sm">
         {% csrf_token %}
-        <div class="mb-3">
-            {{ form.name.label_tag }}
-            {{ form.name|add_class:"form-control" }}
+        {{ form.as_p }}
+
+        <div>
+            <button type="button" class="btn btn-primary" data-title="Guardar cambios"
+                data-message="¿Desea guardar los cambios a esta tienda?"
+                onclick="showConfirm(this)">
+                Guardar
+            </button>
+            <a href="{% url 'shopkeeper_dashboard' %}" class="btn btn-secondary">
+                Cancelar
+            </a>
         </div>
-        <div class="mb-3">
-            {{ form.description.label_tag }}
-            {{ form.description|add_class:"form-control" }}
-        </div>
-        <div class="mb-3">
-            {{ form.store_type.label_tag }}
-            {{ form.store_type|add_class:"form-select" }}
-        </div>
-        <button type="submit" class="btn btn-primary">
-            Guardar
-        </button>
     </form>
 </main>
 

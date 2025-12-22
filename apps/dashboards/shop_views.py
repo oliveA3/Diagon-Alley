@@ -10,6 +10,7 @@ from django.utils import timezone
 from apps.utils.models import Notification
 from .banker_services import bulk_add, update_account
 from django.contrib.auth.decorators import login_required
+from .forms import StoreUpdateForm, ProductCreationForm, ProductUpdateForm
 
 # SHOPKEEPER DASHBOARD
 
@@ -27,22 +28,6 @@ def shop_dashboard_view(request):
 
 
 # Dashboard options
-
-@user_passes_test(is_shopkeeper)
-def create_store_view(request):
-    if request.method == "POST":
-        form = StoreCreationForm(request.POST)
-
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Tienda creada correctamente.")
-            return redirect("shopkeeper_dashboard")
-
-    else:
-        form = StoreCreationForm()
-
-    return render(request, "shopkeeper/forms/store_form.html", {"form": form})
-
 
 @user_passes_test(is_shopkeeper)
 def update_store_view(request, pk):
@@ -65,7 +50,7 @@ def update_store_view(request, pk):
 def create_product_view(request, store_id):
     store = get_object_or_404(Store, pk=store_id)
     if request.method == "POST":
-        form = ProductCreateForm(request.POST)
+        form = ProductCreationForm(request.POST)
 
         if form.is_valid():
             product = form.save(commit=False)
@@ -77,7 +62,7 @@ def create_product_view(request, store_id):
             return redirect("shopkeeper_dashboard")
 
     else:
-        form = ProductCreateForm()
+        form = ProductCreationForm()
 
     return render(request, "shopkeeper/forms/product_form.html", {"form": form, "store": store})
 

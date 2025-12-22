@@ -9,12 +9,9 @@ urlpatterns = [
 
     # Shopkeeper
     path('shopkeeper/', shop_views.shop_dashboard_view, name='shopkeeper_dashboard'),
-
-    path("create_store/", shop_views.create_store_view, name="create_store"),
     path("update_store/<int:pk>/", shop_views.update_store_view, name="update_store"),
     path("create_product/<int:store_id>/", shop_views.create_product_view, name="create_product"),
     path("update_product/<int:pk>/", shop_views.update_product_view, name="update_product"),
-
     path('purchases/', shop_views.purchase_list_view, name='purchase_list'),
     path('usages/', shop_views.usage_list_view, name='usage_list'),
 ]

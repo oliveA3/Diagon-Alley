@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from datetime import timedelta, date
 from django.templatetags.static import static
+from django.core.exceptions import ValidationError
 
 User = get_user_model()
 
@@ -10,7 +11,7 @@ STORE_PRODUCT_MAP = {
     0: 'broom',
     1: 'pet',
     2: 'wand',
-    3: 'misc',
+    3: 'wheezes',
 }
 
 
@@ -22,7 +23,7 @@ class Store(models.Model):
         ('broom', 'Escobas'),
         ('pet', 'Mascotas'),
         ('wand', 'Varitas'),
-        ('misc', 'Miscelaneos'),
+        ('wheezes', 'Sortilegios'),
     ]
     store_type = models.CharField(max_length=20, choices=STORE_TYPES)
 
@@ -66,21 +67,21 @@ class Product(models.Model):
 
         if self.product_type in ['broom', 'wand']:
             if not self.stackable:
-                errors['stackable'] = "Las escobas y varitas deben ser stackable."
+                errors['stackable'] = "Las escobas y varitas deben ser acumulables."
 
             if not self.uses or self.uses <= 0:
                 errors['uses'] = "Las escobas y varitas deben tener un número de usos mayor a 0."
 
         elif self.product_type == 'pet':
             if self.stackable:
-                errors['stackable'] = "Las mascotas no pueden ser stackable."
+                errors['stackable'] = "Las mascotas no pueden ser acumulables."
 
         elif self.product_type == 'wheezes':
             if self.uses != 1:
                 errors['uses'] = "Los sortilegios deben tener exactamente 1 uso."
 
             if self.stackable:
-                errors['stackable'] = "Los sortilegios no pueden ser stackable."
+                errors['stackable'] = "Los sortilegios no pueden ser acumulables."
 
         if errors:
             raise ValidationError(errors)

@@ -30,7 +30,7 @@
                 {% for r in receipts %}
                 <tr>
                     <td>{{ r.code }}</td>
-                    <td>{{ r.user.username }}</td>
+                    <td>#{{ r.user.pk }} ({{ r.user.username }})</td>
                     <td>{% if r.product %}{{ r.product.name }}{% else %}—{% endif %}</td>
                     <td>{{ r.uses_left }}</td>
                     <td>{{ r.created_at }}</td>

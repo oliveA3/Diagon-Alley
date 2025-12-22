@@ -31,7 +31,7 @@
                 {% for r in receipts %}
                 <tr>
                     <td>{{ r.code }}</td>
-                    <td>{{ r.user.username }}</td>
+                    <td>#{{ r.user.pk }} ({{ r.user.username }})</td>
                     <td>{% if r.product %}{{ r.product.name }}{% else %}—{% endif %}</td>
                     <td>{{ r.get_purchase_type_display }}</td>
                     <td>{{ r.price }}</td>

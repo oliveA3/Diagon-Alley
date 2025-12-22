@@ -11,6 +11,7 @@ from apps.utils.models import Notification
 from .banker_services import bulk_add, update_account
 from django.contrib.auth.decorators import login_required
 from .forms import StoreUpdateForm, ProductCreationForm, ProductUpdateForm
+from .shop_services import grant_product
 
 # SHOPKEEPER DASHBOARD
 
@@ -21,10 +22,12 @@ def is_shopkeeper(user):
 
 @user_passes_test(is_shopkeeper)
 def shop_dashboard_view(request):
-    stores = Store.objects.prefetch_related(
-        "products", "warehouse_store").all()
+    stores = Store.objects.all()
+    users = CustomUser.objects.filter(role='student')
 
-    return render(request, "shopkeeper/shop_dashboard.html", {"stores": stores})
+    context = {"stores": stores, "users": users}
+
+    return render(request, "shopkeeper/shop_dashboard.html", context)
 
 
 # Dashboard options
@@ -83,6 +86,20 @@ def update_product_view(request, pk):
         form = ProductUpdateForm(instance=product)
 
     return render(request, "shopkeeper/forms/product_form.html", {"form": form, "product": product})
+
+
+@user_passes_test(is_shopkeeper)
+def grant_product_view(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+
+    if request.method == "POST":
+        user_id = request.POST.get("user_id")
+        user = get_object_or_404(CustomUser, pk=user_id)
+        grant_product(request, user, product)
+        messages.success(
+            request, f"Producto {product.name} otorgado a {user.username}.")
+
+    return redirect("shopkeeper_dashboard")
 
 
 # Receipts lists

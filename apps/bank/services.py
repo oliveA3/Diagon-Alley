@@ -6,7 +6,7 @@ from .models import BankAccount
 from django.core.exceptions import ValidationError
 from django.db import transaction as db_transaction
 from django.contrib import messages
-
+from apps.utils.utils import generate_notification
 
 PREMIUM_PRICES = {
     60: 80,
@@ -89,6 +89,8 @@ def execute_transaction(request, sender_account, receiver_account, amount, tx_in
             receiver_account.save()
 
             tx_instance.save()
+
+            generate_notification(receiver_account.user, f"El usuario {sender_account.user.username} te ha transferido {amount} galeones.")
 
             messages.success(request, "Transferencia exitosa.")
             return tx_instance

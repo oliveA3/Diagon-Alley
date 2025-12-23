@@ -4,6 +4,7 @@ from apps.stores.models import Product, InventoryItem
 from .models import PurchaseReceipt, UsageReceipt
 from apps.bank.models import BankAccount
 from datetime import datetime
+from .models import Notification
 
 
 def working_hours():
@@ -15,6 +16,12 @@ def working_hours():
     working_hours = (0 <= weekday <= 4 and 6 <= hour <= 23)
 
     return working_hours
+
+def generate_notification(user: CustomUser, message: str):
+    Notification.objects.create(
+        user=user,
+        message=message,
+    )
 
 
 def generate_purchase_receipt(user: CustomUser, product: Product, p_type: str, price: int):

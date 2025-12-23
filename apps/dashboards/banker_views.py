@@ -6,11 +6,12 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import user_passes_test
 from django.utils import timezone
-from apps.utils.models import Notification
+from apps.utils.utils import generate_notification
 from .banker_services import bulk_add, update_account
 from django.contrib.auth.decorators import login_required
 
 # BANKER DASHBOARD
+
 
 def is_banker(user):
     return user.is_authenticated and user.role == "banker"
@@ -18,7 +19,8 @@ def is_banker(user):
 
 @user_passes_test(is_banker)
 def banker_dashboard_view(request):
-    accounts = BankAccount.objects.select_related("user").filter( user__role="student" ).order_by('is_frozen', 'user__username')
+    accounts = BankAccount.objects.select_related("user").filter(
+        user__role="student").order_by('is_frozen', 'user__username')
 
     # Filters
     if request.GET.get("id"):
@@ -58,7 +60,7 @@ def banker_dashboard_view(request):
                 else:
                     amount = int(amount_raw)
                     bulk_add(ids, amount)
-                    
+
                     messages.success(
                         request, f"Se agregaron galeones a las cuentas seleccionadas.")
 
@@ -86,7 +88,8 @@ def banker_dashboard_view(request):
                 frozen = request.POST.get(f"is_frozen_{acc_id}")
                 new_type = request.POST.get(f"account_type_{acc_id}")
 
-                update_account(request, account, house, new_balance, frozen, new_type)
+                update_account(request, account, house,
+                               new_balance, frozen, new_type)
 
         return redirect("banker_dashboard")
 
@@ -129,13 +132,8 @@ def loans_list_view(request):
                 account.save()
 
                 due_str = loan.due_date.strftime("%d/%m/%Y")
-                Notification.objects.create(
-                    user=account.user,
-                    message=(
-                        f"¡Préstamo aprobado! Ahora cuentas con {loan.amount_requested} galeones, "
-                        f"para pagar {loan.amount_due} antes de {due_str}"
-                    )
-                )
+                generate_notification(
+                    account.user, f"¡Préstamo aprobado! Ahora cuentas con {loan.amount_requested} galeones, para pagar {loan.amount_due} antes de {due_str}")
 
                 messages.success(
                     request, f"Préstamo de {loan.user.username} aprobado y balance actualizado.")

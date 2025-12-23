@@ -28,11 +28,8 @@ def register_view(request):
 
             BankAccount.objects.create(user=user)
 
-            Notification.objects.create(
-                user=user,
-                message=(
-                    f"¡Bienvenido/a al Callejón Diagon! Da un paseo por nuestras tiendas y guarda tus galeones en el Banco Gringotts.")
-            )
+            utils.generate_notification(
+                user, "¡Bienvenido/a al Callejón Diagon! Da un paseo por nuestras tiendas y guarda tus galeones en el Banco Gringotts.")
 
             return redirect('login')
     else:

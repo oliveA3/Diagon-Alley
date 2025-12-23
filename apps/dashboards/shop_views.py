@@ -7,7 +7,6 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import user_passes_test
 from django.utils import timezone
-from apps.utils.models import Notification
 from .banker_services import bulk_add, update_account
 from django.contrib.auth.decorators import login_required
 from .forms import StoreUpdateForm, ProductCreationForm, ProductUpdateForm

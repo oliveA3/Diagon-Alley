@@ -145,6 +145,10 @@ def loans_list_view(request):
         # Not approve loan
         elif action == "reject":
             loan.delete()
+
+            generate_notification(
+                    account.user, f"Lamentamos informarte que tu préstamo ha sido rechazado, para más información consulte con el banquero.")
+
             messages.success(
                 request, f"Préstamo de {loan.user.username} rechazado y eliminado.")
 

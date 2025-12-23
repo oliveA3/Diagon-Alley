@@ -9,8 +9,8 @@ from django.contrib import messages
 from apps.utils.utils import generate_notification
 
 PREMIUM_PRICES = {
-    60: 80,
-    90: 100,
+    90: 80,
+    180: 100,
 }
 
 
@@ -25,7 +25,7 @@ def purchase_premium(request, account: BankAccount, duration_days: int):
             account.balance -= price
             account.save()
 
-            string = "3 meses" if duration_days == 60 else "6 meses"
+            string = "3 meses" if duration_days == 90 else "6 meses"
 
             messages.success(
                 request, f"Has comprado una Cuenta Premium durante {string} por {price} galeones.")

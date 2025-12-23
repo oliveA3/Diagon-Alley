@@ -5,21 +5,21 @@ from django.db import transaction as db_transaction
 from django.contrib import messages
 from django.utils import timezone
 
-def get_amount_if_niffler(request, amount: int, user: CustomUser):
+
+def get_bonus_if_niffler(request, amount: int, user: CustomUser):
     has_niffler = InventoryItem.objects.filter(
         user=user, product=4).exists()
-    new_amount = amount
+    bonus = None
 
     if has_niffler:
         fives = new_amount // 5
         bonus = fives * 2
-        new_amount += bonus
 
-        if new_amount != amount:
-            messages.success(
-                request, f"Se otorgaron {new_amount} galeones a la cuenta de {user.username} por tener un escarbato.")
+        messages.success(
+            request, f"Se otorgó un bonus de {bonus} galeones a la cuenta de {user.username} por tener un escarbato.")
 
-    return new_amount
+    return bonus
+
 
 def bulk_add(ids, amount: int):
     for acc_id in ids:
@@ -33,15 +33,18 @@ def bulk_add(ids, amount: int):
                 account.balance = account.current_limit
             account.save()
 
+
 def update_account(request, account: BankAccount, house: str, new_balance: int, frozen: bool, new_type: str):
     with db_transaction.atomic():
         account.user.house = house
 
         added_amount = new_balance - account.balance
-        new_balance += get_amount_if_niffler(request, added_amount, account.user)
+        bonus = get_bonus_if_niffler(request, added_amount, account.user)
+        if bonus:
+            new_balance += bonus
         account.balance = new_balance
         account.save()
-        
+
         account.is_frozen = not frozen
         account.save()
 
@@ -61,4 +64,5 @@ def update_account(request, account: BankAccount, house: str, new_balance: int, 
             account.balance = account.current_limit
             account.save()
 
-            messages.error(request, "La cantidad de galeones excede el límite de la cuenta así que pudo haber perdido galeones.")
+            messages.error(
+                request, "La cantidad de galeones excede el límite de la cuenta así que pudo haber perdido galeones.")

@@ -43,7 +43,7 @@
             {% endif %}
             
             {% if account.premium_ex_date %}
-            <li>Su cuenta expira el {{ account.premium_ex_date }}</li>
+            <li>Su cuenta premium expira el {{ account.premium_ex_date }}</li>
             {% endif %}
             <li>Transacciones disponibles esta semana: {{ account.weekly_transactions_left }}</li>
         </ul>
@@ -76,7 +76,7 @@
             {% csrf_token %}
             <h5>Cuenta Premium por 3 meses</h5>
             <p>Precio: 80 galeones</p>
-            <input type="hidden" name="account_duration" value="60">
+            <input type="hidden" name="account_duration" value="90">
             <button type="button" class="btn btn-primary" data-title="Confirmación de compra"
                 data-message="¿Deseas comprar una cuenta Premium durante 3 meses por 80 galeones? (Esta acción es irreversible)"
                 onclick="showConfirm(this)">
@@ -88,7 +88,7 @@
             {% csrf_token %}
             <h5>Cuenta Premium por 6 meses</h5>
             <p>Precio: 100 galeones</p>
-            <input type="hidden" name="account_duration" value="90">
+            <input type="hidden" name="account_duration" value="180">
             <button type="button" class="btn btn-primary" data-title="Confirmación de compra"
                 data-message="¿Deseas comprar una cuenta Premium durante 6 meses por 100 galeones? (Esta acción es irreversible)"
                 onclick="showConfirm(this)">

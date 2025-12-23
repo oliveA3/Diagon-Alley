@@ -47,11 +47,11 @@
                         Para extender su límite acceda a las cuentas premium del
                         <a href="{% url 'bank_view' %}">Banco Gringotts</a>
                     </p>
-
-                    {% if account.expiration_date %}
-                    <p>Su cuenta expira el {{ account.premium_ex_date }}</p>
-                    {% endif %}
                 </div>
+                {% endif %}
+
+                {% if account.premium_ex_date %}
+                <li>Su cuenta expira el {{ account.premium_ex_date }}</li>
                 {% endif %}
 
                 <p>Transacciones restantes esta semana: {{ account.weekly_transactions_left }}</li>

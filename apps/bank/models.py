@@ -28,6 +28,7 @@ class BankAccount(models.Model):
 
     created_at = models.DateField(auto_now_add=True)
     upgraded_at = models.DateField(null=True, blank=True)
+    
     # Just for premium
     duration_days = models.PositiveIntegerField(null=True, blank=True)
 

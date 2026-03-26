@@ -1,0 +1,78 @@
+{% load static %}
+{% block footer %}
+
+<footer class="main-footer">
+    <style>
+        .main-footer {
+            background-color: #4b0082;
+            color: white;
+            padding: 20px 0;
+            width: 100%;
+        }
+
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: nowrap;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-column {
+            flex: 1;
+            min-width: 0;
+            margin: 0 10px;
+        }
+
+        .footer-title {
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .footer-logo {
+            max-width: 100px;
+            height: auto;
+            opacity: 0.9;
+        }
+
+        .links-column a {
+            display: block;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            margin-bottom: 6px;
+            font-size: 0.7rem;
+            transition: color 0.3s ease;
+        }
+
+        .links-column a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+    </style>
+
+    <div class="footer-container">
+        <div class="footer-column brand-column">
+            <h2 class="footer-title">Callejón Diagon</h2>
+            <img src="{% static 'imgs/hog_footer.png' %}" alt="Hogwarts Silhouette" class="footer-logo">
+        </div>
+
+        <div class="footer-column links-column">
+            <a href="{% url 'bank_view' %}">Banco Gringotts</a>
+            <a href="https://chat.whatsapp.com/GjAylTHvlB5CLXZp9eanqm?mode=gi_t" target="_blank">TerrorTours</a>
+            <a href="{% url 'faq' %}">FAQ</a>
+            <a href="#">Términos de uso</a>
+        </div>
+
+        <div class="footer-column links-column">
+            <a href="{% url 'store' store_id=1 %}">Quidditch Supplies</a>
+            <a href="{% url 'store' store_id=2 %}">Magical Menagerie</a>
+            <a href="{% url 'store' store_id=3 %}">Ollivander's</a>
+            <a href="{% url 'store' store_id=4 %}">Sortilegios Weasley</a>
+        </div>
+    </div>
+</footer>
+
+{% endblock %}

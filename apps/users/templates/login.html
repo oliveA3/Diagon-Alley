@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load class_tag %}
+
+{% block head %}
+<title>Inicio de Sesión</title>
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block body %}
+
+<main class="container">
+
+    <h2 class="title">Inicia sesión para acceder al Callejón Diagon</h2>
+    <hr class="line">
+
+    <form method="POST" class="auth-form">
+        {% csrf_token %}
+
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+            {{ field | add_class:"form-input" }}
+
+            {% for error in field.errors %}
+            <p class="error-msg">{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endfor %}
+
+        {% if form.non_field_errors %}
+        <div class="non-field-errors">
+            {% for error in form.non_field_errors %}
+            <p class="error-msg">{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <p class="error-msg small">{{ error }}</p>
+        {% endif %}
+
+        <button type="submit" class="btn-primary">Entrar</button>
+    </form>
+
+    <hr class="line">
+
+    <p class="text-center">
+      ¿Aún no tienes cuenta en el Callejón Diagon?<br>
+      <a href="{% url 'register' %}" class="link-primary">Regístrate</a>
+    </p>
+
+</main>
+
+{% endblock %}
+
+{% block modals %}
+{{ block.super }}
+{% endblock %}

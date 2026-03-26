@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<title>Banco Grigotts</title>
+{% endblock %}
+
+{% block body %}
+
+<!-- Loans -->
+<main>
+    <a href="{% url 'bank_view' %}">🏠 Volver al Banco Gringotts</a>
+
+    <p>Recuerda que debes contar con dos codeudores para pedir un préstamo.</p>
+
+    <!-- Codebtors -->
+    <form method="post">
+        {% csrf_token %}
+        <!-- 1st codebtor -->
+        <div>
+            <label for="user_a">Primer codeudor</label>
+            <select name="codebtor_a" id="user_a" class="form-select" required>
+                <option value="" disabled selected>Selecciona un codeudor...</option>
+                {% for u in users %}
+                <option value="{{ u.id }}">{{ u.full_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- 2nd codebtor -->
+        <div>
+            <label for="user_b">Segundo codeudor</label>
+            <select name="codebtor_b" id="user_b" class="form-select" required>
+                <option value="" disabled selected>Selecciona un codeudor...</option>
+                {% for u in users %}
+                <option value="{{ u.id }}">{{ u.full_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Loan types -->
+        <div>
+            <h3>Préstamos (cantidad -- devolución)</h3>
+            <input type="hidden" name="loan_type" id="loan_type_field">
+
+            <div>
+                <p>Préstamo de 25 galeones (devolver 30) por un mes.</p>
+                <button type="button" name="loan_type" value="0" class="btn btn-primary"
+                    data-title="Confirmación de préstamo"
+                    data-message="¿Deseas pedir un préstamo de 25 galeones a devolver 30?" onclick="showConfirm(this)">
+                    Pedir préstamo
+                </button>
+            </div>
+
+            <div>
+                <p>Préstamo de 50 galeones (devolver 60) por dos meses.</p>
+                <button type="button" name="loan_type" value="1" class="btn btn-primary"
+                    data-title="Confirmación de préstamo"
+                    data-message="¿Deseas pedir un préstamo de 50 galeones a devolver 60?" onclick="showConfirm(this)">
+                    Pedir préstamo
+                </button>
+            </div>
+
+            <div>
+                <p>Préstamo de 100 galeones (devolver 120) por tres meses.</p>
+                <button type="button" name="loan_type" value="2" class="btn btn-primary"
+                    data-title="Confirmación de préstamo"
+                    data-message="¿Deseas pedir un préstamo de 100 galeones a devolver 120?"
+                    onclick="showConfirm(this)">
+                    Pedir préstamo
+                </button>
+            </div>
+        </div>
+    </form>
+</main>
+
+{% endblock %}
+
+<!-- Modals templates -->
+{% block modals %}
+{{ block.super }}
+{% endblock %}
+
+<!-- Modals JS -->
+{% block scripts %}
+<script src="{% static 'js/selectorAandB.js' %}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let pendingForm = null;
+        let pendingLoanType = null;
+
+        window.showConfirm = function (button) {
+            event.preventDefault();
+
+            pendingForm = button.closest("form");
+            pendingLoanType = button.value;
+
+            document.getElementById("confirmModalLabel").textContent = button.dataset.title;
+            document.getElementById("confirmMessage").textContent = button.dataset.message;
+
+            const modal = new bootstrap.Modal(document.getElementById("confirmModal"));
+            modal.show();
+            return false;
+        };
+
+        document.getElementById("confirmBtn").addEventListener("click", function () {
+            if (pendingForm && pendingLoanType) {
+                // setear el loan_type antes de enviar
+                const hidden = document.createElement("input");
+                hidden.type = "hidden";
+                hidden.name = "loan_type";
+                hidden.value = pendingLoanType;
+                pendingForm.appendChild(hidden);
+
+                pendingForm.submit();
+            }
+        });
+    });
+
+</script>
+{% endblock %}

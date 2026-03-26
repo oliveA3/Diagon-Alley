@@ -1,0 +1,80 @@
+{% load static %}
+{% block header %}
+
+<header class="main-header">
+    <style>
+        .main-header {
+            background-color: #4b0082;
+            padding: 10px 0;
+            width: 100%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-logo img {
+            height: 50px;
+            width: auto;
+            display: block;
+        }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-icon {
+            color: #f0e6ff;
+            font-size: 2.5rem;
+            text-decoration: none;
+            transition: transform 0.2s ease;
+        }
+
+        .profile-icon:hover {
+            transform: scale(1.1);
+            color: white;
+        }
+
+        .login-link {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border: 1px solid white;
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        @media (max-width: 480px) {
+            .header-logo img {
+                height: 35px;
+            }
+        }
+    </style>
+
+    <div class="header-container">
+        <div class="header-logo">
+            <a href="/">
+                <img src="{% static 'imgs/diagon_alley.png' %}" alt="Diagon Alley Logo">
+            </a>
+        </div>
+
+        <div class="header-user">
+            {% if request.user.is_authenticated %}
+            <a href="{% url 'profile' %}" class="profile-icon" title="Perfil">
+                <i class="fas fa-user-circle"></i> <span class="sr-only">Perfil</span>
+            </a>
+            {% else %}
+            <a href="{% url 'login' %}" class="login-link">Iniciar sesión</a>
+            {% endif %}
+        </div>
+    </div>
+</header>
+
+{% endblock %}

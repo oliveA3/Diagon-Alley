@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<title>Callejón Diagon</title>
+{% endblock %}
+
+{% block header %}
+{% include "components/header.html" %}
+{% endblock %}
+
+{% block body %}
+
+<!-- Diagon Alley -->
+<main class="container my-4 home">
+
+    <!-- Gringotts -->
+    <a href="{% url 'bank_view' %}" class="sign">
+        <img src="{% static 'imgs/signs/0.png' %}" alt="Imagen de Banco Gringotts"/>
+    </a>
+
+    <!-- Stores -->
+    {% for store in stores %}
+    <a href="{% url 'store' store.id %}" class="sign">
+        <img src="{{ store.image_url }}" alt="Imagen de {{store.name}}" />
+    </a>
+    {% endfor %}
+
+</main>
+
+{% endblock %}
+
+{% block footer %}
+{% include "components/footer.html" %}
+{% endblock %}
+
+<!-- Modals templates -->
+{% block modals %}
+{{ block.super }}
+{% endblock %}

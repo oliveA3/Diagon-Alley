@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<title>Perfil</title>
+{% endblock %}
+
+{% block body %}
+
+<main>
+    <a href="{% url 'profile' %}">🏠 Volver a mi perfil</a>
+
+    <!-- Edit profile -->
+    <div>
+        <h2>Editar Perfil</h2>
+        <form id="edit-profile-form" method="POST">
+            {% csrf_token %}
+
+            {% for field in form %}
+            <div>
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+
+                {% for error in field.errors %}
+                <p style="color: red; font-size: 0.8em;">{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endfor %}
+
+            {% if form.non_field_errors %}
+            <div style="border: 1px solid red; padding: 10px; color: red;">
+                {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+
+            <button type="button" data-title="Edición de perfil" data-message="¿Desea conservar los cambios?"
+                class="btn btn-primary" onclick="showConfirm(this)">
+                Guardar
+            </button>
+
+            <a type="button" href="{% url 'profile' %}" class="btn btn-secondary">
+                Cancelar
+            </a>
+        </form>
+    </div>
+</main>
+
+{% endblock %}
+
+<!-- Modals templates -->
+{% block modals %}
+{{ block.super }}
+{% endblock %}

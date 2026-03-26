@@ -1,0 +1,59 @@
+.home {
+    background-image: url("../imgs/Fondo.png");
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: cover;
+    min-height: 100vh;
+    margin: 0 !important;
+    padding: 20px 0 100px 0 !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+}
+
+.sign {
+    display: block;
+    width: 65%;
+    max-width: 400px;
+    text-decoration: none;
+    transition: transform 0.1s ease-in-out;
+}
+
+.sign:active {
+    transform: scale(0.98);
+}
+
+.sign img {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: drop-shadow(2px 4px 20px rgba(0, 0, 0, 0.551));
+}
+
+.sign:hover img {
+    filter: drop-shadow(2px 2px 40px rgba(204, 151, 5, 0.795));
+}
+
+.sign:first-child {
+    margin-top: 100px;
+    transform: rotate(-2deg);
+}
+
+.sign:nth-child(2n) {
+    transform: rotate(5deg);
+}
+
+.sign:nth-child(4n) {
+    transform: rotate(-3deg);
+}
+
+.sign:last-child {
+    transform: rotate(1deg);
+}
+
+@media (max-width: 360px) {
+    .sign {
+        width: 78%;
+    }
+}

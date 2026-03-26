@@ -1,0 +1,44 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+body:not(.dashboard-body) {
+    max-width: 900px;
+    margin: auto;
+}
+
+table table tr.selected-row td,
+table table tr:hover td,
+table table tr:active td {
+    background-color: #d0ebff !important;
+}
+
+table:not(:has(table)) tr.selected-row td,
+table:not(:has(table)) tr:hover td,
+table:not(:has(table)) tr:active td {
+    background-color: #d0ebff !important;
+}
+
+/* Utilidades */
+.text-center {
+    text-align: center;
+}
+.text-right {
+    text-align: right;
+}
+.mt-1 {
+    margin-top: 1em;
+}
+.mb-1 {
+    margin-bottom: 1em;
+}

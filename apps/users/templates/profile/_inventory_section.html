@@ -1,0 +1,9 @@
+<div>
+    <h4>{{ items.0.product.get_product_type_display }}</h4>
+
+    <div class="d-flex flex-wrap gap-3">
+        {% for item in items %}
+        {% include "profile/_inventory_item.html" with item=item %}
+        {% endfor %}
+    </div>
+</div>

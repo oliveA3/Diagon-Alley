@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<title>Perfil</title>
+{% endblock %} {% block body %}
+
+<main>
+    <a href="{% url 'home' %}">🏠 Volver al Callejón Diagon</a>
+
+    <button type="button" class="btn btn-primary position-relative" data-bs-toggle="modal"
+        data-bs-target="#notificationsModal">
+        Notificaciones
+        {% if notifications %}
+        <span
+            class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
+            <span class="visually-hidden">Notificaciones nuevas</span>
+        </span>
+        {% endif %}
+    </button>
+
+    <!-- Student data -->
+    <div>
+        <h2>{{ user.full_name }}</h2>
+        <ul>
+            <li><strong>Nombre de usuario:</strong> {{ user.username }}</li>
+            <li><strong>Casa de Hogwarts:</strong> {{ user.house|title }}</li>
+            {% if user.email %}
+            <li><strong>Correo:</strong> {{ user.email }}</li>
+            {% endif %}
+            <br />
+
+            <!-- Account data -->
+            <li>
+                <h4><strong>No. de bóveda:</strong> {{ account.pk }}</h4>
+                <p><strong>Saldo:</strong> {{ account.balance }} galeones</p>
+                <div>
+                    <strong>Estado de la cuenta:</strong>
+                    {% if account.is_frozen %}
+                    <span style="color: red">Congelada</span>
+                    {% else %}
+                    <span style="color: green">Activa</span>
+                    {% endif %}
+                </div>
+
+                <!-- Account type info -->
+                <p>Cuenta {{ account.get_account_type_display }}</p>
+                {% if account.current_limit %}
+                <div>
+                    <strong>Límite:</strong> {{ account.current_limit }} galeones
+                    <p>
+                        Para extender su límite acceda a las cuentas premium del
+                        <a href="{% url 'bank_view' %}">Banco Gringotts</a>
+                    </p>
+                </div>
+                {% endif %}
+
+                {% if account.premium_ex_date %}
+            <li>Su cuenta expira el {{ account.premium_ex_date }}</li>
+            {% endif %}
+
+            <p>Transacciones restantes esta semana: {{ account.weekly_transactions_left }}</li>
+                </li>
+        </ul>
+
+        {% if pending_loans %}
+        <a href="{% url 'pending_loans' %}" class="btn btn-primary">Préstamos pendientes</a>
+        {% endif %}
+    </div>
+</main>
+
+<!-- Profile options -->
+<div>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#houseStatsModal">
+        Estadísticas de la casa
+    </button>
+
+    <a type="button" class="btn btn-primary" href="{% url 'edit_profile' %}">
+        Editar perfil
+    </a>
+
+    <a type="button" class="btn btn-primary" href="{% url 'update_password' %}">
+        Cambiar contraseña
+    </a>
+</div>
+
+<!-- Logout -->
+<div>
+    <form method="POST" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="button" class="btn btn-secondary btn-logout" data-title="Confirmación de cierre de sesión"
+            data-message="¿Está seguro de que desea cerrar la sesión activa?" onclick="showConfirm(this)">
+            Cerrar sesión
+        </button>
+    </form>
+</div>
+
+<!-- Student inventory -->
+<section class="container-fluid">
+    <div>
+        <h3>Mi inventario</h3>
+        <form method="GET" class="d-flex" style="gap: 5px;">
+            <input type="text" name="q" value="{{ query|default_if_none:'' }}" class="form-control"
+                placeholder="Buscar producto...">
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </form>
+    </div>
+
+    {% if not wands and not brooms and not pets and not wheezes %}
+    <p>No tienes artículos en tu inventario{% if query %} que coincidan con "{{ query }}"{% endif %}.</p>
+    {% else %}
+
+    <!-- Wands -->
+    <div>
+        <h4>Varitas</h4>
+        <div class="d-flex flex-wrap gap-3">
+            {% for item in wands %}
+            {% include "profile/inventory_section.html" with item=item %}
+            {% empty %}
+            <p>No tienes varitas en tu inventario{% if query %} que coincidan con "{{ query }}"{% endif %}.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Brooms -->
+    <div>
+        <h4>Escobas</h4>
+        <div class="d-flex flex-wrap gap-3">
+            {% for item in brooms %}
+            {% include "profile/inventory_section.html" with item=item %}
+            {% empty %}
+            <p>No tienes escobas en tu inventario{% if query %} que coincidan con "{{ query }}"{% endif %}.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Pets -->
+    <div>
+        <h4>Mascotas</h4>
+        <div class="d-flex flex-wrap gap-3">
+            {% for item in pets %}
+            {% include "profile/inventory_section.html" with item=item %}
+            {% empty %}
+            <p>No has comprado ninguna mascota{% if query %} que coincida con "{{ query }}"{% endif %}.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Wheezes -->
+    <div>
+        <h4>Sortilegios</h4>
+        <div class="d-flex flex-wrap gap-3">
+            {% for item in wheezes %}
+            {% include "profile/inventory_section.html" with item=item %}
+            {% empty %}
+            <p>No tienes artículos de Sortilegios Weasley en tu inventario{% if query %} que coincidan con "{{ query
+                }}"{% endif %}.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% endif %}
+</section>
+
+{% endblock %}
+
+<!-- Modals templates -->
+{% block modals %}
+{{ block.super }}
+{% include "modal/notifications_modal.html" %}
+{% include "modal/house_stats_modal.html" %}
+{% include "modal/usage_modal.html" %}
+{% endblock %}

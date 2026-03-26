@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<title>Préstamos</title>
+{% endblock %}
+
+{% block body_class %}dashboard-body{% endblock %}
+
+{% block body %}
+<main>
+    <a href="{% url 'banker_dashboard' %}">🏠 Volver al dashboard</a>
+
+    <!-- Loans to approve list -->
+    <div>
+        <h2>Préstamos por aprobar</h2>
+        {% if loans_to_approve %}
+        <table class="table">
+            <tr>
+                <th>Usuario</th>
+                <th>Casa</th>
+                <th>Codeudor A</th>
+                <th>Codeudor B</th>
+                <th>Monto</th>
+                <th>Devolver</th>
+                <th></th>
+            </tr>
+            {% for loan in loans_to_approve %}
+            <tr>
+                <td>(No. {{loan.user.id}}) {{ loan.user.full_name }}</td>
+                <td>{{ loan.user.house|title }}</td>
+                <td>{{ loan.codebtor_a.full_name }}</td>
+                <td>{{ loan.codebtor_b.full_name }}</td>
+                <td>{{ loan.amount_requested }}</td>
+                <td>{{ loan.amount_due }}</td>
+                <td>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="loan_id" value="{{ loan.id }}">
+                        <button type="submit" name="action" value="approve" class="btn btn-success">Aprobar</button>
+                        <button type="submit" name="action" value="reject" class="btn btn-danger">Rechazar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <div>
+            <p colspan="5" class="text-center">No hay préstamos para aprobar.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Loans list log -->
+    <div>
+        <h2>Registro de préstamos</h2>
+        {% if loans_log %}
+        <table class="table">
+            <tr>
+                <th>Usuario</th>
+                <th>Casa</th>
+                <th>Balance</th>
+                <th>Codeudor A</th>
+                <th>Codeudor B</th>
+                <th>Estado de la cuenta</th>
+                <th>Monto</th>
+                <th>Devolver</th>
+                <th>Fecha de aprobacion</th>
+                <th>Fecha de devolución</th>
+                <th>Estado del préstamo</th>
+                <th></th>
+            </tr>
+            {% for loan in loans_log %}
+            <tr>
+                <td>(No. {{loan.user.id}}) {{ loan.user.full_name }}</td>
+                <td>{{ loan.user.house|title }}</td>
+                <td>{{ loan.user.bank_account.balance }}</td>
+                <td>{{ loan.codebtor_a.full_name }}</td>
+                <td>{{ loan.codebtor_b.full_name }}</td>
+                <td>{{ loan.user.bank_account.is_frozen }}</td>
+                <td>{{ loan.amount_requested }}</td>
+                <td>{{ loan.amount_due }}</td>
+                <td>{{ loan.approved_at }}</td>
+                <td {% if loan.is_overdue %} style="color:red; font-weight:bold" {% elif loan.is_near_due %}
+                    style="color:orange; font-weight:bold" {% endif %}>
+                    {{ loan.due_date }}
+                </td>
+                <td>{{ loan.get_state_display }}</td>
+                <td>
+                    {% if loan.state == 'pending' %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="loan_id" value="{{ loan.id }}">
+                        <button type="submit" name="action" value="mark_paid" class="btn btn-success">
+                            Marcar como pagado
+                        </button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <div>
+            <p colspan="5" class="text-center">No hay préstamos registrados.
+                <br>Los registros de préstamos pagados se eliminarán al pasar 30 días
+            </p>
+        </div>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}
+
+<!-- Modals templates -->
+{% block modals %}
+{{ block.super }}
+{% endblock %}

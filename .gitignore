@@ -1,0 +1,21 @@
+# VS Code
+.vscode/
+
+# Python
+__pycache__/
+*.py[cod]
+*.log
+
+# Django
+/staticfiles/
+/media/
+/.env
+
+# Entornos virtuales
+.env
+venv/
+env/
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db

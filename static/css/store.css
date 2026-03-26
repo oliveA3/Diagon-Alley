@@ -1,0 +1,133 @@
+:root {
+    --primary-purple: #4a2c82;
+    --light-purple: #e2d9f3;
+    --text-purple: #5a3d8d;
+    --status-green: #4cac4c;
+}
+
+body {
+    background-color: #f8f6fb;
+    margin: 0;
+}
+
+.store-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Product Cards */
+.products-container {
+    max-width: 600px;
+    margin: 20px auto;
+    margin-bottom: 27px;
+    padding: 0 25px;
+}
+
+.product-card {
+    background-color: var(--light-purple);
+    border-radius: 20px;
+    display: flex;
+    margin-bottom: 20px;
+    padding: 15px;
+    position: relative;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.card-left {
+    flex: 0 0 100px;
+    text-align: center;
+    margin-right: 15px;
+}
+
+.product-image-placeholder {
+    background-color: #d1c4e9;
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+}
+
+.price-tag {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--primary-purple);
+}
+
+.card-right {
+    flex: 1;
+}
+
+.card-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.product-name {
+    color: var(--primary-purple);
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.btn-ver-usuarios {
+    background: none;
+    border: none;
+    color: #8367b3;
+    font-size: 0.8rem;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.product-desc {
+    color: #333;
+    font-size: 0.9rem;
+    margin: 10px 0;
+    line-height: 1.2;
+}
+
+.stats-row {
+    color: var(--text-purple);
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    display: flex;
+    gap: 20px;
+}
+
+.action-row {
+    display: flex;
+    gap: 10px;
+}
+
+/* Buttons */
+.btn-buy,
+.btn-gift {
+    border: none;
+    border-radius: 20px;
+    padding: 8px 25px;
+    font-weight: 600;
+    cursor: pointer;
+    background-color: #f1ecf9;
+    color: #444;
+}
+
+.btn-buy:active,
+.btn-gift:active {
+    transform: scale(0.98);
+}
+
+.stock-status {
+    margin: auto;
+}
+
+.status-available {
+    color: var(--status-green);
+    font-size: 0.9rem;
+    position: absolute;
+    bottom: 15px;
+    left: 27px;
+}

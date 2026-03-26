@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<title>Banquero</title>
+{% endblock %}
+
+{% block body_class %}dashboard-body{% endblock %}
+
+{% block body %}
+
+<!-- Banker dashboard -->
+<main>
+    <!-- Filters -->
+    <form method="get" class="mb-3">
+        <input type="text" name="id" placeholder="Filtrar por ID" value="{{ request.GET.id }}">
+        <input type="text" name="username" placeholder="Filtrar por Usuario" value="{{ request.GET.username }}">
+        <input type="text" name="full_name" placeholder="Filtrar por Nombre mágico" value="{{ request.GET.full_name }}">
+        <input type="text" name="house" placeholder="Filtrar por Casa" value="{{ request.GET.house }}">
+        <button type="submit" class="btn btn-secondary">Filtrar</button>
+
+        <a href="{% url 'banker_dashboard' %}" class="btn btn-light">
+            Limpiar filtros
+        </a>
+    </form>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- Bulk options -->
+        <div class="d-flex" style="width:400px;">
+            <input type="number" name="amount" placeholder="Cantidad a agregar">
+
+            <button type="submit" name="action" value="bulk_add" class="btn btn-primary ms-2">
+                Agregar
+            </button>
+
+            <button type="submit" name="action" value="bulk_delete" class="btn btn-danger ms-auto">
+                Eliminar
+            </button>
+        </div>
+
+        <table class="table table-striped">
+            <!-- Column names -->
+            <tr>
+                <th></th>
+                <th><a href="?order=user">ID</a></th>
+                <th>Usuario</a></th>
+                <th>Nombre mágico</th>
+                <th>Casa</th>
+                <th>Balance</th>
+                <th><a href="?order=is_frozen">Estado</a></th>
+                <th>Tipo</th>
+                <th>Límite</th>
+                <th>Premium vence</th>
+                <th></th>
+            </tr>
+
+            <!-- Accounts -->
+            {% for acc in accounts %}
+            <tr>
+                <td><input type="checkbox" name="selected_accounts" value="{{ acc.pk }}"></td>
+                <td>{{ acc.pk }}</td>
+                <td>{{ acc.user.username }}</td>
+                <td>{{ acc.user.full_name }}</td>
+
+                <td>
+                    <select name="house_{{ acc.pk }}">
+                        <option value="ravenclaw" {% if acc.user.house=="ravenclaw" %}selected{% endif %}>Ravenclaw
+                        </option>
+                        <option value="gryffindor" {% if acc.user.house=="gryffindor" %}selected{% endif %}>Gryffindor
+                        </option>
+                        <option value="hufflepuff" {% if acc.user.house=="hufflepuff" %}selected{% endif %}>Hufflepuff
+                        </option>
+                        <option value="slytherin" {% if acc.user.house=="slytherin" %}selected{% endif %}>Slytherin
+                        </option>
+                    </select>
+                </td>
+
+                <td><input type="number" name="balance_{{ acc.pk }}" value="{{ acc.balance }}"></td>
+
+                <td>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="is_frozen_{{ acc.pk }}" {% if not
+                            acc.is_frozen %}checked{% endif %}>
+                        <label class="form-check-label">
+                            {% if acc.is_frozen %}<span style="color:red">Congelada</span>{% else %}<span
+                                style="color:green">Activa</span>{% endif %}
+                        </label>
+                    </div>
+                </td>
+
+                <!-- Account type -->
+                <td>
+                    <select name="account_type_{{ acc.pk }}">
+                        <option value="standard" {% if acc.account_type=="standard" %}selected{% endif %}>Standard
+                        </option>
+                        <option value="premium" {% if acc.account_type=="premium" %}selected{% endif %}>Premium</option>
+                        <option value="vip" {% if acc.account_type=="vip" %}selected{% endif %} disabled>VIP</option>
+                    </select>
+                </td>
+
+                <td>
+                    {% if acc.current_limit %}
+                    {{ acc.current_limit }}
+                    {% endif %}
+                </td>
+
+                <!-- Premium info -->
+                <td>
+                    {% if acc.account_type == 'premium' and acc.premium_ex_date %}
+                    {{ acc.premium_ex_date }}
+                    {% endif %}
+                </td>
+
+                <td>
+                    <button type="submit" name="action" value="update_{{ acc.pk }}" class="btn btn-primary">
+                        Actualizar
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </form>
+
+    <!-- Premium info -->
+    <div>
+        <a href="{% url 'transactions_list' %}">Transacciones</a>
+
+        <a href="{% url 'loans_list' %}">Préstamos</a>
+    </div>
+
+    <!-- Logout -->
+    <div>
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="button" class="btn btn-secondary btn-logout" data-title="Confirmación de cierre de sesión"
+                data-message="¿Está seguro de que desea cerrar la sesión activa?" onclick="showConfirm(this)">
+                Cerrar sesión
+            </button>
+        </form>
+    </div>
+</main>
+
+{% endblock %}
+
+<!-- Modals templates -->
+{% block modals %}
+{{ block.super }}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const checkboxes = document.querySelectorAll("input[name='selected_accounts']");
+        checkboxes.forEach(cb => {
+            cb.addEventListener("change", function () {
+                const row = cb.closest("tr");
+                if (cb.checked) {
+                    row.classList.add("selected-row");
+                } else {
+                    row.classList.remove("selected-row");
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

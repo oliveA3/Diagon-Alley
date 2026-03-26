@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<title>Transacciones</title>
+{% endblock %}
+
+{% block body_class %}dashboard-body{% endblock %}
+
+{% block body %}
+<main>
+    <a href="{% url 'banker_dashboard' %}">🏠 Volver al dashboard</a>
+
+    <!-- Transaction list -->
+    <div>
+        <h2 class="mt-3">📜 Historial de transacciones</h2>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Remitente</th>
+                    <th>Destinatario</th>
+                    <th>Cantidad</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tx in transactions %}
+                <tr>
+                    <td>{{ tx.sender.username }} ({{ tx.sender.full_name }})</td>
+                    <td>{{ tx.receiver.username }} ({{ tx.receiver.full_name }})</td>
+                    <td>{{ tx.amount }}</td>
+                    <td>{{ tx.created_at }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">
+                        <p>No hay transacciones registradas.
+                            <br>Los registros de transacciones se eliminarán al pasar 30 días
+                        </p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+{% endblock %}
+
+<!-- Modals templates -->
+{% block modals %}
+{{ block.super }}
+{% endblock %}

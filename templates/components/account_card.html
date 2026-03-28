@@ -1,56 +1,49 @@
 <style>
     /* TARJETA DE CUENTA */
     .account-card {
-        background-color: var(--light-purple);
+        background-color: var(--light-purple-dim);
         border-radius: 15px;
         padding: 15px;
         margin: 20px 0;
-        border: 1px solid var(--border-color);
     }
 
     .account-card.frozen {
-        background-color: var(--bg-frozen);
-        border-color: var(--grey);
+        background-color: var(--light-blue);
     }
 
     .card-grid {
         display: flex;
-        justify-content: space-between;
+        justify-content: space-around;
         gap: 10px;
         margin-bottom: 10px;
     }
 
     .card-item {
-        flex: 1;
+        width: max-content;
         text-align: center;
     }
 
     .label {
         display: block;
-        color: var(--primary-purple);
+        color: var(--dark-purple);
         font-weight: bold;
-        font-size: 0.85rem;
+        font-size: 0.9rem;
         margin-bottom: 5px;
     }
 
     .value-box {
-        background: rgba(255, 255, 255, 0.5);
-        border: 1.5px solid var(--primary-purple);
+        border: 1.5px solid var(--dark-purple);
         border-radius: 4px;
-        padding: 5px;
+        padding: 5px 25px;
         font-weight: bold;
-        color: var(--primary-purple);
-    }
-
-    .account-card.frozen .value-box {
-        border-color: var(--text-color);
-        color: var(--text-color);
+        color: var(--dark-purple);
+        width: 100%;
     }
 
     /* Banner Premium dentro de la tarjeta */
     .premium-badge {
-        background-color: var(--primary-purple);
-        color: white;
+        background-color: var(--dark-purple);
+        color: var(--light-purple-dim);
         border-radius: 10px;
         padding: 10px 15px;
         display: flex;

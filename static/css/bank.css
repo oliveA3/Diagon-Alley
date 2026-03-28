@@ -10,12 +10,11 @@
 }
 
 .welcome-title {
-    color: var(--primary-purple);
+    color: var(--dark-purple);
     margin-bottom: 5px;
     font-size: 1.6rem;
 }
 .welcome-subtitle {
-    color: #666;
     margin-top: 0;
     font-size: 0.95rem;
 }
@@ -24,11 +23,11 @@
 .warning-text {
     font-size: 0.85rem;
     line-height: 1.4;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--white);
     padding-bottom: 15px;
 }
 .section-title {
-    color: var(--primary-purple);
+    color: var(--dark-purple);
     margin-bottom: 10px;
 }
 .trans-info {
@@ -40,18 +39,6 @@
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
-}
-
-.btn-action {
-    background-color: #ece6f7;
-    color: var(--text-color);
-    padding: 12px 20px;
-    border-radius: 25px;
-    text-decoration: none;
-    font-weight: 500;
-    flex: 1;
-    text-align: center;
-    min-width: 140px;
 }
 
 /* Mercado Premium */
@@ -69,21 +56,21 @@
     border-radius: 15px;
     padding: 15px;
     margin-bottom: 15px;
-    border-left: 5px solid var(--primary-purple);
+    border-left: 5px solid var(--dark-purple);
 }
 
 .offer-title {
     margin: 0;
-    color: var(--primary-purple);
+    color: var(--dark-purple);
 }
 .offer-subtitle {
     font-size: 0.8rem;
     margin: 5px 0;
 }
 .offer-duration {
-    color: var(--primary-purple);
+    color: var(--dark-purple);
     font-weight: bold;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--white);
     padding-bottom: 5px;
     margin-bottom: 10px;
 }
@@ -97,15 +84,5 @@
 .price {
     font-size: 1.4rem;
     font-weight: bold;
-    color: var(--primary-purple);
-}
-
-.btn-buy {
-    background-color: white;
-    border: 1px solid var(--primary-purple);
-    color: var(--text-color);
-    padding: 8px 25px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: bold;
+    color: var(--dark-purple);
 }

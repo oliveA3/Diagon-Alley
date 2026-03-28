@@ -6,10 +6,9 @@
 {% endblock %}
 
 {% block body %}
+{% include "components/nav.html" with url_link='profile' url_name="perfil" %}
 
 <main>
-    <a href="{% url 'profile' %}">🏠 Volver a mi perfil</a>
-
     <!-- Edit profile -->
     <div>
         <h2>Editar Perfil</h2>
@@ -45,6 +44,10 @@
     </div>
 </main>
 
+{% endblock %}
+
+{% block footer %}
+{% include "components/footer.html" %}
 {% endblock %}
 
 <!-- Modals templates -->

@@ -1,7 +1,7 @@
 <h5>Varitas</h5>
 <ul class="list-group mb-3">
     {% for u in users_with_wands %}
-    <li class="list-group-item">{{ u.full_name }} ({{ u.house|title }})</li>
+    <li class="list-group-item">{{ u.full_name }}</li>
     {% empty %}
     <li class="list-group-item">No hay usuarios con varitas en esta casa.</li>
     {% endfor %}
@@ -10,7 +10,7 @@
 <h5>Escobas</h5>
 <ul class="list-group">
     {% for u in users_with_brooms %}
-    <li class="list-group-item">{{ u.full_name }} ({{ u.house|title }})</li>
+    <li class="list-group-item">{{ u.full_name }}</li>
     {% empty %}
     <li class="list-group-item">No hay usuarios con escobas en esta casa.</li>
     {% endfor %}

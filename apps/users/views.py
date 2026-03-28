@@ -104,7 +104,7 @@ def profile_view(request):
         usage_message = utils.generate_usage_message(receipt)
 
         if result == 'deleted':
-            usage_message += "\n\nEl artículo no tiene más usos, \npor lo que se ha eliminado de su inventario."
+            usage_message += "\n\nEl artículo no tiene más usos, \npor lo que se ha eliminado \nde su inventario."
 
     context = {
         'user': user,

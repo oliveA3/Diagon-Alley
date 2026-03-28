@@ -1,3 +1,38 @@
+/* --- INPUTS --- */
+
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    background: var(--white)
+        url("data:image/svg+xml;utf8,<svg fill='%23333' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>")
+        no-repeat right 0.75em center;
+}
+
+input,
+select,
+textarea {
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 0.6rem 1.3rem;
+    border: none;
+    border-radius: 24px;
+    background-color: var(--grey);
+    width: 100%;
+    box-sizing: border-box;
+    outline-offset: 2px;
+    outline-color: transparent;
+    outline-style: solid;
+    color: var(--black);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline-color: var(--strong-purple);
+}
+
 /* --- BOTONES --- */
 .btn {
     display: inline-flex;

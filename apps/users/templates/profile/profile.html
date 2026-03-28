@@ -3,11 +3,12 @@
 
 {% block head %}
 <title>Perfil</title>
-{% endblock %} {% block body %}
+{% endblock %}
+
+{% block body %}
+{% include "components/nav.html" with url_link='home' url_name="Callejón Diagon" %}
 
 <main>
-    <a href="{% url 'home' %}">🏠 Volver al Callejón Diagon</a>
-
     <button type="button" class="btn btn-primary position-relative" data-bs-toggle="modal"
         data-bs-target="#notificationsModal">
         Notificaciones
@@ -20,7 +21,7 @@
     </button>
 
     <!-- Student data -->
-    <div>
+    <section>
         <h2>{{ user.full_name }}</h2>
         <ul>
             <li><strong>Nombre de usuario:</strong> {{ user.username }}</li>
@@ -30,70 +31,43 @@
             {% endif %}
             <br />
 
-            <!-- Account data -->
-            <li>
-                <h4><strong>Nºde bóveda:</strong> {{ account.pk }}</h4>
-                <p><strong>Saldo:</strong> {{ account.balance }} galeones</p>
-                <div>
-                    <strong>Estado de la cuenta:</strong>
-                    {% if account.is_frozen %}
-                    <span style="color: var(--light-blue)">Congelada</span>
-                    {% else %}
-                    <span style="color: var(--green)">Activa</span>
-                    {% endif %}
-                </div>
-
-                <!-- Account type info -->
-                <p>Cuenta {{ account.get_account_type_display }}</p>
-                {% if account.current_limit %}
-                <div>
-                    <strong>Límite:</strong> {{ account.current_limit }} galeones
-                    <p>
-                        Para extender su límite acceda a las cuentas premium del
-                        <a href="{% url 'bank_view' %}">Banco Gringotts</a>
-                    </p>
-                </div>
-                {% endif %}
-
-                {% if account.premium_ex_date %}
-            <li>Su cuenta expira el {{ account.premium_ex_date }}</li>
-            {% endif %}
-
-            <p>Transacciones restantes esta semana: {{ account.weekly_transactions_left }}</li>
-                </li>
+            {% include "components/account_card.html" %}
         </ul>
 
         {% if pending_loans %}
-        <a href="{% url 'pending_loans' %}" class="btn btn-primary">Préstamos pendientes</a>
+        <p>Revisa tus préstamos pendientes en el <a href="{% url 'bank_view' %}" class="btn btn-primary">Banco
+                Gringotts</a>.</p>
         {% endif %}
-    </div>
+    </section>
+
+    <section>
+        <!-- Profile options -->
+        <div>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#houseStatsModal">
+                Estadísticas de la casa
+            </button>
+
+            <a type="button" class="btn btn-primary" href="{% url 'edit_profile' %}">
+                Editar perfil
+            </a>
+
+            <a type="button" class="btn btn-primary" href="{% url 'update_password' %}">
+                Cambiar llave
+            </a>
+        </div>
+
+        <!-- Logout -->
+        <div>
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="button" class="btn btn-secondary btn-logout" data-title="Confirmación de cierre de sesión"
+                    data-message="¿Está seguro de que desea cerrar la sesión activa?" onclick="showConfirm(this)">
+                    Cerrar sesión
+                </button>
+            </form>
+        </div>
+    </section>
 </main>
-
-<!-- Profile options -->
-<div>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#houseStatsModal">
-        Estadísticas de la casa
-    </button>
-
-    <a type="button" class="btn btn-primary" href="{% url 'edit_profile' %}">
-        Editar perfil
-    </a>
-
-    <a type="button" class="btn btn-primary" href="{% url 'update_password' %}">
-        Cambiar llave
-    </a>
-</div>
-
-<!-- Logout -->
-<div>
-    <form method="POST" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button type="button" class="btn btn-secondary btn-logout" data-title="Confirmación de cierre de sesión"
-            data-message="¿Está seguro de que desea cerrar la sesión activa?" onclick="showConfirm(this)">
-            Cerrar sesión
-        </button>
-    </form>
-</div>
 
 <!-- Student inventory -->
 <section class="container-fluid">
@@ -153,8 +127,8 @@
             {% for item in wheezes %}
             {% include "profile/inventory_section.html" with item=item %}
             {% empty %}
-            <p>No tienes artículos de Sortilegios Weasley en tu inventario{% if query %} que coincidan con "{{ query
-                }}"{% endif %}.</p>
+            <p>No tienes artículos de Sortilegios Weasley en tu inventario
+                {% if query %} que coincidan con "{{ query}}"{% endif %}.</p>
             {% endfor %}
         </div>
     </div>
@@ -162,6 +136,10 @@
     {% endif %}
 </section>
 
+{% endblock %}
+
+{% block footer %}
+{% include "components/footer.html" %}
 {% endblock %}
 
 <!-- Modals templates -->

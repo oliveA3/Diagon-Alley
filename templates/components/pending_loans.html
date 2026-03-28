@@ -1,40 +1,126 @@
+<style>
+    .loans-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        margin-top: 20px;
+    }
+
+    .loan-card {
+        background-color: var(--grey);
+        border-radius: 25px;
+        padding: 20px;
+        max-width: 550px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .loan-header h4 {
+        color: var(--dark-purple);
+        font-size: 1.3rem;
+        font-weight: 700;
+    }
+
+    .loan-subtitle {
+        font-size: 0.9rem;
+        color: var(--black);
+        margin: 5px 0;
+    }
+
+    .loan-participants {
+        display: flex;
+        gap: 15px;
+        font-size: 0.85rem;
+        margin-top: 8px;
+        color: var(--dark-purple);
+    }
+
+    .loan-divider {
+        border: 0;
+        border-top: 1.5px solid var(--dark-purple);
+        margin: 15px 0;
+        opacity: 0.8;
+    }
+
+    .loan-body {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .loan-debt {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 5px;
+    }
+
+    .debt-label {
+        color: var(--dark-purple);
+        font-size: 1.2rem;
+        font-weight: 700;
+    }
+
+    .loan-date {
+        font-size: 0.8rem;
+        color: var(--dark-purple);
+    }
+
+    .loan-date.overdue {
+        color: var(--red);
+        font-weight: bold;
+    }
+
+    .loan-date.near-due {
+        color: var(--orange);
+        font-weight: bold;
+    }
+
+    .btn {
+        font-size: 0.85rem;
+    }
+</style>
+
 <!-- Pending loans -->
-<div>
-    {% if pending_loans %}
-    <h3>Préstamos pendientes</h3>
-    <table class="table">
-        <tr>
-            <th>Monto solicitado</th>
-            <th>Monto a devolver</th>
-            <th>Fecha de devolución</th>
-            <th></th>
-        </tr>
+<div class="loans-container">
+    <h3 class="section-title">Préstamos pendientes</h3>
 
+    <div class="loans-grid">
         {% for loan in pending_loans %}
-        <tr>
-            <td>{{ loan.amount_requested }}</td>
-            <td>{{ loan.amount_due }}</td>
-            <td {% if loan.is_overdue %} style="color:var(--red); font-weight:bold" {% elif loan.is_near_due %}
-                style="color:var(--orange); font-weight:bold" {% endif %}>
-                {{ loan.due_date }}
-            </td>
-            <td>
-                <form method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="form" value="loan">
-                    <input type="hidden" name="loan_id" value="{{ loan.id }}">
-                    <button type="button" name="pay_loan" class="btn btn-primary" data-title="Confirmación de pago"
-                        data-message="¿Está seguro de que desea pagar el monto debido ({{ loan.amount_due }} galeones)? (Esta acción es irreversible)?"
-                        onclick="showConfirm(this)">
-                        Pagar
-                    </button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+        <div class="loan-card">
+            <div class="loan-header">
+                <h4>Préstamo activo</h4>
+                <p class="loan-subtitle">Tienes un préstamo con pago pendiente.</p>
+                <div class="loan-participants">
+                    <span>Codeudor: {{ loan.codebtor_a.full_name}}</span>
+                    <span>Codeudor: {{ loan.codebtor_b.full_name}}</span>
+                </div>
+            </div>
 
-    {% else %}
-    <p>No tienes préstamos pendientes.</p>
-    {% endif %}
+            <hr class="loan-divider">
+
+            <div class="loan-body">
+                <div class="loan-info">
+                    <div class="loan-debt">
+                        <span class="debt-label">Deuda: {{ loan.amount_due }} 🪙</span>
+                    </div>
+                    <p class="loan-date {% if loan.is_overdue %}overdue{% elif loan.is_near_due %}near-due{% endif %}">
+                        Pagar antes de: {{ loan.due_date }}
+                    </p>
+                </div>
+
+                <div class="loan-actions">
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="loan_id" value="{{ loan.id }}">
+                        <button type="button" class="btn btn-primary" data-title="Confirmación de pago"
+                            data-message="¿Está seguro de que desea pagar {{ loan.amount_due }} galeones?"
+                            onclick="showConfirm(this)">
+                            Pagar ahora
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 </div>

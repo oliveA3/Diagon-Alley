@@ -20,16 +20,29 @@
 }
 
 /* Advertencias y Operaciones */
-.warning-text, .frozen-details {
+.frozen-details {
+    font-size: 0.9rem;
+    color: var(--red);
+}
+
+.warning-text {
     font-size: 1rem;
     line-height: 1.3;
+    padding-bottom: 10px;
+}
+
+.frozen-details,
+.warning-text {
     border-bottom: 1px solid var(--grey);
-    padding-bottom: 15px;
 }
 
 .section-title {
     color: var(--dark-purple);
     margin-bottom: 10px;
+}
+
+.operations-section {
+    margin-top: 10px;
 }
 
 .trans-info {
@@ -43,6 +56,7 @@
     flex-wrap: wrap;
     border-bottom: 1px solid var(--grey);
     padding-bottom: 15px;
+    margin-bottom: 25px;
 }
 
 .actions-group .btn {
@@ -54,7 +68,7 @@
     padding: 20px 0;
 }
 .market-desc {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: var(--black);
     margin-bottom: 20px;
 }

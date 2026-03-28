@@ -19,15 +19,16 @@
 
         {% include "components/account_card.html" %}
 
-        <p class="warning-text">Para evitar que una cuenta se congele debes comprar un artículo del Callejón Diagon cada
-            copa.</p>
-
         <!-- Frozen info -->
         {% if account.is_frozen %}
         <div class="frozen-details">
-            <p>Para descongelar una cuenta deben comprar un artículo del Callejón Diagon.</p>
-            <p>Mientras la cuenta permanezca congelada se descontará el 5% de su saldo cada 3 días.</p>
+            <p>Para descongelar una cuenta debes comprar un artículo del Callejón Diagon.
+                <br>Mientras la cuenta permanezca congelada se descontará el 5% de su saldo cada 3 días.
+            </p>
         </div>
+        {% else %}
+        <p class="warning-text">Para evitar que una cuenta se congele debes comprar un artículo del Callejón Diagon cada
+            copa.</p>
         {% endif %}
     </section>
 

@@ -10,7 +10,6 @@
 {% block body %}
 
 <main class="container">
-
     <h2 class="title">Inicia sesión para acceder al Callejón Diagon</h2>
     <hr class="line">
 
@@ -40,16 +39,15 @@
         <p class="error-msg small">{{ error }}</p>
         {% endif %}
 
-        <button type="submit" class="btn-primary">Entrar</button>
+        <button type="submit" class="btn btn-primary">Entrar</button>
     </form>
 
     <hr class="line">
 
-    <p class="text-center">
-      ¿Aún no tienes cuenta en el Callejón Diagon?<br>
-      <a href="{% url 'register' %}" class="link-primary">Regístrate</a>
+    <p class="change-login-text">
+        ¿Aún no tienes cuenta en el Callejón Diagon?
+        <br><a href="{% url 'register' %}" class="dark-link">Regístrate</a>
     </p>
-
 </main>
 
 {% endblock %}

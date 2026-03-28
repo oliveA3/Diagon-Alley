@@ -12,20 +12,12 @@ STORE_PRODUCT_MAP = {
     1: 'pet',
     2: 'wand',
     3: 'wheezes',
+    4: 'misc',
 }
-
 
 class Store(models.Model):
     name = models.CharField(max_length=150)
     description = models.TextField()
-
-    STORE_TYPES = [
-        ('broom', 'Escobas'),
-        ('pet', 'Mascotas'),
-        ('wand', 'Varitas'),
-        ('wheezes', 'Sortilegios'),
-    ]
-    store_type = models.CharField(max_length=20, choices=STORE_TYPES)
 
     def __str__(self):
         return self.name
@@ -51,8 +43,9 @@ class Product(models.Model):
         ('pet', 'Mascota'),
         ('wand', 'Varita'),
         ('wheezes', 'Sortilegios'),
+        ('misc', 'Miscelaneos'),
     ]
-    product_type = models.CharField(max_length=20, choices=PRODUCT_TYPES)
+    product_type = models.CharField(max_length=20, choices=PRODUCT_TYPES, default='misc')
 
     duration_days = models.PositiveIntegerField(blank=True, null=True)
 
@@ -86,10 +79,9 @@ class Product(models.Model):
         if errors:
             raise ValidationError(errors)
 
-    def save(self, *args, **kwargs):
-        if self.store and self.store.store_type:
-            self.product_type = self.store.store_type
-        super().save(*args, **kwargs)
+    @property
+    def image_url(self):
+        return static(f"imgs/products/{self.id}.png")
 
     def __str__(self):
         return self.name

@@ -32,14 +32,14 @@
 
             <!-- Account data -->
             <li>
-                <h4><strong>No. de bóveda:</strong> {{ account.pk }}</h4>
+                <h4><strong>Nºde bóveda:</strong> {{ account.pk }}</h4>
                 <p><strong>Saldo:</strong> {{ account.balance }} galeones</p>
                 <div>
                     <strong>Estado de la cuenta:</strong>
                     {% if account.is_frozen %}
-                    <span style="color: red">Congelada</span>
+                    <span style="color: var(--light-blue)">Congelada</span>
                     {% else %}
-                    <span style="color: green">Activa</span>
+                    <span style="color: var(--green)">Activa</span>
                     {% endif %}
                 </div>
 

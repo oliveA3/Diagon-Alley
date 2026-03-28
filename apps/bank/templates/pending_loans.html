@@ -26,8 +26,8 @@
             <tr>
                 <td>{{ loan.amount_requested }}</td>
                 <td>{{ loan.amount_due }}</td>
-                <td {% if loan.is_overdue %} style="color:red; font-weight:bold" {% elif loan.is_near_due %}
-                    style="color:orange; font-weight:bold" {% endif %}>
+                <td {% if loan.is_overdue %} style="color:var(--red); font-weight:bold" {% elif loan.is_near_due %}
+                    style="color:var(--orange); font-weight:bold" {% endif %}>
                     {{ loan.due_date }}
                 </td>
                 <td>

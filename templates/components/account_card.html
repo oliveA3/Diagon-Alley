@@ -1,0 +1,113 @@
+<style>
+    /* TARJETA DE CUENTA */
+    .account-card {
+        background-color: var(--light-purple);
+        border-radius: 15px;
+        padding: 15px;
+        margin: 20px 0;
+        border: 1px solid var(--border-color);
+    }
+
+    .account-card.frozen {
+        background-color: var(--bg-frozen);
+        border-color: var(--grey);
+    }
+
+    .card-grid {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .card-item {
+        flex: 1;
+        text-align: center;
+    }
+
+    .label {
+        display: block;
+        color: var(--primary-purple);
+        font-weight: bold;
+        font-size: 0.85rem;
+        margin-bottom: 5px;
+    }
+
+    .value-box {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1.5px solid var(--primary-purple);
+        border-radius: 4px;
+        padding: 5px;
+        font-weight: bold;
+        color: var(--primary-purple);
+    }
+
+    .account-card.frozen .value-box {
+        border-color: var(--text-color);
+        color: var(--text-color);
+    }
+
+    /* Banner Premium dentro de la tarjeta */
+    .premium-badge {
+        background-color: var(--primary-purple);
+        color: white;
+        border-radius: 10px;
+        padding: 10px 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .premium-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .premium-text {
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+
+    .premium-date {
+        font-size: 0.7rem;
+        text-align: right;
+        opacity: 0.9;
+    }
+</style>
+
+<!-- Account card -->
+<div class="account-card {% if account.is_frozen %}frozen{% endif %}">
+    <div class="card-grid">
+        <div class="card-item">
+            <span class="label"><i class="icon-vault"></i> Bóveda</span>
+            <div class="value-box">{{ account.pk }}</div>
+        </div>
+
+        <div class="card-item">
+            <span class="label"><i class="icon-balance"></i> Saldo</span>
+            <div class="value-box">{{ account.balance }}</div>
+        </div>
+
+        <div class="card-item">
+            <span class="label">Estado de la cuenta</span>
+            <div class="value-box status-text">
+                {% if account.is_frozen %}Congelada{% else %}Activa{% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Premium expiration date -->
+    {% if account.premium_ex_date %}
+    <div class="premium-badge">
+        <div class="premium-content">
+            <span class="crown-icon">👑</span>
+            <span class="premium-text">SERVICIO PREMIUM</span>
+        </div>
+        <div class="premium-date">
+            Vence: <br> {{ account.premium_ex_date|date:"d/m/y" }}
+        </div>
+    </div>
+    {% endif %}
+</div>

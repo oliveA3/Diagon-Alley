@@ -60,7 +60,7 @@ def generate_usage_message(receipt):
         f"Ticket de Uso\n"
         f"🧾 Código: {receipt.code}\n"
         f"✅ Dueño: {receipt.user.full_name}\n"
-        f"💳 No. de cuenta: {account.pk}\n"
+        f"💳 Nºde cuenta: {account.pk}\n"
         f"🪄 Producto: {receipt.product.name}\n"
         f"🚀 Usos restantes: {receipt.uses_left}\n"
         f"🗓 Fecha: {receipt.created_at.strftime('%d/%m/%Y %H:%M')}\n\n"

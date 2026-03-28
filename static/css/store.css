@@ -1,19 +1,12 @@
-:root {
-    --primary-purple: #4a2c82;
-    --light-purple: #e2d9f3;
-    --text-purple: #5a3d8d;
-    --status-green: #4cac4c;
-}
-
-body {
-    background-color: #f8f6fb;
-    margin: 0;
+.store-info {
+    margin-bottom: 20px;
 }
 
 .store-title {
     font-size: 2rem;
     font-weight: bold;
     margin-bottom: 5px;
+    color: var(--dark-purple);
 }
 
 /* Product Cards */
@@ -25,25 +18,25 @@ body {
 }
 
 .product-card {
-    background-color: var(--light-purple);
+    background-color: var(--light-purple-dim);
     border-radius: 20px;
     display: flex;
     margin-bottom: 20px;
     padding: 15px;
-    position: relative;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
+/* Left - image, price, stock */
 .card-left {
     flex: 0 0 100px;
     text-align: center;
-    margin-right: 15px;
+    margin-right: 10px;
 }
 
 .product-image-placeholder {
-    background-color: #d1c4e9;
-    width: 100px;
-    height: 100px;
+    background-color: var(--grey);
+    width: 90px;
+    height: 90px;
     border-radius: 10px;
 }
 
@@ -54,44 +47,55 @@ body {
     justify-content: center;
     font-size: 1.3rem;
     font-weight: bold;
-    color: var(--primary-purple);
+    color: var(--dark-purple);
 }
 
+.stock-status {
+    margin: auto;
+    margin-top: 10px;
+}
+
+.status-available {
+    color: var(--green);
+    font-size: 0.9rem;
+}
+
+/* Right - users, name, desc, stats, actions */
 .card-right {
-    flex: 1;
+    max-width: 65%;
 }
 
 .card-header-row {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    max-width: 100%;
 }
 
 .product-name {
-    color: var(--primary-purple);
-    font-size: 1.1rem;
+    color: var(--dark-purple);
+    font-size: 1rem;
     font-weight: bold;
-    margin: 0;
 }
 
 .btn-ver-usuarios {
     background: none;
     border: none;
-    color: #8367b3;
+    color: var(--dark-purple-dim);
     font-size: 0.8rem;
     text-decoration: none;
     cursor: pointer;
 }
 
 .product-desc {
-    color: #333;
+    color: var(--black);
     font-size: 0.9rem;
     margin: 10px 0;
     line-height: 1.2;
 }
 
 .stats-row {
-    color: var(--text-purple);
+    color: var(--dark-purple);
     font-size: 0.9rem;
     margin-bottom: 15px;
     display: flex;
@@ -100,34 +104,6 @@ body {
 
 .action-row {
     display: flex;
+    width: 100%;
     gap: 10px;
-}
-
-/* Buttons */
-.btn-buy,
-.btn-gift {
-    border: none;
-    border-radius: 20px;
-    padding: 8px 25px;
-    font-weight: 600;
-    cursor: pointer;
-    background-color: #f1ecf9;
-    color: #444;
-}
-
-.btn-buy:active,
-.btn-gift:active {
-    transform: scale(0.98);
-}
-
-.stock-status {
-    margin: auto;
-}
-
-.status-available {
-    color: var(--status-green);
-    font-size: 0.9rem;
-    position: absolute;
-    bottom: 15px;
-    left: 27px;
 }

@@ -1,0 +1,78 @@
+/* --- BOTONES --- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    border-radius: 50px;
+    border: none;
+    font-family: var(--font-family);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
+    text-decoration: none;
+    min-width: 90px;
+    max-width: max-content;
+    text-align: center;
+}
+
+.btn-primary {
+    background-color: var(--light-purple);
+    color: var(--dark-purple);
+}
+.btn-primary:hover {
+    background-color: var(--dark-purple);
+    color: var(--white);
+}
+
+.btn-secondary {
+    background-color: var(--grey);
+    color: var(--dark-purple-dim);
+}
+.btn-secondary:hover {
+    background-color: var(--dark-purple-dim);
+    color: var(--grey);
+}
+
+.btn-success {
+    background-color: var(--green);
+    color: var(--white);
+}
+.btn-success:hover {
+    background-color: var(--dark-green);
+}
+
+.btn-warning {
+    background-color: var(--red);
+    color: var(--white);
+}
+.btn-warning:hover {
+    background-color: var(--dark-red);
+}
+
+/* --- ENLACES --- */
+a {
+    transition: color 0.3s ease;
+    font-weight: 500;
+}
+
+.light-link { /* para footer */
+    color: var(--light-purple);
+    text-decoration: none;
+}
+.light-link:hover {
+    color: var(--strong-purple);
+    text-decoration: underline;
+}
+
+.dark-link {
+    color: var(--strong-purple);
+    text-decoration: none;
+}
+.dark-link:hover {
+    color: var(--dark-purple);
+    text-decoration: underline;
+}

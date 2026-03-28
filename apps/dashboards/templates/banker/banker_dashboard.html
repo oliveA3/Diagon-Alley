@@ -19,7 +19,7 @@
         <input type="text" name="house" placeholder="Filtrar por Casa" value="{{ request.GET.house }}">
         <button type="submit" class="btn btn-secondary">Filtrar</button>
 
-        <a href="{% url 'banker_dashboard' %}" class="btn btn-light">
+        <a href="{% url 'banker_dashboard' %}" class="btn btn-secundary">
             Limpiar filtros
         </a>
     </form>
@@ -35,7 +35,7 @@
                 Agregar
             </button>
 
-            <button type="submit" name="action" value="bulk_delete" class="btn btn-danger ms-auto">
+            <button type="submit" name="action" value="bulk_delete" class="btn btn-warning ms-auto">
                 Eliminar
             </button>
         </div>
@@ -66,13 +66,13 @@
 
                 <td>
                     <select name="house_{{ acc.pk }}">
-                        <option value="ravenclaw" {% if acc.user.house=="ravenclaw" %}selected{% endif %}>Ravenclaw
+                        <option value="ravenclaw" {% if acc.user.house == "ravenclaw" %}selected{% endif %}>Ravenclaw
                         </option>
-                        <option value="gryffindor" {% if acc.user.house=="gryffindor" %}selected{% endif %}>Gryffindor
+                        <option value="gryffindor" {% if acc.user.house == "gryffindor" %}selected{% endif %}>Gryffindor
                         </option>
-                        <option value="hufflepuff" {% if acc.user.house=="hufflepuff" %}selected{% endif %}>Hufflepuff
+                        <option value="hufflepuff" {% if acc.user.house == "hufflepuff" %}selected{% endif %}>Hufflepuff
                         </option>
-                        <option value="slytherin" {% if acc.user.house=="slytherin" %}selected{% endif %}>Slytherin
+                        <option value="slytherin" {% if acc.user.house == "slytherin" %}selected{% endif %}>Slytherin
                         </option>
                     </select>
                 </td>
@@ -81,11 +81,15 @@
 
                 <td>
                     <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" name="is_frozen_{{ acc.pk }}" {% if not
-                            acc.is_frozen %}checked{% endif %}>
+                        <input class="form-check-input" type="checkbox" name="is_frozen_{{ acc.pk }}"
+                        {% if not acc.is_frozen %}checked
+                        {% endif %}>
                         <label class="form-check-label">
-                            {% if acc.is_frozen %}<span style="color:red">Congelada</span>{% else %}<span
-                                style="color:green">Activa</span>{% endif %}
+                            {% if acc.is_frozen %}
+                            <span style="color:var(--red)">Congelada</span>
+                            {% else %}
+                            <span style="color:var(--green)">Activa</span>
+                            {% endif %}
                         </label>
                     </div>
                 </td>
@@ -93,10 +97,10 @@
                 <!-- Account type -->
                 <td>
                     <select name="account_type_{{ acc.pk }}">
-                        <option value="standard" {% if acc.account_type=="standard" %}selected{% endif %}>Standard
+                        <option value="standard" {% if acc.account_type == "standard" %}selected{% endif %}>Standard
                         </option>
-                        <option value="premium" {% if acc.account_type=="premium" %}selected{% endif %}>Premium</option>
-                        <option value="vip" {% if acc.account_type=="vip" %}selected{% endif %} disabled>VIP</option>
+                        <option value="premium" {% if acc.account_type == "premium" %}selected{% endif %}>Premium</option>
+                        <option value="vip" {% if acc.account_type == "vip" %}selected{% endif %} disabled>VIP</option>
                     </select>
                 </td>
 
@@ -125,9 +129,9 @@
 
     <!-- Premium info -->
     <div>
-        <a href="{% url 'transactions_list' %}">Transacciones</a>
+        <a href="{% url 'transactions_list' %}" class="btn btn-primary">Transacciones</a>
 
-        <a href="{% url 'loans_list' %}">Préstamos</a>
+        <a href="{% url 'loans_list' %}" class="btn btn-primary">Préstamos</a>
     </div>
 
     <!-- Logout -->

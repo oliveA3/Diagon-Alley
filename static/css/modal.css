@@ -1,0 +1,12 @@
+.modal-content {
+    border-radius: 20px;
+}
+
+.modal-header {
+    background-color: var(--dark-purple) !important;
+}
+
+.modal-title {
+    color: var(--white);
+    font-size: 1rem;
+}

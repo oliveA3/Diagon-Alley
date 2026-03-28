@@ -1,14 +1,20 @@
+<style>
+    .gift-title {
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+    }
+</style>
+
 <!-- Gift -->
-<main class="container my-4">
-    <h2>Regalar {{ product.name }}</h2>
+<main class="gift-main container my-4">
+    <h2 class="gift-title">Regalar {{ product.name }}</h2>
 
     <form method="post" action="{% url 'gift' product.id %}">
         {% csrf_token %}
         <input type="hidden" name="product_id" value="{{ product.id }}">
 
-        <label for="receiver">Regalar a:</label>
         <select name="receiver_id" id="receiver" class="form-select" required>
-            <option value="" disabled selected>-- Selecciona un destinatario --</option>
+            <option value="" disabled selected>Selecciona un destinatario</option>
             {% for a in accounts %}
             <option value="{{ a.user.id }}">{{ a.user.full_name }}</option>
             {% endfor %}

@@ -4,7 +4,7 @@
 <header class="main-header">
     <style>
         .main-header {
-            background-color: #4b0082;
+            background-color: var(--dark-purple);
             padding: 10px 0;
             width: 100%;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -16,7 +16,7 @@
             align-items: center;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 10px 20px;
         }
 
         .header-logo img {
@@ -31,22 +31,24 @@
         }
 
         .profile-icon {
-            color: #f0e6ff;
-            font-size: 2.5rem;
-            text-decoration: none;
+            width: 1.5rem;
             transition: transform 0.2s ease;
         }
 
         .profile-icon:hover {
             transform: scale(1.1);
-            color: white;
+            opacity: 0.9px;
+        }
+
+        .profile-icon img {
+            width: 100%;
         }
 
         .login-link {
-            color: white;
+            color: var(--white);
             text-decoration: none;
             font-weight: bold;
-            border: 1px solid white;
+            border: 1px solid var(--white);
             padding: 5px 15px;
             border-radius: 20px;
         }
@@ -59,16 +61,18 @@
     </style>
 
     <div class="header-container">
+        <!-- Diagon logo -->
         <div class="header-logo">
-            <a href="/">
-                <img src="{% static 'imgs/diagon_alley.png' %}" alt="Diagon Alley Logo">
+            <a href="{% url 'home' %}">
+                <img src="{% static 'imgs/Logo Callejon Diagon.png' %}" alt="Diagon Alley Logo">
             </a>
         </div>
 
+        <!-- Profile/Login -->
         <div class="header-user">
             {% if request.user.is_authenticated %}
             <a href="{% url 'profile' %}" class="profile-icon" title="Perfil">
-                <i class="fas fa-user-circle"></i> <span class="sr-only">Perfil</span>
+                <img src="{% static 'imgs/Perfil Icon.png' %}" alt="Perfil Icon">
             </a>
             {% else %}
             <a href="{% url 'login' %}" class="login-link">Iniciar sesión</a>

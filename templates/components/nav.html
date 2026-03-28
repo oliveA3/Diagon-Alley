@@ -2,22 +2,24 @@
 {% block nav %}
 
 <style>
-    .shop-nav {
-        background-color: var(--primary-purple);
-        color: white;
-        padding: 20px;
+    .back-nav {
+        display: flex;
+        align-items: center;
+        background-color: var(--dark-purple);
+        color: ;
+        padding: 30px 30px;
         text-align: center;
     }
 
     .back-link {
-        color: #cbb6f1;
+        color: var(--light-purple);
         text-decoration: none;
         display: block;
         text-align: left;
-        margin-bottom: 10px;
     }
 </style>
 
+<!-- Back to home -->
 <nav class="back-nav">
     <a href="{% url 'home' %}" class="back-link">❮ Volver al callejón</a>
 </nav>

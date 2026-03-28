@@ -5,23 +5,20 @@ from apps.stores.models import Store, Product, WarehouseItem
 class StoreUpdateForm(forms.ModelForm):
     class Meta:
         model = Store
-        fields = ["name", "description", "store_type"]
+        fields = ["name", "description"]
         labels = {
             "name": "Nombre de la tienda",
             "description": "Descripción",
-            "store_type": "Tipo de tienda",
         }
         widgets = {
             "name": forms.TextInput(attrs={"class": "form-control"}),
             "description": forms.Textarea(attrs={"class": "form-control"}),
-            "store_type": forms.Select(attrs={"class": "form-select"}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["name"].required = True
         self.fields["description"].required = True
-        self.fields["store_type"].required = True
 
 
 class ProductCreationForm(forms.ModelForm):

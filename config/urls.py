@@ -12,6 +12,7 @@ urlpatterns = [
     path('bank/', include('apps.bank.urls')),
     path('dashboard/', include('apps.dashboards.urls')),
     path('faq/', views.faq_view, name='faq'),
+    path('terms/', views.terms_view, name='terms'),
 
     # Password reset
     path('password_reset/', auth_views.PasswordResetView.as_view(

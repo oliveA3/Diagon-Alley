@@ -3,7 +3,7 @@ select {
     -webkit-appearance: none;
     -moz-appearance: none;
 
-    background: #fff
+    background: var(--white)
         url("data:image/svg+xml;utf8,<svg fill='%23333' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>")
         no-repeat right 0.75em center;
 }
@@ -16,19 +16,19 @@ textarea {
     padding: 0.6rem 1.3rem;
     border: none;
     border-radius: 24px;
-    background-color: #d6d6d6;
+    background-color: var(--grey);
     width: 100%;
     box-sizing: border-box;
     outline-offset: 2px;
     outline-color: transparent;
     outline-style: solid;
-    color: #000;
+    color: var(--black);
 }
 
 input:focus,
 select:focus,
 textarea:focus {
-    outline-color: #6b49cc;
+    outline-color: var(--strong-purple);
 }
 
 /* MAIN CONTAINER */
@@ -37,15 +37,16 @@ textarea:focus {
 }
 
 .title {
-    color: #3b2077;
+    color: var(--dark-purple);
     font-weight: 600;
     font-size: 1.4rem;
     margin-bottom: 0.5rem;
+    text-align: center;
 }
 
 .line {
     border: none;
-    border-bottom: 1.5px solid #bbb;
+    border-bottom: 1.5px solid var(--grey);
     margin: 0.5rem 0 1rem 0;
 }
 
@@ -65,50 +66,18 @@ textarea:focus {
     font-weight: normal;
     font-size: 1rem;
     margin-bottom: 0.3rem;
-    color: #000;
+    color: var(--black);
 }
 
 .error-msg {
-    color: #d32f2f;
+    color: var(--red);
     font-size: 0.75rem;
     margin-top: 0.25rem;
     margin-bottom: 0;
 }
 
-.btn-primary {
-    background-color: #d6cef7;
-    color: #3b2077;
-    padding: 0.5rem 1rem;
-    width: fit-content;
-    border: none;
-    border-radius: 24px;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    user-select: none;
-
-    transition: background-color 0.5s;
-}
-
-.btn-primary:hover {
-    background-color: #ad99ff;
-}
-
-.link-primary {
-    color: #6b49cc;
-    font-size: 1rem;
-    text-decoration: none;
-}
-
-.link-primary:hover,
-.link-primary:focus {
-    text-decoration: underline;
-}
-
-.text-center {
-    text-align: center;
-    font-size: 1rem;
-    margin-top: 1rem;
+.change-login-text {
+    font-size: 0.9rem;
 }
 
 .small {

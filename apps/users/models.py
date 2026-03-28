@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db import transaction as db_transaction
 
 class CustomUser(AbstractUser):
     id = models.PositiveIntegerField(primary_key=True, unique=True)
@@ -35,10 +36,11 @@ class CustomUser(AbstractUser):
 
         
     def save(self, *args, **kwargs):
-        if not self.id:
-            used_ids = set(CustomUser.objects.values_list('id', flat=True))
-            i = 1
-            while i in used_ids:
-                i += 1
-            self.id = i
-        super().save(*args, **kwargs)
+        with db_transaction.atomic():
+            if not self.id:
+                used_ids = set(CustomUser.objects.values_list('id', flat=True))
+                i = 1
+                while i in used_ids:
+                    i += 1
+                self.id = i
+            super().save(*args, **kwargs)

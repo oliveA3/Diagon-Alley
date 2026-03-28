@@ -6,11 +6,10 @@
 {% endblock %}
 
 {% block body %}
+{% include "components/nav.html" with url_link='bank_view' url_name="Banco Gringotts" %}
 
 <!-- Loans -->
 <main>
-    <a href="{% url 'bank_view' %}">🏠 Volver al Banco Gringotts</a>
-
     <p>Recuerda que debes contar con dos codeudores para pedir un préstamo.</p>
 
     <!-- Codebtors -->
@@ -74,6 +73,10 @@
     </form>
 </main>
 
+{% endblock %}
+
+{% block footer %}
+{% include "components/footer.html" %}
 {% endblock %}
 
 <!-- Modals templates -->

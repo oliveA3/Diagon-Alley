@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block body %}
-{% include "components/nav.html" %}
+{% include "components/nav.html" with url_link='home' url_name="Callejón Diagon" %}
 
 <!-- Bank main -->
 <main class="bank-main">
@@ -25,10 +25,8 @@
         <!-- Frozen info -->
         {% if account.is_frozen %}
         <div class="frozen-details">
-            <ul>
-                <li>Para descongelar una cuenta deben comprar un artículo del Callejón Diagon.</li>
-                <li>Mientras la cuenta permanezca congelada se descontará el 5% de su saldo cada 3 días.</li>
-            </ul>
+            <p>Para descongelar una cuenta deben comprar un artículo del Callejón Diagon.</p>
+            <p>Mientras la cuenta permanezca congelada se descontará el 5% de su saldo cada 3 días.</p>
         </div>
         {% endif %}
     </section>
@@ -39,12 +37,13 @@
         <p class="trans-info">Transferencias disponibles esta semana: {{ account.weekly_transactions_left }}</p>
 
         <div class="actions-group">
-            <a href="{% url 'transactions' %}" class="btn btn-action">Transferir galeones</a>
-            <a href="{% url 'loans' %}" class="btn btn-action">Pedir un préstamo</a>
-            {% if pending_loans %}
-            <a href="{% url 'pending_loans' %}" class="btn btn-action warning">Préstamos pendientes</a>
-            {% endif %}
+            <a href="{% url 'transactions' %}" class="btn btn-primary">Transferir galeones</a>
+            <a href="{% url 'loans' %}" class="btn btn-primary">Pedir un préstamo</a>
         </div>
+
+        {% if pending_loans %}
+        {% include "components/pending_loans.html" %}
+        {% endif %}
     </section>
 
     <!-- Premium purchase -->
@@ -65,9 +64,10 @@
                     <div class="offer-duration">Duración: 3 meses</div>
                     <div class="offer-footer">
                         <div class="price">80 <span class="coin">🪙</span></div>
+                        <input type="hidden" name="form" value="premium">
                         <input type="hidden" name="account_duration" value="90">
-                        <button type="button" class="btn btn-primary" onclick="showConfirm(this)" data-title="Confirmación"
-                            data-message="¿Deseas comprar 3 meses?">Comprar</button>
+                        <button type="button" class="btn btn-primary" onclick="showConfirm(this)"
+                            data-title="Confirmación" data-message="¿Deseas comprar 3 meses?">Comprar</button>
                     </div>
                 </form>
             </div>
@@ -81,9 +81,10 @@
                     <div class="offer-duration">Duración: 6 meses</div>
                     <div class="offer-footer">
                         <div class="price">100 <span class="coin">🪙</span></div>
+                        <input type="hidden" name="form" value="premium">
                         <input type="hidden" name="account_duration" value="180">
-                        <button type="button" class="btn btn-primary" onclick="showConfirm(this)" data-title="Confirmación"
-                            data-message="¿Deseas comprar 6 meses?">Comprar</button>
+                        <button type="button" class="btn btn-primary" onclick="showConfirm(this)"
+                            data-title="Confirmación" data-message="¿Deseas comprar 6 meses?">Comprar</button>
                     </div>
                 </form>
             </div>

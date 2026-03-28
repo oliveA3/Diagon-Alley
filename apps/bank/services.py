@@ -1,8 +1,8 @@
 from django.utils import timezone
 from datetime import timedelta
-from .models import Transaction
+from apps.users.models import CustomUser
 from django.contrib import messages
-from .models import BankAccount
+from .models import BankAccount, Loan, Transaction
 from django.core.exceptions import ValidationError
 from django.db import transaction as db_transaction
 from django.contrib import messages
@@ -96,3 +96,20 @@ def execute_transaction(request, sender_account, receiver_account, amount, tx_in
             return tx_instance
 
     return None
+
+
+def pay_loan(request, loan: Loan, user: CustomUser):
+    account = user.bank_account
+    
+    if account.balance >= loan.amount_due:
+        with db_transaction.atomic():
+            account.balance -= loan.amount_due
+            account.save()
+
+            loan.state = 'paid'
+            loan.save()
+            messages.success(request, f"Has pagado tu préstamo.")
+
+    else:
+        messages.error(
+            request, "No tienes suficientes galeones para pagar este préstamo.")

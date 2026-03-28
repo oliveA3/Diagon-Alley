@@ -6,9 +6,9 @@
 {% endblock %}
 
 {% block body %}
-<main>
-    <a href="{% url 'bank_view' %}">🏠 Volver al Banco Gringotts</a>
+{% include "components/nav.html" with url_link='bank_view' url_name="Banco Gringotts" %}
 
+<main>
     <!-- Transaction form -->
     <div>
         <h2>Realizar transferencia</h2>
@@ -44,6 +44,10 @@
         </ul>
     </div>
 </main>
+{% endblock %}
+
+{% block footer %}
+{% include "components/footer.html" %}
 {% endblock %}
 
 <!-- Modals templates -->

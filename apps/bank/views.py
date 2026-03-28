@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from apps.users.models import CustomUser
 from .models import BankAccount, Loan, Transaction
-from .services import purchase_premium, execute_transaction
+from .services import purchase_premium, execute_transaction, pay_loan
 from django.contrib import messages
 from django.db.models import Q
 from django.core.exceptions import ValidationError
@@ -14,25 +14,33 @@ from django.contrib.auth.decorators import login_required
 def bank_view(request):
     user = request.user
     account = get_object_or_404(BankAccount, user_id=user.id)
-    pending_loans = Loan.objects.filter(
-        user=user, approved=True, state='pending').exists()
+    pending_loans = Loan.objects.filter(user=user, approved=True, state='pending')
 
-    # Premium purchase
     if request.method == 'POST':
-        duration_days = int(request.POST.get('account_duration'))
-        purchase_premium(request, account, duration_days)
-        return redirect('bank_view')
+        form_type = request.POST.get('form')
+        
+        # Pay loan
+        if form_type == 'loan':
+            loan_id = request.POST.get("loan_id")
+            loan = get_object_or_404(Loan, id=loan_id, user=user)
+            pay_loan(loan, user)
+            return redirect('bank_view')
+        
+        # Purchase premium
+        elif form_type == 'premium':
+            duration_days = int(request.POST.get('account_duration'))
+            purchase_premium(request, account, duration_days)
+            return redirect('bank_view')
 
     working_hours = utils.working_hours()
-
     context = {
         'user': user,
         'account': account,
         'working_hours': working_hours,
         'pending_loans': pending_loans,
     }
-
     return render(request, 'bank.html', context)
+
 
 @login_required
 def transactions_view(request):
@@ -122,33 +130,3 @@ def loans_view(request):
         'users': users,
     }
     return render(request, 'loans.html', context)
-
-
-def pending_loans_view(request):
-    user = request.user
-    pending_loans = Loan.objects.filter(
-        user=user, approved=True, state='pending')
-
-    if request.method == "POST":
-        loan_id = request.POST.get("loan_id")
-        loan = Loan.objects.get(id=loan_id, user=user,
-                                approved=True, state='pending')
-        account = user.bank_account
-
-        if account.balance >= loan.amount_due:
-            account.balance -= loan.amount_due
-            account.save()
-
-            loan.state = 'paid'
-            loan.save()
-            messages.success(request, f"Has pagado tu préstamo.")
-
-        else:
-            messages.error(
-                request, "No tienes suficientes galeones para pagar este préstamo.")
-
-    context = {
-        "user": user,
-        "pending_loans": pending_loans,
-    }
-    return render(request, "pending_loans.html", context)

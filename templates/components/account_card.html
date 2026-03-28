@@ -3,7 +3,6 @@
     .account-card {
         background-color: var(--light-purple-dim);
         border-radius: 15px;
-        padding: 15px;
         margin: 20px 0;
     }
 
@@ -15,7 +14,8 @@
         display: flex;
         justify-content: space-around;
         gap: 10px;
-        margin-bottom: 10px;
+        padding: 15px;
+        padding-bottom: 5px;
     }
 
     .card-item {
@@ -44,7 +44,7 @@
     .premium-badge {
         background-color: var(--dark-purple);
         color: var(--light-purple-dim);
-        border-radius: 10px;
+        border-radius: 0 0 10px 10px;
         padding: 10px 15px;
         display: flex;
         justify-content: space-between;
@@ -74,12 +74,12 @@
 <div class="account-card {% if account.is_frozen %}frozen{% endif %}">
     <div class="card-grid">
         <div class="card-item">
-            <span class="label"><i class="icon-vault"></i> Bóveda</span>
+            <span class="label"><i class="bi bi-bank"></i> Bóveda</span>
             <div class="value-box">{{ account.pk }}</div>
         </div>
 
         <div class="card-item">
-            <span class="label"><i class="icon-balance"></i> Saldo</span>
+            <span class="label"><i class="bi bi-coin"></i> Saldo</span>
             <div class="value-box">{{ account.balance }}</div>
         </div>
 

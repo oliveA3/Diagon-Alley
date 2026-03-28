@@ -16,29 +16,37 @@
 }
 .welcome-subtitle {
     margin-top: 0;
-    font-size: 0.95rem;
+    font-size: 1.1rem;
 }
 
 /* Advertencias y Operaciones */
-.warning-text {
-    font-size: 0.85rem;
-    line-height: 1.4;
-    border-bottom: 1px solid var(--white);
+.warning-text, .frozen-details {
+    font-size: 1rem;
+    line-height: 1.3;
+    border-bottom: 1px solid var(--grey);
     padding-bottom: 15px;
 }
+
 .section-title {
     color: var(--dark-purple);
     margin-bottom: 10px;
 }
+
 .trans-info {
-    font-size: 0.9rem;
+    font-size: 1rem;
     margin-bottom: 15px;
 }
 
 .actions-group {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
+    border-bottom: 1px solid var(--grey);
+    padding-bottom: 15px;
+}
+
+.actions-group .btn {
+    font-size: 0.9rem;
 }
 
 /* Mercado Premium */
@@ -47,16 +55,15 @@
 }
 .market-desc {
     font-size: 0.85rem;
-    color: #444;
+    color: var(--black);
     margin-bottom: 20px;
 }
 
 .offer-card {
-    background-color: var(--light-purple);
+    background-color: var(--light-purple-dim);
     border-radius: 15px;
     padding: 15px;
     margin-bottom: 15px;
-    border-left: 5px solid var(--dark-purple);
 }
 
 .offer-title {
@@ -64,13 +71,13 @@
     color: var(--dark-purple);
 }
 .offer-subtitle {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     margin: 5px 0;
 }
 .offer-duration {
     color: var(--dark-purple);
     font-weight: bold;
-    border-bottom: 1px solid var(--white);
+    border-bottom: 1px solid var(--dark-purple);
     padding-bottom: 5px;
     margin-bottom: 10px;
 }

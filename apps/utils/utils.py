@@ -13,7 +13,7 @@ def working_hours():
     weekday = now.weekday()  # 0 = monday, 6 = sunday
 
     # Monday to Friday (0-4) from 6am to 11pm
-    working_hours = (0 <= weekday <= 5 and 6 <= hour <= 23)
+    working_hours = (0 <= weekday <= 6 and 6 <= hour <= 23)
 
     return working_hours
 

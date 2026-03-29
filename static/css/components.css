@@ -1,6 +1,6 @@
 /* --- INPUTS --- */
 
-select {
+main select {
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;

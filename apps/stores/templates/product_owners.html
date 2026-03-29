@@ -1,6 +1,6 @@
 <ul class="list-group">
     {% for user in users %}
-    <li class="list-group-item">Nº{{ user.id }} {{ user.full_name }} ( {{ user.house|title }} )</li>
+    <li class="list-group-item">Nº{{ user.id }} {{ user.full_name }} ({{ user.house|title }})</li>
 
     {% empty %}
     <li class="list-group-item">No hay usuarios con este producto.</li>

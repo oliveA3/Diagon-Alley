@@ -54,7 +54,6 @@
 
 .sign:last-child {
     transform: rotate(2deg);
-    width: 80% !important;
 }
 
 @media (max-width: 360px) {

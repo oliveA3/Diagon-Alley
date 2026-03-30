@@ -5,8 +5,14 @@
             <div class="item-image-placeholder"></div>
             <div class="item-details">
                 <p>Comprado en: <br><span>{{ item.pur_date|date:"M. d, Y" }}</span></p>
-                <p>Expira en: <br><span class="{% if item.is_near_ex %}text-warning{% endif %}">{{ item.ex_date|date:"M.
-                        d, Y" }}</span></p>
+
+                {% if item.ex_date %}
+                <p>Expira en: <br>
+                    <span class="{% if item.is_near_ex %}text-warning{% endif %}">
+                        {{ item.ex_date|date:"M. d, Y"}}
+                    </span>
+                </p>
+                {% endif %}
             </div>
         </div>
         <p class="item-desc">{{ item.product.description }}</p>

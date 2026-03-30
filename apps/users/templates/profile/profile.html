@@ -16,12 +16,11 @@
             <p class="subtitle">Información de usuario</p>
         </div>
 
-        <button type="button" class="btn btn-primary position-relative" data-bs-toggle="modal"
+        <button type="button" class="btn btn-primary btn-not position-relative" data-bs-toggle="modal"
             data-bs-target="#notificationsModal">
             Notificaciones
             {% if notifications %}
-            <span
-                class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
+            <span class="nots">
                 <span class="visually-hidden">Notificaciones nuevas</span>
             </span>
             {% endif %}
@@ -76,10 +75,14 @@
 
     <section class="inventory-section">
         <h3 class="section-title-purple">Mi inventario</h3>
+
+        <!-- Search -->
         <form method="GET" class="search-container mb-4">
             <input type="text" name="q" value="{{ query|default_if_none:'' }}"
                 class="form-control search-input form-input" placeholder="Buscar producto...">
-            <button type="submit"><i class="bi bi-search search-icon"></i></button>
+            <button type="submit" class="search-button">
+                <i class="bi bi-search"></i>
+            </button>
         </form>
 
         {% if not wands and not brooms and not pets and not wheezes %}
@@ -93,9 +96,8 @@
                 {% for item in wands %}
                 {% include "profile/inventory_section.html" with item=item %}
                 {% empty %}
-                <p class="empty-text">No tienes varitas en tu inventario
-                    {% if query %} que coincidan con "{{ query }}"{% endif %}.
-                </p>
+                <p class="empty-text">No tienes varitas en tu inventario{% if query %} que coincidan con "{{ query }}"
+                    {%endif %}.</p>
                 {% endfor %}
             </div>
         </div>
@@ -107,9 +109,8 @@
                 {% for item in brooms %}
                 {% include "profile/inventory_section.html" with item=item %}
                 {% empty %}
-                <p class="empty-text">No tienes escobas en tu inventario
-                    {% if query %} que coincidan con "{{ query }}"{% endif %}.
-                </p>
+                <p class="empty-text">No tienes escobas en tu inventario{% if query %} que coincidan con "{{ query }}"
+                    {% endif %}.</p>
                 {% endfor %}
             </div>
         </div>
@@ -121,8 +122,8 @@
                 {% for item in pets %}
                 {% include "profile/inventory_section.html" with item=item %}
                 {% empty %}
-                <p class="empty-text">No has comprado ninguna mascota
-                    {% if query %} que coincida con "{{ query }}"{% endif %}.
+                <p class="empty-text">No has comprado ninguna mascota{% if query %} que coincida con "{{ query }}"
+                    {% endif %}.
                 </p>
                 {% endfor %}
             </div>
@@ -135,8 +136,9 @@
                 {% for item in wheezes %}
                 {% include "profile/inventory_section.html" with item=item %}
                 {% empty %}
-                <p class="empty-text">No tienes artículos de Sortilegios Weasley en tu inventario
-                    {% if query %} que coincidan con "{{ query}}"{% endif %}.
+                <p class="empty-text">No tienes artículos de Sortilegios Weasley en tu inventario{% if query %} que
+                    coincidan con "{{ query}}"
+                    {% endif %}.
                 </p>
                 {% endfor %}
             </div>

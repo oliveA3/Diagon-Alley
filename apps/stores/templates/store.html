@@ -84,7 +84,9 @@
     </div>
 
     {% empty %}
-    <p class="text-center">No hay productos disponibles.</p>
+    <div class="empty-container">
+        <img src="" alt="No hay productos disponibles">
+    </div>
     {% endfor %}
 </main>
 {% endblock %}

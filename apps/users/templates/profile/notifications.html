@@ -1,5 +1,3 @@
-{% if notifications %}
-
 <style>
     .actions-row {
         display: flex;
@@ -31,15 +29,15 @@
 </form>
 
 <ul class="list-group mb-3">
+    {% if notifications %}
     {% for n in notifications %}
     <li class="list-group-item d-flex justify-content-between align-items-center {% if not n.read %}fw-bold{% endif %}">
         ({{ n.created_at }}) {{ n.message }}
     </li>
-    {% empty %}
-    <li class="list-group-item">No tienes notificaciones.</li>
     {% endfor %}
+    {% else %}
+    <li class="list-group-item">No tienes notificaciones.</li>
+    {% endif %}
 </ul>
-
-{% endif %}
 
 <p class="disclaimer">Todas las notificaciones serán eliminadas automáticamente despues de 2 semanas.</p>

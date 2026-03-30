@@ -113,8 +113,9 @@
 .item-image-placeholder {
     width: 60px;
     height: 60px;
-    background-color: var(--light-purple);
+    background-color: var(--grey);
     border-radius: 4px;
+    margin-right: 10px;
 }
 
 .item-details p,

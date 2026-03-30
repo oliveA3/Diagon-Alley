@@ -1,0 +1,75 @@
+.main-content {
+    max-width: 500px;
+    margin: 20px;
+    padding-bottom: 10px;
+}
+
+.main-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+}
+
+.form-title {
+    color: var(--dark-purple);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.section-subtitle {
+    color: var(--dark-purple);
+    font-size: 1.4rem;
+    margin: 10px 0 15px 0;
+}
+
+.loans-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.selection-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    background-color: var(--light-purple-dim);
+    border-radius: 20px;
+}
+
+.selection-card h4 {
+    color: var(--dark-purple);
+    margin-bottom: 2px;
+    font-size: 1.1rem;
+}
+
+.selection-card p {
+    font-size: 0.85rem;
+    color: var(--black);
+}
+
+.loan-details h4 {
+    font-size: 1rem;
+}
+
+.loan-details p {
+    font-size: 0.8rem;
+}
+
+.transaction-rules {
+    padding-top: 10px;
+}
+
+.rules-list {
+    list-style-type: disc;
+    padding-left: 20px;
+    color: var(--black);
+    margin-top: 10px;
+}
+
+.rules-list li {
+    font-size: 0.9rem;
+    line-height: 1.3;
+    margin-top: 5px;
+}

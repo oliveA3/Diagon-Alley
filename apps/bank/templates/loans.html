@@ -3,22 +3,21 @@
 
 {% block head %}
 <title>Banco Grigotts</title>
+<link rel="stylesheet" href="{% static 'css/bank_operations.css' %}">
 {% endblock %}
 
 {% block body %}
-{% include "components/nav.html" with url_link='bank_view' url_name="Banco Gringotts" %}
+{% include "components/nav.html" with url_link='bank' url_name="Banco Gringotts" %}
 
-<!-- Loans -->
-<main>
-    <p>Recuerda que debes contar con dos codeudores para pedir un préstamo.</p>
+<main class="main-content">
+    <h2 class="form-title">Pedir préstamo</h2>
 
-    <!-- Codebtors -->
-    <form method="post">
+    <form method="post" id="loan-form">
         {% csrf_token %}
-        <!-- 1st codebtor -->
-        <div>
-            <label for="user_a">Primer codeudor</label>
-            <select name="codebtor_a" id="user_a" class="form-select" required>
+
+        <div class="form-group">
+            <label for="user_a" class="form-label">Primer codeudor:</label>
+            <select name="codebtor_a" id="user_a" class="form-input form-select" required>
                 <option value="" disabled selected>Selecciona un codeudor...</option>
                 {% for u in users %}
                 <option value="{{ u.id }}">{{ u.full_name }}</option>
@@ -26,10 +25,9 @@
             </select>
         </div>
 
-        <!-- 2nd codebtor -->
-        <div>
-            <label for="user_b">Segundo codeudor</label>
-            <select name="codebtor_b" id="user_b" class="form-select" required>
+        <div class="form-group">
+            <label for="user_b" class="form-label">Segundo codeudor (opcional):</label>
+            <select name="codebtor_b" id="user_b" class="form-input form-select">
                 <option value="" disabled selected>Selecciona un codeudor...</option>
                 {% for u in users %}
                 <option value="{{ u.id }}">{{ u.full_name }}</option>
@@ -37,42 +35,49 @@
             </select>
         </div>
 
-        <!-- Loan types -->
-        <div>
-            <h3>Préstamos (cantidad -- devolución)</h3>
-            <input type="hidden" name="loan_type" id="loan_type_field">
+        <section class="loan-options">
+            <h3 class="section-subtitle">Tipos de préstamos:</h3>
 
-            <div>
-                <p>Préstamo de 25 galeones (devolver 30) por un mes.</p>
-                <button type="button" name="loan_type" value="0" class="btn btn-primary"
-                    data-title="Confirmación de préstamo"
-                    data-message="¿Deseas pedir un préstamo de 25 galeones a devolver 30?" onclick="showConfirm(this)">
-                    Pedir préstamo
-                </button>
-            </div>
+            <div class="loans-grid">
+                <div class="loan-card selection-card">
+                    <div class="loan-details">
+                        <h4>Préstamo de 25 galeones</h4>
+                        <p>Devolver 30 en el plazo de 1 mes.</p>
+                    </div>
+                    <button type="button" value="0" class="btn btn-primary" data-title="Confirmación de préstamo"
+                        data-message="¿Deseas pedir un préstamo de 25 galeones a devolver 30?"
+                        onclick="showConfirm(this)">
+                        Solicitar
+                    </button>
+                </div>
 
-            <div>
-                <p>Préstamo de 50 galeones (devolver 60) por dos meses.</p>
-                <button type="button" name="loan_type" value="1" class="btn btn-primary"
-                    data-title="Confirmación de préstamo"
-                    data-message="¿Deseas pedir un préstamo de 50 galeones a devolver 60?" onclick="showConfirm(this)">
-                    Pedir préstamo
-                </button>
-            </div>
+                <div class="loan-card selection-card">
+                    <div class="loan-details">
+                        <h4>Préstamo de 50 galeones</h4>
+                        <p>Devolver 60 en el plazo de 2 meses.</p>
+                    </div>
+                    <button type="button" value="1" class="btn btn-primary" data-title="Confirmación de préstamo"
+                        data-message="¿Deseas pedir un préstamo de 50 galeones a devolver 60?"
+                        onclick="showConfirm(this)">
+                        Solicitar
+                    </button>
+                </div>
 
-            <div>
-                <p>Préstamo de 100 galeones (devolver 120) por tres meses.</p>
-                <button type="button" name="loan_type" value="2" class="btn btn-primary"
-                    data-title="Confirmación de préstamo"
-                    data-message="¿Deseas pedir un préstamo de 100 galeones a devolver 120?"
-                    onclick="showConfirm(this)">
-                    Pedir préstamo
-                </button>
+                <div class="loan-card selection-card">
+                    <div class="loan-details">
+                        <h4>Préstamo de 100 galeones</h4>
+                        <p>Devolver 120 en el plazo de 3 meses.</p>
+                    </div>
+                    <button type="button" value="2" class="btn btn-primary" data-title="Confirmación de préstamo"
+                        data-message="¿Deseas pedir un préstamo de 100 galeones a devolver 120?"
+                        onclick="showConfirm(this)">
+                        Solicitar
+                    </button>
+                </div>
             </div>
-        </div>
+        </section>
     </form>
 </main>
-
 {% endblock %}
 
 {% block footer %}

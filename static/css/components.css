@@ -1,36 +1,48 @@
 /* --- INPUTS --- */
 
-main select {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
+.form-label {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--dark-purple);
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+select,
+datalist,
+.form-select {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    background-image: none !important;
 
     background: var(--white)
         url("data:image/svg+xml;utf8,<svg fill='%23333' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>")
-        no-repeat right 0.75em center;
+        no-repeat right 0.75em center !important;
 }
 
-input,
-select,
-textarea {
-    font-family: inherit;
-    font-size: 1rem;
-    padding: 0.6rem 1.3rem;
+.form-input,
+datalist {
+    font-family: inherit !important;
+    font-size: 1rem !important;
+    padding: 0.6rem 1.3rem !important;
+    border: none !important;
+    border-radius: 24px !important;
+    background-color: var(--grey) !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    outline-offset: 2px !important;
+    outline-color: transparent !important;
+    outline-style: solid !important;
+    color: var(--black) !important;
+}
+
+.form-input:hover,
+datalist:focus {
+    outline: none;
     border: none;
-    border-radius: 24px;
-    background-color: var(--grey);
-    width: 100%;
-    box-sizing: border-box;
-    outline-offset: 2px;
-    outline-color: transparent;
-    outline-style: solid;
-    color: var(--black);
-}
-
-input:focus,
-select:focus,
-textarea:focus {
-    outline-color: var(--strong-purple);
+    box-shadow: none;
+    outline-color: var(--strong-purple) !important;
 }
 
 /* --- BOTONES --- */
@@ -94,7 +106,8 @@ a {
     font-weight: 500;
 }
 
-.light-link { /* para footer */
+.light-link {
+    /* para footer */
     color: var(--light-purple);
     text-decoration: none;
 }

@@ -1,52 +1,104 @@
-/* MAIN CONTAINER */
-.container {
-    padding: 2rem 30px;
+.profile-container {
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    font-family: var(--font-family);
 }
 
-.title {
+.main-title {
     color: var(--dark-purple);
-    font-weight: 600;
-    font-size: 1.4rem;
-    margin-bottom: 0.5rem;
-    text-align: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+.subtitle {
+    color: var(--dark-purple);
+    font-size: 0.95rem;
+    margin: 0;
+}
+.section-title-purple {
+    color: var(--dark-purple);
+    font-size: 1.2rem;
+    border-top: 1px solid var(--grey);
+    padding-top: 15px;
 }
 
-.line {
-    border: none;
-    border-bottom: 1.5px solid var(--grey);
-    margin: 0.5rem 0 1rem 0;
+.dark-link {
+    text-decoration: underline;
 }
 
-.auth-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding-bottom: 12px;
+.info-card-purple {
+    background-color: var(--light-purple);
+    border-radius: 15px;
+    padding: 15px 20px;
+}
+.info-row {
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(75, 9, 129, 0.1);
+    padding-bottom: 4px;
+}
+.info-row .label {
+    font-weight: bold;
+    color: var(--dark-purple);
+    margin-right: 10px;
+}
+.info-row .value {
+    color: var(--dark-purple-dim);
 }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
-}
-
-.form-label {
-    font-weight: normal;
-    font-size: 1rem;
-    margin-bottom: 0.3rem;
-    color: var(--black);
-}
-
-.error-msg {
-    color: var(--red);
-    font-size: 0.75rem;
-    margin-top: 0.25rem;
-    margin-bottom: 0;
-}
-
-.change-login-text {
+.bank-info p {
     font-size: 0.9rem;
+    margin-bottom: 5px;
 }
 
-.small {
+.btn {
+    font-size: 0.9rem;
+    min-width: 150px !important;
+}
+
+/* Buscador */
+.search-container {
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    color: var(--dark-purple);
+}
+
+/* Inventario */
+.inventory-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.inventory-card {
+    background-color: var(--light-purple-dim);
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
+.item-name {
+    color: var(--dark-purple);
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+.item-image-placeholder {
+    width: 60px;
+    height: 60px;
+    background-color: var(--light-purple);
+    border-radius: 4px;
+}
+.item-details p {
+    font-size: 0.7rem;
+    margin-bottom: 2px;
+    color: var(--dark-purple);
+}
+.item-desc {
     font-size: 0.8rem;
+    margin: 10px 0;
+    color: var(--black);
 }

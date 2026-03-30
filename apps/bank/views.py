@@ -24,13 +24,13 @@ def bank_view(request):
             loan_id = request.POST.get("loan_id")
             loan = get_object_or_404(Loan, id=loan_id, user=user)
             pay_loan(loan, user)
-            return redirect('bank_view')
+            return redirect('bank')
         
         # Purchase premium
         elif form_type == 'premium':
             duration_days = int(request.POST.get('account_duration'))
             purchase_premium(request, account, duration_days)
-            return redirect('bank_view')
+            return redirect('bank')
 
     working_hours = utils.working_hours()
     context = {

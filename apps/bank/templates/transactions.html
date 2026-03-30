@@ -3,45 +3,49 @@
 
 {% block head %}
 <title>Banco Gringotts</title>
+<link rel="stylesheet" href="{% static 'css/bank_operations.css' %}">
 {% endblock %}
 
 {% block body %}
-{% include "components/nav.html" with url_link='bank_view' url_name="Banco Gringotts" %}
+{% include "components/nav.html" with url_link='bank' url_name="Banco Gringotts" %}
 
-<main>
-    <!-- Transaction form -->
-    <div>
-        <h2>Realizar transferencia</h2>
+<main class="main-content">
+    <div class="form-container">
+        <h2 class="form-title">Realizar transferencia</h2>
 
-        <form method="post" action="{% url 'transactions' %}">
+        <form method="post" action="{% url 'transactions' %}" id="transfer-form">
             {% csrf_token %}
 
-            <label for="receiver">Enviar a:</label>
-            <input list="accounts" name="receiver_id" id="receiver" required>
-            <datalist id="accounts">
-                {% for a in accounts %}
-                <option value="{{ a.pk }}">{{ a.user.full_name }}</option>
-                {% endfor %}
-            </datalist>
+            <div class="form-group">
+                <label for="receiver" class="form-label">Enviar a:</label>
+                <input list="accounts" name="receiver_id" id="receiver" class="form-input form-select" required>
+                <datalist id="accounts">
+                    {% for a in accounts %}
+                    <option value="{{ a.pk }}">{{ a.user.full_name }}</option>
+                    {% endfor %}
+                </datalist>
+            </div>
 
-            <label for="amount">Cantidad de galeones:</label>
-            <input type="number" name="amount" id="amount" required>
+            <div class="form-group">
+                <label for="amount" class="form-label">Cantidad de galeones:</label>
+                <input type="number" name="amount" id="amount" class="form-input" required>
+            </div>
 
-            <button type="button" class="btn btn-primary" data-title="Confirmación de transferencia"
-                data-message="¿Deseas transferir galeones a esta cuenta?" onclick="return prepareConfirm(this)">
+            <button type="button" class="btn btn-primary" 
+                data-title="Confirmación de transferencia"
+                onclick="return prepareConfirm(this)">
                 Transferir
             </button>
         </form>
-    </div>
 
-    <!-- Transaction rules -->
-    <div class="rules">
-        <ul>
-            <li>Transferir mínimo 20 galeones.</li>
-            <li>Debes tener el monto + 5% de comisión.</li>
-            <li>Solo una transacción por semana, tanto para el remitente como para el receptor.</li>
-            <li>No se permiten transacciones si la cuenta está congelada.</li>
-        </ul>
+        <div class="transaction-rules">
+            <ul class="rules-list">
+                <li>Mínimo de transferencia 20 galeones.</li>
+                <li>Debes tener en tu cuenta la cantidad total a transferir +5% de comisión</li>
+                <li>Solo puedes realizar una transacción a la semana, tanto como remitente o como receptor</li>
+                <li>No se permiten transferencias si la cuenta está congelada.</li>
+            </ul>
+        </div>
     </div>
 </main>
 {% endblock %}

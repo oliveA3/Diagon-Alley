@@ -29,9 +29,7 @@
     <div class="product-card">
         <div class="card-left">
             <div class="product-image-placeholder">
-                {% if item.product.image %}
-                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
-                {% endif %}
+                <img src="{{ item.product.image_url }}" alt="Imagen de {{item.product.name}}" />
             </div>
 
             <!-- Product price -->

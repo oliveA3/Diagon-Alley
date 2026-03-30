@@ -3,138 +3,148 @@
 
 {% block head %}
 <title>Perfil</title>
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
 {% endblock %}
 
 {% block body %}
 {% include "components/nav.html" with url_link='home' url_name="Callejón Diagon" %}
 
-<main>
-    <button type="button" class="btn btn-primary position-relative" data-bs-toggle="modal"
-        data-bs-target="#notificationsModal">
-        Notificaciones
-        {% if notifications %}
-        <span
-            class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
-            <span class="visually-hidden">Notificaciones nuevas</span>
-        </span>
-        {% endif %}
-    </button>
+<main class="profile-container">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <div class="user-header">
+            <h2 class="main-title">{{ user.full_name }}</h2>
+            <p class="subtitle">Información de usuario</p>
+        </div>
 
-    <!-- Student data -->
-    <section>
-        <h2>{{ user.full_name }}</h2>
-        <ul>
-            <li><strong>Nombre de usuario:</strong> {{ user.username }}</li>
-            <li><strong>Casa de Hogwarts:</strong> {{ user.house|title }}</li>
-            {% if user.email %}
-            <li><strong>Correo:</strong> {{ user.email }}</li>
+        <button type="button" class="btn btn-primary position-relative" data-bs-toggle="modal"
+            data-bs-target="#notificationsModal">
+            Notificaciones
+            {% if notifications %}
+            <span
+                class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
+                <span class="visually-hidden">Notificaciones nuevas</span>
+            </span>
             {% endif %}
-            <br />
+        </button>
+    </div>
 
-            {% include "components/account_card.html" %}
-        </ul>
-
-        {% if pending_loans %}
-        <p>Revisa tus préstamos pendientes en el <a href="{% url 'bank_view' %}" class="dark-link">Banco
-                Gringotts</a>.</p>
-        {% endif %}
+    <section class="info-card-purple mb-4">
+        <div class="info-row">
+            <span class="label">Usuario:</span> <span class="value">{{ user.username }}</span>
+        </div>
+        <div class="info-row">
+            <span class="label">Casa de Hogwarts:</span> <span class="value">{{ user.house|title }}</span>
+        </div>
+        <div class="info-row">
+            <span class="label">Correo:</span> <span class="value">{{ user.email }}</span>
+        </div>
     </section>
 
-    <section>
-        <!-- Profile options -->
-        <div>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#houseStatsModal">
-                Estadísticas de la casa
-            </button>
+    <section class="bank-section mb-4">
+        <p class="subtitle">Información de la cuenta de banco</p>
+        {% include "components/account_card.html" %}
 
-            <a type="button" class="btn btn-primary" href="{% url 'edit_profile' %}">
-                Editar perfil
-            </a>
-
-            <a type="button" class="btn btn-primary" href="{% url 'update_password' %}">
-                Cambiar llave
-            </a>
+        <div class="bank-info">
+            <p class="limit-text mt-2">Límite actual: {{ user.bank_account.current_limit }}</p>
+            <p class="limit-subtext">Para extender su límite acceda a las cuentas premium del <a href="{% url 'bank' %}"
+                    class="dark-link">Banco
+                    Gringotts</a>.
+            </p>
         </div>
+    </section>
 
-        <!-- Logout -->
-        <div>
-            <form method="POST" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <button type="button" class="btn btn-secondary btn-logout" data-title="Confirmación de cierre de sesión"
-                    data-message="¿Está seguro de que desea cerrar la sesión activa?" onclick="showConfirm(this)">
-                    Cerrar sesión
+    <section class="mb-4">
+        <h3 class="section-title-purple">Operaciones</h3>
+        <div class="row g-3">
+            <div class="col-6">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#houseStatsModal">
+                    Datos de la casa
                 </button>
-            </form>
+            </div>
+            <div class="col-6"><a href="{% url 'edit_profile' %}" class="btn btn-primary">Editar perfil</a></div>
+            <div class="col-6"><a href="{% url 'update_password' %}" class="btn btn-primary">Cambiar
+                    contraseña</a></div>
+            <div class="col-6">
+                <form method="POST" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="button" class="btn btn-secondary" onclick="showConfirm(this)">Cerrar
+                        sesión</button>
+                </form>
+            </div>
         </div>
+    </section>
+
+    <section class="inventory-section">
+        <h3 class="section-title-purple">Mi inventario</h3>
+        <form method="GET" class="search-container mb-4">
+            <input type="text" name="q" value="{{ query|default_if_none:'' }}"
+                class="form-control search-input form-input" placeholder="Buscar producto...">
+            <button type="submit"><i class="bi bi-search search-icon"></i></button>
+        </form>
+
+        {% if not wands and not brooms and not pets and not wheezes %}
+        <p>No tienes artículos en tu inventario{% if query %} que coincidan con "{{ query }}"{% endif %}.</p>
+        {% else %}
+
+        <!-- Wands -->
+        <div class="category-block mb-4">
+            <h4 class="category-title">Varitas</h4>
+            <div class="inventory-grid d-flex flex-wrap gap-3">
+                {% for item in wands %}
+                {% include "profile/inventory_section.html" with item=item %}
+                {% empty %}
+                <p class="empty-text">No tienes varitas en tu inventario
+                    {% if query %} que coincidan con "{{ query }}"{% endif %}.
+                </p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Brooms -->
+        <div class="category-block mb-4">
+            <h4 class="category-title">Escobas</h4>
+            <div class="inventory-grid d-flex flex-wrap gap-3">
+                {% for item in brooms %}
+                {% include "profile/inventory_section.html" with item=item %}
+                {% empty %}
+                <p class="empty-text">No tienes escobas en tu inventario
+                    {% if query %} que coincidan con "{{ query }}"{% endif %}.
+                </p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Pets -->
+        <div class="category-block mb-4">
+            <h4 class="category-title">Mascotas</h4>
+            <div class="inventory-grid d-flex flex-wrap gap-3">
+                {% for item in pets %}
+                {% include "profile/inventory_section.html" with item=item %}
+                {% empty %}
+                <p class="empty-text">No has comprado ninguna mascota
+                    {% if query %} que coincida con "{{ query }}"{% endif %}.
+                </p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Wheezes -->
+        <div class="category-block mb-4">
+            <h4 class="category-title">Sortilegios</h4>
+            <div class="inventory-grid d-flex flex-wrap gap-3">
+                {% for item in wheezes %}
+                {% include "profile/inventory_section.html" with item=item %}
+                {% empty %}
+                <p class="empty-text">No tienes artículos de Sortilegios Weasley en tu inventario
+                    {% if query %} que coincidan con "{{ query}}"{% endif %}.
+                </p>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% endif %}
     </section>
 </main>
-
-<!-- Student inventory -->
-<section class="container-fluid">
-    <div>
-        <h3>Mi inventario</h3>
-        <form method="GET" class="d-flex" style="gap: 5px;">
-            <input type="text" name="q" value="{{ query|default_if_none:'' }}" class="form-control"
-                placeholder="Buscar producto...">
-            <button type="submit" class="btn btn-primary">Buscar</button>
-        </form>
-    </div>
-
-    {% if not wands and not brooms and not pets and not wheezes %}
-    <p>No tienes artículos en tu inventario{% if query %} que coincidan con "{{ query }}"{% endif %}.</p>
-    {% else %}
-
-    <!-- Wands -->
-    <div>
-        <h4>Varitas</h4>
-        <div class="d-flex flex-wrap gap-3">
-            {% for item in wands %}
-            {% include "profile/inventory_section.html" with item=item %}
-            {% empty %}
-            <p>No tienes varitas en tu inventario{% if query %} que coincidan con "{{ query }}"{% endif %}.</p>
-            {% endfor %}
-        </div>
-    </div>
-
-    <!-- Brooms -->
-    <div>
-        <h4>Escobas</h4>
-        <div class="d-flex flex-wrap gap-3">
-            {% for item in brooms %}
-            {% include "profile/inventory_section.html" with item=item %}
-            {% empty %}
-            <p>No tienes escobas en tu inventario{% if query %} que coincidan con "{{ query }}"{% endif %}.</p>
-            {% endfor %}
-        </div>
-    </div>
-
-    <!-- Pets -->
-    <div>
-        <h4>Mascotas</h4>
-        <div class="d-flex flex-wrap gap-3">
-            {% for item in pets %}
-            {% include "profile/inventory_section.html" with item=item %}
-            {% empty %}
-            <p>No has comprado ninguna mascota{% if query %} que coincida con "{{ query }}"{% endif %}.</p>
-            {% endfor %}
-        </div>
-    </div>
-
-    <!-- Wheezes -->
-    <div>
-        <h4>Sortilegios</h4>
-        <div class="d-flex flex-wrap gap-3">
-            {% for item in wheezes %}
-            {% include "profile/inventory_section.html" with item=item %}
-            {% empty %}
-            <p>No tienes artículos de Sortilegios Weasley en tu inventario
-                {% if query %} que coincidan con "{{ query}}"{% endif %}.</p>
-            {% endfor %}
-        </div>
-    </div>
-
-    {% endif %}
-</section>
 
 {% endblock %}
 

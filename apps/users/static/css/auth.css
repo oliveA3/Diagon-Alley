@@ -29,13 +29,6 @@
     flex-direction: column;
 }
 
-.form-label {
-    font-weight: normal;
-    font-size: 1rem;
-    margin-bottom: 0.3rem;
-    color: var(--black);
-}
-
 .error-msg {
     color: var(--red);
     font-size: 0.75rem;

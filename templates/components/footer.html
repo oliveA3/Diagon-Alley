@@ -35,7 +35,7 @@
         }
 
         .footer-logo {
-            max-width: 100px;
+            max-width: 120px;
             height: auto;
             opacity: 0.9;
         }
@@ -57,7 +57,7 @@
 
     <!-- Links of interest -->
     <div class="footer-column links-column">
-        <a class="light-link" href="{% url 'bank_view' %}">Banco Gringotts</a>
+        <a class="light-link" href="{% url 'bank' %}">Banco Gringotts</a>
         <a class="light-link" href="{% url 'profile' %}">Perfil</a>
         <a class="light-link" href="{% url 'faq' %}">FAQ</a>
         <a class="light-link" href="{% url 'terms' %}">Términos de uso</a>
@@ -70,7 +70,7 @@
         <a class="light-link"  href="{% url 'store' store_id=2 %}">Magical Menagerie</a>
         <a class="light-link"  href="{% url 'store' store_id=3 %}">Ollivander's</a>
         <a class="light-link"  href="{% url 'store' store_id=4 %}">Sortilegios Weasley</a>
-        <a class="light-link"  href="#">HoneyDukes</a>
+        <a class="light-link"  href="{% url 'store' store_id=5 %}">Honeydukes</a>
     </div>
 </footer>
 

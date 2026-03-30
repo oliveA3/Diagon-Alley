@@ -1,15 +1,20 @@
-<div class="card" style="flex: 1 1 250px; max-width: 300px;">
-    <div class="card-body">
-        <h5 class="card-title">{{ item.product.name }}</h5>
-        <h6 class="card-subtitle mb-2 text-body-secondary">{{ item.product.description }}</h6>
-        <p class="card-text">Comprado en: {{ item.pur_date }}</p>
-        <p class="card-text" {% if item.is_near_ex %} style="color:var(--orange); font-weight:bold" {% endif %}>
-            Expira en: {{ item.ex_date }}
-        </p>
+<div class="inventory-card">
+    <div class="card-content">
+        <h5 class="item-name">{{ item.product.name }}</h5>
+        <div class="d-flex gap-2">
+            <div class="item-image-placeholder"></div>
+            <div class="item-details">
+                <p>Comprado en: <br><span>{{ item.pur_date|date:"M. d, Y" }}</span></p>
+                <p>Expira en: <br><span class="{% if item.is_near_ex %}text-warning{% endif %}">{{ item.ex_date|date:"M.
+                        d, Y" }}</span></p>
+            </div>
+        </div>
+        <p class="item-desc">{{ item.product.description }}</p>
 
         {% if item.uses %}
-        <p class="card-text">Usos: {{ item.uses }}</p>
-        <form method="POST">
+        <p class="item-uses">Usos: {{ item.uses }}</p>
+
+        <form method="POST" class="mt-auto">
             {% csrf_token %}
             <input type="hidden" name="item_id" value="{{ item.id }}" />
             <button type="button" class="btn btn-primary" data-title="Confirmación de uso"

@@ -15,6 +15,7 @@ def home_view(request):
     stores = Store.objects.all()
     return render(request, 'home.html', {'stores': stores})
 
+@login_required(login_url='/users/login/')
 def faq_view(request):
     return render(request, 'faq.html')
 

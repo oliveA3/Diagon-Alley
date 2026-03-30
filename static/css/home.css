@@ -40,6 +40,10 @@
     transform: rotate(-2deg);
 }
 
+.sign:first-child img {
+    min-height: 80px;
+}
+
 .sign:nth-child(2n) {
     transform: rotate(5deg);
 }

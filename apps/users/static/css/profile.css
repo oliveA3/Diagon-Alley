@@ -101,6 +101,7 @@
     padding: 15px;
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
 /* Inventario section */
@@ -111,8 +112,8 @@
     margin-bottom: 10px;
 }
 .item-image-placeholder {
-    width: 70px;
-    height: 70px;
+    width: 80px;
+    height: 80px;
     background-color: var(--grey);
     border-radius: 4px;
     margin-right: 10px;

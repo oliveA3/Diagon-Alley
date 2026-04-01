@@ -18,6 +18,10 @@
         </div>
 
         {% include "components/account_card.html" %}
+        
+        {% if user.bank_account.current_limit %}
+        <p class="limit-text mt-2">Límite actual: {{ user.bank_account.current_limit }}</p>
+        {% endif %}
 
         <!-- Frozen info -->
         {% if account.is_frozen %}

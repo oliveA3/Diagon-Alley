@@ -103,5 +103,13 @@
             Vence: <br> {{ account.premium_ex_date|date:"d/m/y" }}
         </div>
     </div>
+
+    {% elif account.account_type == 'vip' %}
+    <div class="premium-badge">
+        <div class="premium-content">
+            <span class="crown-icon">💎</span>
+            <span class="premium-text">SERVICIO VIP</span>
+        </div>
+    </div>
     {% endif %}
 </div>

@@ -10,6 +10,7 @@
 {% include "components/nav.html" with url_link='home' url_name="Callejón Diagon" %}
 
 <main class="profile-container">
+    <!-- User info -->
     <div class="d-flex justify-content-between align-items-start mb-3">
         <div class="user-header">
             <h2 class="main-title">{{ user.full_name }}</h2>
@@ -42,12 +43,15 @@
         {% endif %}
     </section>
 
+    <!-- Account info -->
     <section class="bank-section mb-4">
         <p class="subtitle">Información de la cuenta de banco</p>
         {% include "components/account_card.html" %}
 
         <div class="bank-info">
+            {% if user.bank_account.current_limit %}
             <p class="limit-text mt-2">Límite actual: {{ user.bank_account.current_limit }}</p>
+            {% endif %}
             <p class="limit-subtext">Para extender su límite acceda a las cuentas premium del
                 <a href="{% url 'bank' %}" class="dark-link">Banco Gringotts</a>.
             </p>

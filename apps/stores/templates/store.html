@@ -43,6 +43,9 @@
             <!-- Product stock -->
             <div class="stock-status">
                 {% if item.available %}
+                {% if item.stock %}
+                <span class="stock-text">Restantes: {{ item.stock }}</span>
+                {% endif %}
                 <span class="status-available">Disponible</span>
                 {% else %}
                 <span class="status-unavailable">No disponible</span>

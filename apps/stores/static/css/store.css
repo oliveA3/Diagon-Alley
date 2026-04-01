@@ -59,6 +59,11 @@
     margin-top: 10px;
 }
 
+.stock-text {
+    font-size: 0.85rem;
+    color: var(--black);
+}
+
 .status-available {
     color: var(--green);
     font-size: 0.9rem;

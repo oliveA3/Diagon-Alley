@@ -59,7 +59,7 @@ def banker_dashboard_view(request):
 
                 else:
                     amount = int(amount_raw)
-                    bulk_add(ids, amount)
+                    bulk_add(request, ids, amount)
 
                     messages.success(
                         request, f"Se agregaron galeones a las cuentas seleccionadas.")

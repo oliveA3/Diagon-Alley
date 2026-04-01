@@ -36,8 +36,13 @@
     margin-bottom: 0;
 }
 
-.change-login-text {
+.change-login-text,
+.password-reset-text {
     font-size: 0.9rem;
+}
+
+.password-reset-text {
+    padding-top: 3px;
 }
 
 .small {

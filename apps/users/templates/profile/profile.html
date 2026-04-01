@@ -34,9 +34,12 @@
         <div class="info-row">
             <span class="label">Casa de Hogwarts:</span> <span class="value">{{ user.house|title }}</span>
         </div>
+
+        {% if user.email %}
         <div class="info-row">
             <span class="label">Correo:</span> <span class="value">{{ user.email }}</span>
         </div>
+        {% endif %}
     </section>
 
     <section class="bank-section mb-4">
@@ -45,9 +48,8 @@
 
         <div class="bank-info">
             <p class="limit-text mt-2">Límite actual: {{ user.bank_account.current_limit }}</p>
-            <p class="limit-subtext">Para extender su límite acceda a las cuentas premium del <a href="{% url 'bank' %}"
-                    class="dark-link">Banco
-                    Gringotts</a>.
+            <p class="limit-subtext">Para extender su límite acceda a las cuentas premium del
+                <a href="{% url 'bank' %}" class="dark-link">Banco Gringotts</a>.
             </p>
         </div>
     </section>
@@ -66,7 +68,8 @@
             <div class="col-6">
                 <form method="POST" action="{% url 'logout' %}">
                     {% csrf_token %}
-                    <button type="button" class="btn btn-secondary" onclick="showConfirm(this)">Cerrar
+                    <button type="button" class="btn btn-secondary" data-message="¿Seguro de que deseas cerrar sesión?"
+                        onclick="showConfirm(this)">Cerrar
                         sesión</button>
                 </form>
             </div>

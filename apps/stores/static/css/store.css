@@ -40,6 +40,10 @@
     border-radius: 10px;
 }
 
+.product-image-placeholder img {
+    width: 100%;
+}
+
 .price-tag {
     margin-top: 10px;
     display: flex;
@@ -58,6 +62,7 @@
 .status-available {
     color: var(--green);
     font-size: 0.9rem;
+    text-shadow: 0 0 0.3px var(--black);
 }
 
 /* Right - users, name, desc, stats, actions */

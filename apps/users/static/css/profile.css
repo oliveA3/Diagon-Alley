@@ -111,11 +111,15 @@
     margin-bottom: 10px;
 }
 .item-image-placeholder {
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     background-color: var(--grey);
     border-radius: 4px;
     margin-right: 10px;
+}
+
+.item-image-placeholder img {
+    width: 100%;
 }
 
 .item-details p,

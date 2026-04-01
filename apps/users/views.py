@@ -38,9 +38,9 @@ def register_view(request):
     return render(request, 'register.html', {'form': form})
 
 
-def login_view(request):
-    error_message = None
+# Login view for students
 
+def login_view(request):
     if request.method == 'POST':
         form = StudentLoginForm(request.POST)
 
@@ -53,15 +53,16 @@ def login_view(request):
                 login(request, user)
                 if user.role == 'student':
                     return redirect('home')
-
                 return redirect(f"{user.role}_dashboard")
-
             else:
-                error_message = "Usuario o contraseña incorrectos."
+                messages.error(request, "Usuario o contraseña incorrectos.")
+        else:
+            messages.error(request, "Revisa los campos del formulario.")
     else:
         form = StudentLoginForm()
 
-    return render(request, 'login.html', {'form': form, 'error_message': error_message})
+    return render(request, 'login.html', {'form': form})
+
 
 
 # Profile views for students

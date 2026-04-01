@@ -63,7 +63,7 @@ def generate_usage_message(receipt):
         f"💳 Nºde cuenta: {account.pk}\n"
         f"🪄 Producto: {receipt.product.name}\n"
         f"🚀 Usos restantes: {receipt.uses_left}\n"
-        f"🗓 Fecha: {receipt.created_at.strftime('%d/%m/%Y %H:%M')}\n\n"
+        f"🗓 Fecha: {receipt.created_at.strftime('%d/%m/%Y')}\n\n"
         "•🪙💰🪙💰🪙💰🪙💰🪙💰🪙•\n"
         "🧙‍♂🪄🧙‍♂🪄🧙‍♂🪄🧙‍♂🪄🧙‍♂🪄🧙‍♂🪄🧙‍♂"
     )

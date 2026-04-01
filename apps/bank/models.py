@@ -46,10 +46,9 @@ class BankAccount(models.Model):
 
     @property
     def premium_ex_date(self):
-        if self.account_type in ['vip', 'standard']:
-            return None
-        elif self.account_type == 'premium':
+        if self.account_type == 'premium' and self.upgraded_at and self.duration_days:
             return self.upgraded_at + timedelta(days=self.duration_days)
+        
         return None
 
 

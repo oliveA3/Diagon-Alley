@@ -9,7 +9,7 @@ from django.utils import timezone
 def get_bonus_if_niffler(request, amount: int, user: CustomUser):
     has_niffler = InventoryItem.objects.filter(
         user=user, product=4).exists()
-    bonus = None
+    bonus = amount
 
     if has_niffler:
         fives = new_amount // 5
@@ -21,11 +21,11 @@ def get_bonus_if_niffler(request, amount: int, user: CustomUser):
     return bonus
 
 
-def bulk_add(ids, amount: int):
+def bulk_add(request, ids, amount: int):
     for acc_id in ids:
         with db_transaction.atomic():
             account = BankAccount.objects.get(pk=int(acc_id))
-            account.balance += get_amount_if_niffler(
+            account.balance += get_bonus_if_niffler(
                 request, amount, account.user)
             account.save()
 

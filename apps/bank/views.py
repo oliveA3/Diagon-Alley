@@ -14,7 +14,12 @@ from django.contrib.auth.decorators import login_required
 def bank_view(request):
     user = request.user
     account = get_object_or_404(BankAccount, user_id=user.id)
-    pending_loans = Loan.objects.filter(user=user, approved=True, state='pending')
+
+    pending_loans = Loan.objects.filter(
+        Q(user=user) | Q(codebtor_a=user) | Q(codebtor_b=user),
+        approved=True,
+        state='pending'
+    )
 
     if request.method == 'POST':
         form_type = request.POST.get('form')

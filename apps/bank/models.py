@@ -39,6 +39,7 @@ class BankAccount(models.Model):
     def current_limit(self):
         if self.account_type == 'vip':
             return None
+        
         return {
             'standard': 200,
             'premium': 400,

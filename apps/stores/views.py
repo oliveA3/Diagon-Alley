@@ -24,6 +24,7 @@ def store_view(request, store_id):
         product = get_object_or_404(Product, id=product_id)
 
         purchase_product(request, user, account, product, discount)
+        return redirect('store', store_id=store_id)
 
     working_hours = utils.working_hours()
 

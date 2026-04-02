@@ -88,19 +88,23 @@ class Product(models.Model):
 
 
 class WarehouseItem(models.Model):
-    store = models.ForeignKey(
-        Store, on_delete=models.CASCADE, related_name='warehouse_store')
-    product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name='warehouse_product')
+    product = models.OneToOneField(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='warehouse_item',
+        primary_key=True
+    )
 
+    store = models.ForeignKey(
+        Store,
+        on_delete=models.CASCADE,
+        related_name='warehouse_items'
+    )
     stock = models.PositiveIntegerField(blank=True, null=True)
     available = models.BooleanField(default=True)
 
-    class Meta:
-        unique_together = ('store_id', 'product_id')
-
     def __str__(self):
-        return f"{self.product.name} from {self.store.name} - ({self.available})"
+        return f"{self.product.name} en {self.store.name} - ({'Disponible' if self.available else 'Agotado'})"
 
 
 class InventoryItem(models.Model):

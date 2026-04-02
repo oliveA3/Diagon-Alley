@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'apps.users.apps.UsersConfig',
     'apps.stores',
     'apps.bank',
-    'apps.receipts',
     'apps.dashboards',
     'apps.utils',
     'apps.maintenance',

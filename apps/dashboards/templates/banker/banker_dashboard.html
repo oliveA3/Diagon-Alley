@@ -113,7 +113,7 @@
                 <!-- Premium info -->
                 <td>
                     {% if acc.account_type == 'premium' and acc.premium_ex_date %}
-                    {{ acc.premium_ex_date }}
+                    <input type="date" value="{{ acc.premium_ex_date }}">
                     {% endif %}
                 </td>
 

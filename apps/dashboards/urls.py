@@ -15,4 +15,5 @@ urlpatterns = [
     path("grant_product/<int:pk>/", shop_views.grant_product_view, name="grant_product"),
     path('purchases/', shop_views.purchase_list_view, name='purchase_list'),
     path('usages/', shop_views.usage_list_view, name='usage_list'),
+    path('discount/<int:store_id>/', shop_views.discount_view, name='discount'),
 ]

@@ -45,6 +45,7 @@
                         <a href="{% url 'update_store' store.pk %}" class="btn btn-sm btn-warning">Editar tienda</a>
                         <a href="{% url 'create_product' store.pk %}" class="btn btn-sm btn-success">Agregar
                             Producto</a>
+                        <a href="{% url 'discount' store.pk %}" class="btn btn-sm btn-primary">Aplicar descuento</a>
                     </div>
                 </th>
             </tr>
@@ -60,7 +61,6 @@
                             <tr>
                                 <th>Nombre</th>
                                 <th>Precio</th>
-                                <th>Descuento</th>
                                 <th>Duración</th>
                                 <th>Usos</th>
                                 <th>Stock</th>
@@ -70,18 +70,9 @@
                         </thead>
                         <tbody>
                             {% for product in store.products.all %}
-                            {% with warehouse=product.warehouse_product.first %}
                             <tr>
                                 <td>{{ product.name }}</td>
                                 <td>{{ product.price }}</td>
-
-                                <td>
-                                    {% if product.discount > 0 %}
-                                    {{ product.discount|percentage }}
-                                    {% else %}
-                                    ̶
-                                    {% endif %}
-                                </td>
 
                                 <td>
                                     {% if product.duration_days %}
@@ -100,15 +91,15 @@
                                 </td>
 
                                 <td>
-                                    {% if product.stock %}
-                                    {{ warehouse.stock }}
+                                    {% if product.warehouse_item.stock %}
+                                    {{ product.warehouse_item.stock }}
                                     {% else %}
                                     ̶
                                     {% endif %}
                                 </td>
 
                                 <td>
-                                    {% if warehouse.available %}
+                                    {% if product.warehouse_item.available %}
                                     <span style="color:var(--green)">Disponible</span>
                                     {% else %}
                                     <span style="color:var(--red)">No disponible</span>
@@ -117,7 +108,7 @@
 
                                 <td>
                                     <a href="{% url 'update_product' product.pk %}"
-                                        class="btn btn-sm btn-warning">Editar</a>
+                                        class="btn btn-sm btn-primary">Editar</a>
 
                                     <a href="#" class="btn btn-sm btn-success" data-bs-toggle="modal"
                                         data-bs-target="#grantProductModal{{ product.pk }}">
@@ -128,7 +119,6 @@
                                     {% endif %}
                                 </td>
                             </tr>
-                            {% endwith %}
                             {% empty %}
                             <tr>
                                 <td colspan="6">No hay productos en esta tienda.</td>

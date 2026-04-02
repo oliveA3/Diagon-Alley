@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% load static %}
-{% load discount_tag %}
 
 {% block head %}
 <title>{{ store.name }}</title>
@@ -15,82 +14,17 @@
     <!-- Store info -->
     <div class="store-info">
         <h1 class="store-title">{{ store.name }}</h1>
-        <p class="store-description">{{ store.description }}
-            <br>{% if store.pk == 1 %}
+        <p class="store-description">{{ store.description }}<br>
+            {% if store.name == "Quidditch Supplies" %}
             Usa el emoji 🧹 para representar escobas en actividades del colegio.
-            {% elif store.pk == 3 %}
+            {% elif store.name == "Ollivander's" %}
             Usa el emoji ➖ para representar varitas en actividades del colegio.
             {% endif %}
         </p>
     </div>
 
     <!-- Store products (warehouse) -->
-    {% for item in warehouse_items %}
-    <div class="product-card">
-        <div class="card-left">
-            <div class="product-image-placeholder">
-                <img src="{{ item.product.image_url }}" alt="Imagen de {{item.product.name}}" />
-            </div>
-
-            <!-- Product price -->
-            <div class="price-tag">
-                <span class="price-value">
-                    {% if discount != 0.0 %}{{ item.product.price|dis:discount }}{% else %}{{ item.product.price }}
-                    {% endif %}🪙
-                </span>
-            </div>
-
-            <!-- Product stock -->
-            <div class="stock-status">
-                {% if item.available %}
-                {% if item.stock %}
-                <span class="stock-text">Restantes: {{ item.stock }}</span>
-                {% endif %}
-                <span class="status-available">Disponible</span>
-                {% else %}
-                <span class="status-unavailable">No disponible</span>
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="card-right">
-            <div class="card-header-row">
-                <h2 class="product-name">{{ item.product.name }}</h2>
-                <!-- Product users -->
-                <button type="button" class="btn-ver-usuarios" data-bs-toggle="modal" data-bs-target="#usersModal"
-                    data-product-id="{{ item.product.id }}" data-product-name="{{ item.product.name }}">
-                    Ver usuarios
-                </button>
-            </div>
-
-            <p class="product-desc">{{ item.product.description }}</p>
-
-            <!-- Product stats -->
-            <div class="stats-row">
-                <span>Duración: {{ item.product.duration_days }} días</span>
-                {% if item.product.uses %}
-                <span>Usos: {{ item.product.uses }}</span>
-                {% endif %}
-            </div>
-
-            <form method="post" class="action-row buy-form">
-                {% csrf_token %}
-                <input type="hidden" name="product_id" value="{{ item.product.id }}" />
-                <!-- Purchase -->
-                <button type="button" class="btn btn-primary" onclick="showConfirm(this)"
-                    data-message="¿Deseas comprar {{ item.product.name }}?">Comprar</button>
-                <!-- Gift -->
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#giftModal"
-                    data-url="{% url 'gift' item.product.id %}">Regalar</button>
-            </form>
-        </div>
-    </div>
-
-    {% empty %}
-    <div class="empty-container">
-        <img src="{% static 'imgs/No productos.png' %}" alt="No hay productos disponibles">
-    </div>
-    {% endfor %}
+    {% include "store_products.html" %}
 </main>
 {% endblock %}
 

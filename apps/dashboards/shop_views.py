@@ -119,3 +119,29 @@ def usage_list_view(request):
     return render(request, "shopkeeper/usage_list.html", {
         "receipts": receipts
     })
+
+@user_passes_test(is_shopkeeper)
+def discount_view(request, store_id):
+    store = get_object_or_404(Store, id=store_id)
+    discount = store.discount 
+    discount = int(discount * 100) if discount else None
+    
+    if request.method == 'POST':
+        print(request.POST)
+        if 'remove_discount' in request.POST:
+            print('eliminando')
+            store.discount = None
+        
+        else:
+            discount = int(request.POST.get('discount'))
+            store.discount = (discount / 100) if discount else None
+            
+        store.save()
+        return redirect("shopkeeper_dashboard")
+    
+    context = {
+        'store': store,
+        'discount': discount,
+    }
+
+    return render(request, "shopkeeper/discount.html", context)

@@ -4,7 +4,7 @@ from urllib.parse import quote
 from apps.users.models import CustomUser
 from apps.bank.models import BankAccount
 from .models import Store, Product, WarehouseItem, InventoryItem
-from .services import purchase_product, get_discount, gift_product
+from .services import purchase_product, gift_product
 from apps.utils import utils
 from django.utils import timezone
 
@@ -15,7 +15,7 @@ def store_view(request, store_id):
         'product').filter(store_id=store_id)
     account = BankAccount.objects.get(user_id=request.user.id)
 
-    discount = get_discount(request.user)
+    discount = utils.get_discount_if_niffler(request.user)
 
     # Product purchase
     if request.method == 'POST':
@@ -41,7 +41,7 @@ def store_view(request, store_id):
 def gift_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     accounts = BankAccount.objects.exclude(user=request.user)
-    discount = get_discount(request.user)
+    discount = utils.get_discount_if_niffler(request.user)
 
     if request.method == "POST":
         receiver_id = request.POST.get("receiver_id")

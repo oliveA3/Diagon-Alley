@@ -1,24 +1,10 @@
 from apps.users.models import CustomUser
 from apps.stores.models import Product, InventoryItem, WarehouseItem
 from apps.bank.models import BankAccount
+from apps.utils.utils import get_bonus_if_niffler
 from django.db import transaction as db_transaction
 from django.contrib import messages
 from django.utils import timezone
-
-
-def get_bonus_if_niffler(request, amount: int, user: CustomUser):
-    has_niffler = InventoryItem.objects.filter(
-        user=user, product=4).exists()
-    bonus = 0
-
-    if has_niffler:
-        fives = amount // 5
-        bonus = fives * 2
-
-        messages.success(
-            request, f"Bono de {bonus} galeones a la cuenta Nº{user.id} {user.username} por tener un escarbato.")
-
-    return bonus
 
 
 def bulk_add(request, ids, amount: int):

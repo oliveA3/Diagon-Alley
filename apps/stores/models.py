@@ -18,7 +18,8 @@ STORE_PRODUCT_MAP = {
 class Store(models.Model):
     name = models.CharField(max_length=150)
     description = models.TextField()
-
+    discount = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    
     def __str__(self):
         return self.name
 
@@ -32,12 +33,11 @@ class Product(models.Model):
     name = models.CharField(max_length=130)
     description = models.TextField()
     price = models.PositiveIntegerField()
-    discount = models.DecimalField(default=0.0, decimal_places=2, max_digits=4)
 
     store = models.ForeignKey(
         Store, on_delete=models.CASCADE, related_name='products'
     )
-
+    
     PRODUCT_TYPES = [
         ('broom', 'Escoba'),
         ('pet', 'Mascota'),
@@ -102,9 +102,16 @@ class WarehouseItem(models.Model):
     )
     stock = models.PositiveIntegerField(blank=True, null=True)
     available = models.BooleanField(default=True)
+    
+    @property
+    def current_price(self):
+        if self.store.discount:
+            return int(self.product.price - (self.product.price * self.store.discount))
+        return self.product.price
 
     def __str__(self):
         return f"{self.product.name} en {self.store.name} - ({'Disponible' if self.available else 'Agotado'})"
+    
 
 
 class InventoryItem(models.Model):

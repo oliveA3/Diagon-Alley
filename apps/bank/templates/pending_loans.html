@@ -91,20 +91,20 @@
                 <h4>Préstamo activo</h4>
                 <p class="loan-subtitle">
                     {% if loan.user == user %}
-                        Eres la deudora de este préstamo.
+                    Eres la deudora de este préstamo.
                     {% elif loan.codebtor_a == user or loan.codebtor_b == user %}
-                        Eres codeudora de este préstamo.
+                    Eres codeudora de este préstamo.
                     {% else %}
-                        Participas en este préstamo.
+                    Participas en este préstamo.
                     {% endif %}
                 </p>
                 <div class="loan-participants">
                     <span>Deudor: {{ loan.user.full_name }}</span>
                     {% if loan.codebtor_a %}
-                        <span>Codeudor: {{ loan.codebtor_a.full_name }}</span>
+                    <span>Codeudor: {{ loan.codebtor_a.full_name }}</span>
                     {% endif %}
                     {% if loan.codebtor_b %}
-                        <span>Codeudor: {{ loan.codebtor_b.full_name }}</span>
+                    <span>Codeudor: {{ loan.codebtor_b.full_name }}</span>
                     {% endif %}
                 </div>
             </div>
@@ -122,18 +122,16 @@
                 </div>
 
                 <div class="loan-actions">
-                    {% if loan.user == user %}
-                        <!-- Solo la deudora puede pagar -->
-                        <form method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="loan_id" value="{{ loan.id }}">
-                            <button type="button" class="btn btn-primary" data-title="Confirmación de pago"
-                                data-message="¿Está seguro de que desea pagar {{ loan.amount_due }} galeones?"
-                                onclick="showConfirm(this)">
-                                Pagar ahora
-                            </button>
-                        </form>
-                    {% endif %}
+                    <!-- Pay loan -->
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="loan_id" value="{{ loan.id }}">
+                        <button type="button" class="btn btn-primary" data-title="Confirmación de pago"
+                            data-message="¿Está seguro de que desea pagar el préstamo de {{ loan.amount_due }} galeones?"
+                            onclick="showConfirm(this)">
+                            Pagar
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

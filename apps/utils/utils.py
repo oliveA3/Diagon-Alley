@@ -7,6 +7,32 @@ from datetime import datetime
 from .models import Notification
 
 
+def get_bonus_if_niffler(request, amount: int, user: CustomUser):
+    has_niffler = InventoryItem.objects.filter(
+        user=user, product=4).exists()
+    bonus = 0
+
+    if has_niffler:
+        fives = amount // 5
+        bonus = fives * 2
+
+        messages.success(
+            request, f"Bono de {bonus} galeones a la cuenta Nº{user.id} {user.username} por tener un escarbato.")
+
+    return bonus
+
+
+def get_discount_if_niffler(user: CustomUser):
+    has_niffler = InventoryItem.objects.filter(
+        user=user, product=4).exists()
+    discount = None
+    
+    if has_niffler:
+        discount = 0.1
+    
+    return discount
+
+
 def working_hours():
     now = datetime.now()
     hour = now.hour

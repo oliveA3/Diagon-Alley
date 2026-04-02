@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<title>Descuentos</title>
+{% endblock %}
+
+{% block body_class %}dashboard-body{% endblock %}
+
+{% block body %}
+<main>
+    <a href="{% url 'shopkeeper_dashboard' %}">🏠 Volver al dashboard</a>
+
+    <h2>Descuento de {{ store.name }}</h2>
+
+    <form method="POST" id="discountForm">
+        {% csrf_token %}
+        <label for="discount">Descuento (%):</label>
+        <input type="number" step="5" id="discount" name="discount" value="{{ discount|default:''}}">
+
+        <button type="button" class="btn btn-primary" onclick="showConfirm(this)"
+            data-message="¿Deseas aplicar este descuento a {{ store.name }}?">Aplicar</button>
+
+        <button type="submit" class="btn btn-warning" name="remove_discount" value="true">Quitar</button>
+    </form>
+</main>
+{% endblock %}
+
+<!-- Modals templates -->
+{% block modals %}
+{{ block.super }}
+{% endblock %}

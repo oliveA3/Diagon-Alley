@@ -108,7 +108,7 @@ def pay_loan(request, loan: Loan, user: CustomUser):
 
             loan.state = 'paid'
             loan.save()
-            messages.success(request, f"Has pagado tu préstamo.")
+            messages.success(request, f"Has pagado el préstamo.")
 
     else:
         messages.error(

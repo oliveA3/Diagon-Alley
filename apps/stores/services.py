@@ -61,28 +61,17 @@ def add_product_to_inventory(request, user: CustomUser, product: Product):
         return added
 
 
-def get_discount(user):
-    discounts_qs = InventoryItem.objects.filter(
-        user=user,
-        product__discount__isnull=False
-    ).exclude(product__discount=0)
-
-    if discounts_qs.exists():
-        return discounts_qs.aggregate(Max('product__discount'))['product__discount__max'] or Decimal('0.0')
-
-    return Decimal('0.0')
-
-
-def apply_discount(price, discount):
+def apply_discount_if_niffler(price, discount):
     price_to_pay = price
-    if discount > 0:
+    if discount:
         price_to_pay = int(price - (price * discount))
 
     return price_to_pay
 
 
 def purchase_product(request, user, account, product: Product, discount):
-    price_to_pay = apply_discount(product.price, discount)
+    product_price = product.warehouse_item.current_price
+    price_to_pay = apply_discount_if_niffler(product_price, discount)
 
     if account.balance >= price_to_pay:
         with db_transaction.atomic():
@@ -104,7 +93,8 @@ def purchase_product(request, user, account, product: Product, discount):
 
 def gift_product(request, sender_account: BankAccount, receiver: CustomUser, product_id: int, discount):
     product = get_object_or_404(Product, id=product_id)
-    total_cost = apply_discount(product.price, discount) + 5
+    product_price = product.warehouse_item.current_price
+    total_cost = apply_discount_if_niffler(product_price, discount) + 5
 
     if sender_account.balance >= total_cost:
         with db_transaction.atomic():

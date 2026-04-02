@@ -11,6 +11,9 @@
         <!-- Product price -->
         <div class="price-tag">
             <span class="price-value">
+                {% if store.discount %}
+                <s>{{ item.product.price }} 🪙</s><br>
+                {% endif %}
                 {% if discount %}
                 <s>{{ item.current_price }} 🪙</s><br>
                 {{ item.current_price|dis:discount }}

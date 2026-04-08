@@ -1,3 +1,37 @@
+.text-justify {
+  text-align: justify;
+}
+
+.line {
+    border: none;
+    border-bottom: 2px solid var(--grey);
+    margin: 0.5rem 0 1rem 0;
+}
+
+/* --- TITLES --- */
+
+.main-title,
+.section-title,
+.third-title {
+    font-weight: bold;
+    color: var(--dark-purple);
+}
+
+.main-title {
+    font-size: 1.7rem;
+    margin-bottom: 10px;
+    
+}
+
+.section-title {
+    font-size: 1.3rem;
+}
+
+.third-title {
+    font-size: 1.1rem;
+}
+
+
 /* --- INPUTS --- */
 
 .form-label {

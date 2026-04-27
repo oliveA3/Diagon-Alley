@@ -47,6 +47,12 @@ class StudentRegistrationForm(forms.ModelForm):
             if field_name != 'email':
                 field.required = True
 
+        self.fields['username'].widget.attrs.update({
+            'data-bs-toggle': 'tooltip',
+            'data-bs-placement': 'top',
+            'title': 'Asegúrate de utilizar un nombre de usuario con el que seas identificable en WhatsApp.'
+        })
+
         self.fields['full_name'].widget.attrs.update({
             'data-bs-toggle': 'tooltip',
             'data-bs-placement': 'top',

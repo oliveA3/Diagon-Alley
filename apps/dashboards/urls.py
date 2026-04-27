@@ -4,7 +4,7 @@ from . import banker_views, shop_views
 urlpatterns = [
     # Banker
     path('banker/', banker_views.banker_dashboard_view, name='banker_dashboard'),
-    path('update_expires/', banker_views.update_expires_views, name='banker_dashboard'),
+    path('update_expires/', banker_views.update_expires_views, name='update_expires'),
     path('transactions/', banker_views.transactions_list_view, name='transactions_list'),
     path('loans/', banker_views.loans_list_view, name='loans_list'),
 

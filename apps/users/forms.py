@@ -47,6 +47,13 @@ class StudentRegistrationForm(forms.ModelForm):
             if field_name != 'email':
                 field.required = True
 
+        self.fields['full_name'].widget.attrs.update({
+            'data-bs-toggle': 'tooltip',
+            'data-bs-placement': 'top',
+            'title': 'Asegúrate de utilizar un nombre mágico con el que seas identificable en WhatsApp.'
+        })
+
+
     def clean_username(self):
         username = self.cleaned_data.get('username')
         if " " in username:

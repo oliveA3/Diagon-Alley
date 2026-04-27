@@ -22,7 +22,8 @@
 
     <!-- Stores -->
     {% for store in stores %}
-    <a href="{% url 'store' store.id %}" class="sign">
+    <a href="{% url 'store' store.id %}" class="sign" data-bs-toggle="tooltip" 
+        data-bs-placement="top" title="{{ store.description }}">
         <img src="{{ store.image_url }}" alt="Imagen de {{store.name}}" />
     </a>
     {% endfor %}

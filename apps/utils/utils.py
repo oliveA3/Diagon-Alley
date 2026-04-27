@@ -38,10 +38,11 @@ def working_hours():
     hour = now.hour
     weekday = now.weekday()  # 0 = monday, 6 = sunday
 
-    # Monday to Friday (0-4) from 6am to 11pm
+    # Monday to Saturday (0-5) from 6am to 11pm
     working_hours = (0 <= weekday <= 5 and 6 <= hour <= 23)
 
     return working_hours
+
 
 def generate_notification(user: CustomUser, message: str):
     Notification.objects.create(

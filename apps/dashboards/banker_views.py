@@ -1,13 +1,14 @@
-from django.shortcuts import get_object_or_404, redirect, render
 from apps.users.models import CustomUser
 from apps.bank.models import BankAccount, Loan, Transaction
 from apps.stores.models import InventoryItem
+from apps.utils.utils import generate_notification
+from apps.maintenance import maintenance
+from .banker_services import bulk_add, update_account
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import user_passes_test
 from django.utils import timezone
-from apps.utils.utils import generate_notification
-from .banker_services import bulk_add, update_account
 from django.contrib.auth.decorators import login_required
 
 # BANKER DASHBOARD
@@ -94,6 +95,18 @@ def banker_dashboard_view(request):
         return redirect("banker_dashboard")
 
     return render(request, "banker/banker_dashboard.html", {"accounts": accounts})
+
+
+@user_passes_test(is_banker)
+def update_expires_views(request):
+
+    if request.method == 'POST':
+        maintenance.run_maintenance()
+
+        print("✅ Rutinas de mantenimiento ejecutadas")
+
+
+    return redirect("banker_dashboard")
 
 
 @user_passes_test(is_banker)

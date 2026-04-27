@@ -127,22 +127,32 @@
         </table>
     </form>
 
-    <!-- Premium info -->
+    <!-- Options -->
     <div>
-        <a href="{% url 'transactions_list' %}" class="btn btn-primary">Transacciones</a>
+        <div>
+            <form method="POST" action="{% url 'update_expires' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-secondary">Actualizar expiraciones</button>
+            </form>
+        </div>
 
-        <a href="{% url 'loans_list' %}" class="btn btn-primary">Préstamos</a>
-    </div>
+        <!-- Premium info -->
+        <div>
+            <a href="{% url 'transactions_list' %}" class="btn btn-primary">Transacciones</a>
 
-    <!-- Logout -->
-    <div>
-        <form method="POST" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button type="button" class="btn btn-secondary btn-logout" data-title="Confirmación de cierre de sesión"
-                data-message="¿Está seguro de que desea cerrar la sesión activa?" onclick="showConfirm(this)">
-                Cerrar sesión
-            </button>
-        </form>
+            <a href="{% url 'loans_list' %}" class="btn btn-primary">Préstamos</a>
+        </div>
+
+        <!-- Logout -->
+        <div>
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="button" class="btn btn-secondary btn-logout" data-title="Confirmación de cierre de sesión"
+                    data-message="¿Está seguro de que desea cerrar la sesión activa?" onclick="showConfirm(this)">
+                    Cerrar sesión
+                </button>
+            </form>
+        </div>
     </div>
 </main>
 

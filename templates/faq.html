@@ -5,12 +5,159 @@
 <title>FAQ</title>
 {% endblock %}
 
-{% block header %}
-{% include "components/header.html" %}
-{% endblock %}
-
 {% block body %}
-Preguntas Frecuentes (FAQ)
+<style>
+    .third-title {
+        font-size: 0.6em;
+    }
+
+    .accordion-body {
+        font-size: 0.9rem;
+    }
+</style>
+
+{% include "components/nav.html" with url_link='home' url_name="Callejón Diagon" %}
+
+<main class="p-4 text-justify fs-6">
+    <header>
+        <h1 class="section-title">Preguntas Frecuentes (FAQ)</h1>
+
+        <p>¿Tienes alguna duda extra o se te presentó algún problema con respecto al funcionamiento del Callejón Diagon? Contacta al <a class="dark-link" href="https://chat.whatsapp.com/Dx3y1P53u5wHihhsYr253d?mode=gi_t" target="_blank">Soporte Mágico</a>.</p>
+    </header>
+
+    <div class="accordion" id="questionsAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button third-title" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                    aria-expanded="true" aria-controls="collapseOne">
+                    ¿Cómo llegan los galeones que gano a mi cuenta?
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show">
+                <div class="accordion-body">
+                    Los galeones adquiridos en actividades del colegio son añadidos manualmente a tu cuenta por el
+                    responsable del banco, por lo que no es un proceso automático ni instantáneo. Si ves que demora
+                    muchos
+                    días puedes hacer una reclamación formal al respecto en el grupo de soporte.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button third-title collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    ¿Cómo puedo estar seguro de que un administrador no va a comprar artículos con mis galeones o hacer
+                    transacciones en mi nombre?
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    El administrador del banco no puede realizar operaciones en tu nombre, a menos que inicie sesión con
+                    tu contraseña, a la cual no tiene acceso. También existe un registro de transacciones y compras para
+                    que en caso de necesitar verificación, tengas seguridad de que nadie más usó tu cuenta.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button third-title collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Pedí un préstamo al banco, ¿puedo poner de codeudor a cualquiera sin que se enteren? ¿O puede
+                    ponerme alguien a mí sin mi consentimiento?
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    Cuando pides un préstamo, el banquero debe aprobarlo; para esto primero consulta directamente con
+                    los codeudores seleccionados para asegurar que están dispuestos. Ningún préstamo es aprobado sin
+                    este proceso.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button third-title collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                    Toqué la opción de usar un artículo y no le hice captura al comprobante, ¿cómo puedo demostrar que
+                    lo había comprado para poder usarlo?
+                </button>
+            </h2>
+            <div id="collapseFour" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    Debes de ir al grupo de soporte mágico, donde el banquero puede revisar el historial de compras y
+                    usos, verificar que compraste el producto y cuándo fue su uso, y testificar por ti con el moderador.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button third-title collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                    ¿Para qué sirven los datos de la casa que salen en mi perfil?
+                </button>
+            </h2>
+            <div id="collapseFive" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    Así puedes saber quién en tu casa tiene varitas o escobas, para poder decidir con más facilidad a
+                    quién enviar a los duelos y las carreras.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button third-title collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                    ¿Por qué Terrortours no está en la página como una tienda más?
+                </button>
+            </h2>
+            <div id="collapseSix" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    Terrortours tiene un funcionamiento diferente que no permite usar el mismo modelo de las otras
+                    tiendas. Lleva atención personal y gestión directa y controlada por la dirección superior.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button third-title collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                    ¿Cómo puedo comprobar si alguien realmente compró un producto que está usando en el colegio?
+                </button>
+            </h2>
+            <div id="collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    En las tiendas, cada producto tiene la opción de mostrar una lista con los usuarios que actualmente
+                    lo tienen en el inventario. De esta forma puedes comprobar si alguien de verdad tiene el gato que
+                    usa en la dinámica o cualquier otro artículo. También para los productos de uso único, como el libro
+                    mordedor, para poder usarlo debes ir a tu inventario y tocar la opción de usar, lo cual te da un
+                    ticket al que debes tomarle captura y mandarla al moderador para evitar fraudes.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button third-title collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                    ¿Qué puedo hacer si no recuerdo mi contraseña?
+                </button>
+            </h2>
+            <div id="collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    Debes de ir al grupo de soporte, informar el problema junto a tu usuario y número de bóveda, y se te
+                    dará una contraseña nueva que debes usar para iniciar sesión y cambiarla por otra para mayor
+                    seguridad.
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
 {% endblock %}
 
 {% block footer %}

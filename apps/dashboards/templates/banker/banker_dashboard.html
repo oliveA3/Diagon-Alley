@@ -9,6 +9,31 @@
 
 {% block body %}
 
+<!-- Options -->
+<div>
+    <div>
+        <form method="POST" action="{% url 'update_expires' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-secondary">Actualizar expiraciones</button>
+        </form>
+    </div>
+    <!-- Premium info -->
+    <div>
+        <a href="{% url 'transactions_list' %}" class="btn btn-primary">Transacciones</a>
+        <a href="{% url 'loans_list' %}" class="btn btn-primary">Préstamos</a>
+    </div>
+    <!-- Logout -->
+    <div>
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="button" class="btn btn-secondary btn-logout" data-title="Confirmación de cierre de sesión"
+                data-message="¿Está seguro de que desea cerrar la sesión activa?" onclick="showConfirm(this)">
+                Cerrar sesión
+            </button>
+        </form>
+    </div>
+</div>
+
 <!-- Banker dashboard -->
 <main>
     <!-- Filters -->
@@ -45,14 +70,15 @@
             <tr>
                 <th></th>
                 <th><a href="?order=user">ID</a></th>
-                <th>Usuario</a></th>
+                <th>Usuario</th>
                 <th>Nombre mágico</th>
                 <th>Casa</th>
                 <th>Balance</th>
                 <th><a href="?order=is_frozen">Estado</a></th>
                 <th>Tipo</th>
                 <th>Límite</th>
-                <th>Premium vence</th>
+                <th>Duración</th>
+                <th>Vencimiento</th>
                 <th></th>
             </tr>
 
@@ -110,10 +136,20 @@
                     {% endif %}
                 </td>
 
-                <!-- Premium info -->
+                <!-- Premium info (Duration) -->
+                <td>
+                    {% if acc.account_type == 'premium' %}
+                    <select name="duration_days_{{ acc.pk }}">
+                        <option value=90 {% if acc.duration_days == 90 %}selected{% endif %}>3 meses</option>
+                        <option value=180 {% if acc.duration_days == 180 %}selected{% endif %}>6 meses</option>
+                    </select>
+                    {% endif %}
+                </td>
+
+                <!-- Premium info (Expiration) -->
                 <td>
                     {% if acc.account_type == 'premium' and acc.premium_ex_date %}
-                    <input type="date" value="{{ acc.premium_ex_date }}">
+                        <p>{{ acc.premium_ex_date }}</p>
                     {% endif %}
                 </td>
 
@@ -126,34 +162,6 @@
             {% endfor %}
         </table>
     </form>
-
-    <!-- Options -->
-    <div>
-        <div>
-            <form method="POST" action="{% url 'update_expires' %}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-secondary">Actualizar expiraciones</button>
-            </form>
-        </div>
-
-        <!-- Premium info -->
-        <div>
-            <a href="{% url 'transactions_list' %}" class="btn btn-primary">Transacciones</a>
-
-            <a href="{% url 'loans_list' %}" class="btn btn-primary">Préstamos</a>
-        </div>
-
-        <!-- Logout -->
-        <div>
-            <form method="POST" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <button type="button" class="btn btn-secondary btn-logout" data-title="Confirmación de cierre de sesión"
-                    data-message="¿Está seguro de que desea cerrar la sesión activa?" onclick="showConfirm(this)">
-                    Cerrar sesión
-                </button>
-            </form>
-        </div>
-    </div>
 </main>
 
 {% endblock %}

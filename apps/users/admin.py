@@ -9,10 +9,10 @@ class CustomUserAdmin(UserAdmin):
     model = CustomUser
 
     # Qué columnas mostrar en la lista
-    list_display = ("id", "username", "email", "full_name", "house", "role", "is_staff", "is_active")
+    list_display = ("id", "username", "full_name", "house", "role", "is_staff", "is_active")
 
     # Campos que se pueden buscar
-    search_fields = ("username", "full_name", "email")
+    search_fields = ("username", "full_name")
 
     # Orden por defecto
     ordering = ("id",)
@@ -20,7 +20,7 @@ class CustomUserAdmin(UserAdmin):
     # Configuración de los fieldsets (editar usuario en admin)
     fieldsets = (
         (None, {"fields": ("username", "password")}),
-        ("Información personal", {"fields": ("full_name", "house", "role", "email")}),
+        ("Información personal", {"fields": ("full_name", "house", "role")}),
         ("Permisos", {"fields": ("is_staff", "is_active", "is_superuser", "groups", "user_permissions")}),
         ("Fechas importantes", {"fields": ("last_login", "date_joined")}),
     )
@@ -29,7 +29,7 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             "classes": ("wide",),
-            "fields": ("id", "username", "full_name", "house", "role", "email", "password1", "password2", "is_staff", "is_active"),
+            "fields": ("id", "username", "full_name", "house", "role", "password1", "password2", "is_staff", "is_active"),
         }),
     )
 

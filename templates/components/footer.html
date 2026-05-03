@@ -18,7 +18,7 @@
         .footer-column {
             flex: 1;
             min-width: 0;
-            margin: 0 10px;
+            margin: 0 4px;
         }
 
         .brand-column {
@@ -34,12 +34,14 @@
         }
 
         .footer-logo {
-            max-width: 120px;
+            max-width: 100px;
             height: auto;
             opacity: 0.9;
+            padding-bottom: 4px;
         }
 
-        .links-column a {
+        .links-column a,
+        .footer-column a {
             display: block;
             text-decoration: none;
             margin-bottom: 6px;
@@ -53,13 +55,14 @@
     <div class="footer-column brand-column">
         <h2 class="footer-title">Callejón Diagon</h2>
         <img src="{% static 'imgs/Silueta Hogwarts Footer.png' %}" alt="Hogwarts Silhouette" class="footer-logo">
+        <a class="light-link" href="https://chat.whatsapp.com/Dx3y1P53u5wHihhsYr253d?mode=gi_t" target="_blank">Soporte Mágico</a>
     </div>
 
     <!-- Links of interest -->
     <div class="footer-column links-column">
         <a class="light-link" href="{% url 'bank' %}">Banco Gringotts</a>
         <a class="light-link" href="{% url 'profile' %}">Perfil</a>
-        <a class="light-link" href="{% url 'faq' %}">FAQ</a>
+        <a class="light-link" href="{% url 'faq' %}">Preguntas frecuentes</a>
         <a class="light-link" href="{% url 'terms' %}">Términos de uso</a>
         <a class="light-link" href="https://chat.whatsapp.com/GjAylTHvlB5CLXZp9eanqm?mode=gi_t" target="_blank">TerrorTours</a>
     </div>

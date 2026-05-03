@@ -21,7 +21,7 @@ def is_banker(user):
 @user_passes_test(is_banker)
 def banker_dashboard_view(request):
     accounts = BankAccount.objects.select_related("user").filter(
-        user__role="student").order_by('is_frozen', 'user__username')
+        user__role="student").order_by('is_frozen', 'user_id')
 
     # Filters
     if request.GET.get("id"):
@@ -88,9 +88,11 @@ def banker_dashboard_view(request):
                 new_balance = int(request.POST.get(f"balance_{acc_id}"))
                 frozen = request.POST.get(f"is_frozen_{acc_id}")
                 new_type = request.POST.get(f"account_type_{acc_id}")
+                new_duration = request.POST.get(f"duration_days_{acc_id}")
 
                 update_account(request, account, house,
-                               new_balance, frozen, new_type)
+                               new_balance, frozen, new_type, new_duration)
+                    
 
         return redirect("banker_dashboard")
 

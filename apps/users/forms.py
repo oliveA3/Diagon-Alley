@@ -26,16 +26,14 @@ class StudentRegistrationForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'full_name', 'house', 'email', 'password']
+        fields = ['username', 'full_name', 'house', 'password']
         labels = {
             'username': "Usuario",
             'full_name': "Nombre Mágico",
             'house': "Casa de Hogwarts",
-            'email': "Correo (opcional)",
         }
         widgets = {
             'house': forms.Select(choices=HOUSE_CHOICES),
-            'email': forms.EmailInput(),
         }
 
     def __init__(self, *args, **kwargs):
@@ -43,9 +41,6 @@ class StudentRegistrationForm(forms.ModelForm):
 
         for field_name, field in self.fields.items():
             field.widget.attrs.update({'class': 'form-control'})
-
-            if field_name != 'email':
-                field.required = True
 
         self.fields['username'].widget.attrs.update({
             'data-bs-toggle': 'tooltip',
@@ -112,15 +107,11 @@ class StudentLoginForm(forms.Form):
 class EditProfileForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ['username', 'full_name', 'email']
+        fields = ['username', 'full_name']
 
         labels = {
             'username': "Usuario",
             'full_name': "Nombre Mágico",
-            'email': "Correo (opcional)",
-        }
-        widgets = {
-            'email': forms.EmailInput(),
         }
 
     def __init__(self, *args, **kwargs):
@@ -128,9 +119,6 @@ class EditProfileForm(forms.ModelForm):
 
         for field_name, field in self.fields.items():
             field.widget.attrs.update({'class': 'form-control'})
-
-            if field_name != 'email':
-                field.required = True
 
     def clean_username(self):
         username = self.cleaned_data.get('username')

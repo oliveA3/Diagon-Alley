@@ -39,5 +39,5 @@ body {
 
 .balance-input {
     background-color: var(--white) !important;
-    max-width: 90px;
+    max-width: 100px;
 }

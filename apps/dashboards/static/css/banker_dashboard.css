@@ -1,5 +1,7 @@
 body {
     padding: 20px;
+    max-width: 800px;
+    margin: auto;
 }
 
 .dashboard-nav {
@@ -37,5 +39,5 @@ body {
 
 .balance-input {
     background-color: var(--white) !important;
-    max-width: 70px;
+    max-width: 90px;
 }

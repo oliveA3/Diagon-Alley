@@ -85,14 +85,32 @@
             {% for acc in accounts %}
             <div class="account-card">
 
-                <h3 class="section-title">
+                <label class="section-title">
                     <input type="checkbox" name="selected_accounts" value="{{ acc.pk }}"> <i class="bi bi-bank"></i> {{ acc.pk }}: {{ acc.user.full_name }}
-                </h3>
+                </label>
                 
-                <div>
-                    <!-- Username -->
-                    <p class="third-title">Usuario: {{ acc.user.username }}</p>
+                <div class="d-flex align-items-center justify-content-between">
+                    <!-- Status -->
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="is_frozen_{{ acc.pk }}"
+                        {% if not acc.is_frozen %}checked{% endif %}>
+                        
+                        <label class="form-check-label">
+                        {% if acc.is_frozen %}
+                            <span style="color:var(--red)">Congelada</span>
+                        {% else %}
+                            <span style="color:var(--green)">Activa</span>
+                        {% endif %}
+                        </label>
+                    </div>
 
+                    <!-- Balance -->
+                    <div>
+                        <input class="balance-input form-input text-end" type="number" name="balance_{{ acc.pk }}" value="{{ acc.balance }}">🪙
+                    </div>
+                </div>
+
+                <div class="d-flex gap-1">
                     <!-- House -->
                     <select class="form-select" name="house_{{ acc.pk }}">
                         <option value="ravenclaw" {% if acc.user.house == "ravenclaw" %}selected{% endif %}>Ravenclaw
@@ -105,27 +123,6 @@
                         </option>
                     </select>
 
-                    <div class="d-flex align-items-center justify-content-between">
-                        <!-- Status -->
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" name="is_frozen_{{ acc.pk }}"
-                            {% if not acc.is_frozen %}checked{% endif %}>
-                            
-                            <label class="form-check-label">
-                            {% if acc.is_frozen %}
-                                <span style="color:var(--red)">Congelada</span>
-                            {% else %}
-                                <span style="color:var(--green)">Activa</span>
-                            {% endif %}
-                            </label>
-                        </div>
-
-                        <!-- Balance -->
-                        <div>
-                            <input class="balance-input form-input text-end" type="number" name="balance_{{ acc.pk }}" value="{{ acc.balance }}">🪙
-                        </div>
-                    </div>
-
                     <!-- Account type -->
                     <select class="form-select" name="account_type_{{ acc.pk }}">
                         <option value="standard" {% if acc.account_type == "standard" %}selected{% endif %}>Standard
@@ -134,29 +131,32 @@
                         <option value="vip" {% if acc.account_type == "vip" %}selected{% endif %}>VIP</option>
                     </select>
 
+                    {% if acc.account_type == 'premium' %}   
+                    <!-- Premium duration -->  
+                    <select style="width: min-content;" class="form-select" name="duration_days_{{ acc.pk }}">
+                        <option value=90 {% if acc.duration_days == 90 %}selected{% endif %}>3m</option>
+                        <option value=180 {% if acc.duration_days == 180 %}selected{% endif %}>6m</option>
+                    </select>
+                    {% endif %}
+                </div>
+
+                {% if acc.current_limit or acc.premium_ex_date %}
+                <div class="d-flex justify-content-between" style="height: 30px">
                     <!-- Limit -->
                     {% if acc.current_limit %}
                     <p>Límite: {{ acc.current_limit }}</p>
                     {% endif %}
 
-                    {% if acc.account_type == 'premium' %}   
-                    <!-- Premium duration -->  
-                    <select class="form-select" name="duration_days_{{ acc.pk }}">
-                        <option value=90 {% if acc.duration_days == 90 %}selected{% endif %}>3 meses</option>
-                        <option value=180 {% if acc.duration_days == 180 %}selected{% endif %}>6 meses</option>
-                    </select>
-
                     <!-- Premium expiration -->
                     {% if acc.premium_ex_date %}
                     <p>Vence: {{ acc.premium_ex_date }}</p>
                     {% endif %}
-
-                    {% endif %}
-
-                    <button type="submit" name="action" value="update_{{ acc.pk }}" class="mt-2 btn btn-primary">
-                        Actualizar
-                    </button>
                 </div>
+                {% endif %}
+
+                <button type="submit" name="action" value="update_{{ acc.pk }}" class="mt-1 btn btn-primary">
+                    Actualizar
+                </button>
             </div>
             {% endfor %}
         </section>

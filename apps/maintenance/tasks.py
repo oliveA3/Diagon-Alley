@@ -29,7 +29,7 @@ def reset_stock():
 
 
 # Freeze account after 30 days of the last purchase (check every day)
-def freeze_account():
+def freeze_accounts():
     today = timezone.now().date()
     for acc in BankAccount.objects.filter(is_frozen=False).exclude(account_type='vip'):
         if acc.last_pur_date and today - acc.last_pur_date >= timedelta(days=30):
@@ -54,7 +54,7 @@ def penalize_frozen_accounts():
 
 
 # Delete frozen accounts after 6 months of being frozen (except pk=1) (check every day)
-def delete_frozen_account():
+def delete_frozen_accounts():
     today = timezone.now().date()
     for acc in BankAccount.objects.filter(is_frozen=True).exclude(pk=1):
         if acc.frozen_date and acc.frozen_date <= today - timedelta(days=180):

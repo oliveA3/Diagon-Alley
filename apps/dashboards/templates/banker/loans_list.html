@@ -9,7 +9,7 @@
 
 {% block body %}
 <main>
-    <a href="{% url 'banker_dashboard' %}">🏠 Volver al dashboard</a>
+    {% include "components/nav.html" with url_link='banker_dashboard' url_name="Volver al dashboard" %}
 
     <!-- Loans to approve list -->
     <div>
@@ -77,7 +77,14 @@
                 <td>{{ loan.user.bank_account.balance }}</td>
                 <td>{{ loan.codebtor_a.full_name }}</td>
                 <td>{{ loan.codebtor_b.full_name }}</td>
-                <td>{{ loan.user.bank_account.is_frozen }}</td>
+                <td>
+                {% if loan.user.bank_account.is_frozen %}
+                <span style="color:var(--red)">Congelada</span>
+                {% else %}
+                <span style="color:var(--green)">Activa</span>
+                {% endif %}
+                </td>
+
                 <td>{{ loan.amount_requested }}</td>
                 <td>{{ loan.amount_due }}</td>
                 <td>{{ loan.approved_at }}</td>

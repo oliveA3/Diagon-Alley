@@ -57,7 +57,7 @@
     flex-wrap: wrap;
     border-bottom: 1px solid var(--grey);
     padding-bottom: 15px;
-    margin-bottom: 25px;
+    margin-bottom: 10px;
 }
 
 .actions-group .btn {
@@ -66,8 +66,9 @@
 
 /* Mercado Premium */
 .premium-market {
-    padding: 20px 0;
+    padding: 12px 0;
 }
+
 .market-desc {
     font-size: 0.9rem;
     color: var(--black);

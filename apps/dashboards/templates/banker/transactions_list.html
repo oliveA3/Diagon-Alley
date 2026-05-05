@@ -9,7 +9,7 @@
 
 {% block body %}
 <main>
-    <a href="{% url 'banker_dashboard' %}">🏠 Volver al dashboard</a>
+    {% include "components/nav.html" with url_link='banker_dashboard' url_name="Volver al dashboard" %}
 
     <!-- Transaction list -->
     <div>

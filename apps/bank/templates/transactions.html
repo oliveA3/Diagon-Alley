@@ -17,7 +17,7 @@
             {% csrf_token %}
 
             <div class="form-group">
-                <label for="receiver" class="form-label">Enviar a:</label>
+                <label for="receiver" class="form-label">Enviar a la cuenta:</label>
                 <input list="accounts" name="receiver_id" id="receiver" class="form-input form-select" required>
                 <datalist id="accounts">
                     {% for a in accounts %}
@@ -40,9 +40,9 @@
 
         <div class="transaction-rules">
             <ul class="rules-list">
-                <li>Mínimo de transferencia 20 galeones.</li>
-                <li>Debes tener en tu cuenta la cantidad total a transferir +5% de comisión</li>
-                <li>Solo puedes realizar una transacción a la semana, tanto como remitente o como receptor</li>
+                <li>El mínimo de transferencia es 20 galeones.</li>
+                <li>Debes tener en tu cuenta la cantidad total a transferir +5% de comisión.</li>
+                <li>Solo puedes realizar una transacción a la semana, ya sea como remitente o receptor.</li>
                 <li>No se permiten transferencias si la cuenta está congelada.</li>
             </ul>
         </div>

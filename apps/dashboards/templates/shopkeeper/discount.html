@@ -9,7 +9,7 @@
 
 {% block body %}
 <main>
-    <a href="{% url 'shopkeeper_dashboard' %}">🏠 Volver al dashboard</a>
+    {% include "components/nav.html" with url_link='shopkeeper_dashboard' url_name="Volver al dashboard" %}
 
     <h2>Descuento de {{ store.name }}</h2>
 

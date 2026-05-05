@@ -90,7 +90,7 @@ def execute_transaction(request, sender_account, receiver_account, amount, tx_in
 
             tx_instance.save()
 
-            generate_notification(receiver_account.user, f"El usuario {sender_account.user.username} te ha transferido {amount} galeones.")
+            generate_notification(receiver_account.user, f"El usuario Nº.{sender_account.user.pk}. {sender_account.user.full_name} te ha transferido {amount} galeones.")
 
             messages.success(request, "Transferencia exitosa.")
             return tx_instance

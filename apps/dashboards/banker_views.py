@@ -10,6 +10,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import user_passes_test
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.db import transaction as db_transaction
 
 # BANKER DASHBOARD
 
@@ -75,9 +76,10 @@ def banker_dashboard_view(request):
                         request, "Debe seleccionar al menos una cuenta para eliminar.")
                 else:
                     # Eliminar usuarios asociados
-                    CustomUser.objects.filter(pk__in=ids).delete()
-                    messages.success(
-                        request, f"Se eliminaron {len(ids)} usuarios seleccionados y sus cuentas.")
+                    with db_transaction.atomic():
+                        CustomUser.objects.filter(pk__in=ids).delete()
+                        messages.success(
+                            request, f"Se eliminaron {len(ids)} usuarios seleccionados y sus cuentas.")
 
             # Update register
             elif action.startswith("update_"):
@@ -104,9 +106,7 @@ def update_expires_views(request):
 
     if request.method == 'POST':
         maintenance.run_maintenance()
-
         print("✅ Rutinas de mantenimiento ejecutadas")
-
 
     return redirect("banker_dashboard")
 
@@ -138,41 +138,46 @@ def loans_list_view(request):
         # Approve loan
         if action == "approve":
             new_balance = account.balance + loan.amount_requested
-            if account.current_limit and new_balance <= account.current_limit:
-                loan.approved = True
-                loan.approved_at = timezone.now()
-                loan.save()
+            limit = account.current_limit
 
-                account.balance = new_balance
-                account.save()
+            if not limit or (limit and new_balance <= account.current_limit):
+                with db_transaction.atomic():
+                    loan.approved = True
+                    loan.approved_at = timezone.now()
+                    loan.save()
 
-                due_str = loan.due_date.strftime("%d/%m/%Y")
-                generate_notification(
-                    account.user, f"¡Préstamo aprobado! Ahora cuentas con {loan.amount_requested} galeones, para pagar {loan.amount_due} antes de {due_str}")
+                    account.balance = new_balance
+                    account.save()
 
-                messages.success(
-                    request, f"Préstamo de {loan.user.username} aprobado y balance actualizado.")
+                    due_str = loan.due_date.strftime("%d/%m/%Y")
+                    generate_notification(
+                        account.user, f"¡Préstamo aprobado! Ahora cuentas con {loan.amount_requested} galeones adicionales, y debes pagar {loan.amount_due} antes de {due_str}")
+                    
+                    messages.success(
+                        request, f"Préstamo de {loan.user.username} aprobado y balance actualizado.")
 
             else:
                 messages.error(
-                    request, f"Este préstamo excede el limite de la cuenta de {loan.user.username}.")
+                request, f"Este préstamo excede el limite de la cuenta de {loan.user.username}.")
 
         # Not approve loan
         elif action == "reject":
-            loan.delete()
+            with db_transaction.atomic():
+                loan.delete()
 
-            generate_notification(
-                    account.user, f"Lamentamos informarte que tu préstamo ha sido rechazado, para más información consulte con el banquero.")
+                generate_notification(
+                        account.user, f"Lamentamos informarte que tu préstamo ha sido rechazado, para más información consulte al banquero.")
 
-            messages.success(
-                request, f"Préstamo de {loan.user.username} rechazado y eliminado.")
+                messages.success(
+                    request, f"Préstamo de {loan.user.username} rechazado y eliminado.")
 
         # Mark loan as paid
         elif action == "mark_paid" and loan.state == 'pending':
-            today = timezone.now().date()
-            loan.paid_date = today
-            loan.state = 'paid'
-            loan.save()
+            with db_transaction.atomic():
+                today = timezone.now().date()
+                loan.paid_date = today
+                loan.state = 'paid'
+                loan.save()
 
     context = {
         'loans_to_approve': loans_to_approve,

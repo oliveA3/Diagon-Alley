@@ -34,13 +34,15 @@ def shop_dashboard_view(request):
 @user_passes_test(is_shopkeeper)
 def update_store_view(request, pk):
     store = get_object_or_404(Store, pk=pk)
+    
     if request.method == "POST":
         form = StoreUpdateForm(request.POST, instance=store)
 
         if form.is_valid():
-            form.save()
-            messages.success(request, "Tienda actualizada correctamente.")
-            return redirect("shopkeeper_dashboard")
+            with db_transaction.atomic():
+                form.save()
+                messages.success(request, "Tienda actualizada correctamente.")
+                return redirect("shopkeeper_dashboard")
 
     else:
         form = StoreUpdateForm(instance=store)
@@ -55,13 +57,14 @@ def create_product_view(request, store_id):
         form = ProductCreationForm(request.POST)
 
         if form.is_valid():
-            product = form.save(commit=False)
-            product.store = store
-            product.save()
-            form.save(commit=True)
+            with db_transaction.atomic():
+                product = form.save(commit=False)
+                product.store = store
+                product.save()
+                form.save(commit=True)
 
-            messages.success(request, "Producto creado correctamente.")
-            return redirect("shopkeeper_dashboard")
+                messages.success(request, "Producto creado correctamente.")
+                return redirect("shopkeeper_dashboard")
 
     else:
         form = ProductCreationForm()
@@ -76,10 +79,11 @@ def update_product_view(request, pk):
         form = ProductUpdateForm(request.POST, instance=product)
 
         if form.is_valid():
-            form.save()
+            with db_transaction.atomic():
+                form.save()
 
-            messages.success(request, "Producto actualizado correctamente.")
-            return redirect("shopkeeper_dashboard")
+                messages.success(request, "Producto actualizado correctamente.")
+                return redirect("shopkeeper_dashboard")
 
     else:
         form = ProductUpdateForm(instance=product)
@@ -120,6 +124,7 @@ def usage_list_view(request):
         "receipts": receipts
     })
 
+
 @user_passes_test(is_shopkeeper)
 def discount_view(request, store_id):
     store = get_object_or_404(Store, id=store_id)
@@ -127,17 +132,16 @@ def discount_view(request, store_id):
     discount = int(discount * 100) if discount else None
     
     if request.method == 'POST':
-        print(request.POST)
-        if 'remove_discount' in request.POST:
-            print('eliminando')
-            store.discount = None
-        
-        else:
-            discount = int(request.POST.get('discount'))
-            store.discount = (discount / 100) if discount else None
+        with db_transaction.atomic():
+            if 'remove_discount' in request.POST:
+                store.discount = None
             
-        store.save()
-        return redirect("shopkeeper_dashboard")
+            else:
+                discount = int(request.POST.get('discount'))
+                store.discount = (discount / 100) if discount else None
+                
+            store.save()
+            return redirect("shopkeeper_dashboard")
     
     context = {
         'store': store,

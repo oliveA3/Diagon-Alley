@@ -19,3 +19,6 @@ env/
 # Archivos de sistema
 .DS_Store
 Thumbs.db
+
+db.sqlite3
+gitpush.bat

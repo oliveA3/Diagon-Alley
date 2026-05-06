@@ -11,6 +11,7 @@ from apps.bank.models import BankAccount, Transaction, Loan
 from apps.utils.models import Notification
 from .models import CustomUser
 from apps.utils import utils
+from django.db import transaction as db_transaction
 
 User = get_user_model()
 
@@ -22,14 +23,14 @@ def register_view(request):
         form = StudentRegistrationForm(request.POST)
 
         if form.is_valid():
-            user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password'])
-            user.save()
+            with db_transaction.atomic():
+                user = form.save(commit=False)
+                user.set_password(form.cleaned_data['password'])
+                user.save()
 
-            BankAccount.objects.create(user=user)
+                BankAccount.objects.create(user=user)
 
-            utils.generate_notification(
-                user, "¡Bienvenido/a al Callejón Diagon! Da un paseo por nuestras tiendas y guarda tus galeones en el Banco Gringotts.")
+                utils.generate_notification(user, "¡Bienvenido/a al Callejón Diagon! Da un paseo por nuestras tiendas y guarda tus galeones en el Banco Gringotts.")
 
             return redirect('login')
     else:
@@ -133,16 +134,17 @@ def notifications_view(request):
     }
 
     if request.method == "POST":
-        # Read all
-        if "mark_all" in request.POST:
-            Notification.objects.filter(
-                user=request.user, read=False).update(read=True)
+        with db_transaction.atomic():
+            # Read all
+            if "mark_all" in request.POST:
+                Notification.objects.filter(
+                    user=request.user, read=False).update(read=True)
 
-        # Delete all
-        if "delete_all" in request.POST:
-            Notification.objects.filter(user=request.user).delete()
+            # Delete all
+            if "delete_all" in request.POST:
+                Notification.objects.filter(user=request.user).delete()
 
-        return redirect('profile')
+            return redirect('profile')
 
     return render(request, 'profile/notifications.html', context)
 
@@ -175,11 +177,11 @@ def edit_profile_view(request):
         form = EditProfileForm(request.POST, instance=user)
 
         if form.is_valid():
-            form.save()
-            messages.success(
-                request, "¡Tu perfil mágico ha sido actualizado con éxito!")
+            with db_transaction.atomic():
+                form.save()
+                messages.success(request, "¡Tu perfil mágico ha sido actualizado con éxito!")
 
-            return redirect('profile')
+                return redirect('profile')
 
     else:
         form = EditProfileForm(instance=user)
@@ -200,8 +202,9 @@ def update_password_view(request):
         form = CustomPasswordChangeForm(user=user, data=request.POST)
 
         if form.is_valid():
-            user = form.save()
-            update_session_auth_hash(request, user)
+            with db_transaction.atomic():
+                user = form.save()
+                update_session_auth_hash(request, user)
 
         return redirect('profile')
 

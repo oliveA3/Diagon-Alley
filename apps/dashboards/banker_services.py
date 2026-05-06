@@ -23,6 +23,7 @@ def bulk_add(request, ids, amount: int):
 def update_account(request, account: BankAccount, house: str, new_balance: int, frozen: bool, new_type: str, new_duration: int):
     with db_transaction.atomic():
         account.user.house = house
+        account.user.save()
 
         added_amount = new_balance - account.balance
         bonus = get_bonus_if_niffler(request, added_amount, account.user)
@@ -44,12 +45,14 @@ def update_account(request, account: BankAccount, house: str, new_balance: int, 
             account.balance = new_balance
             account.save()
 
-            messages.success(
-                request, f"Cuenta de {account.user.username} actualizada.")
-
         elif account.current_limit and new_balance > account.current_limit:
             account.balance = account.current_limit
             account.save()
 
             messages.error(
                 request, "La cantidad de galeones excede el límite de la cuenta así que pudo haber perdido galeones.")
+
+            return
+
+        messages.success(
+            request, f"Cuenta de {account.user.username} actualizada.")

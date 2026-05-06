@@ -118,7 +118,7 @@ def gift_product(request, sender_account: BankAccount, receiver: CustomUser, pro
                     message=(n_msg)
                 )
                 messages.success(
-                    request, f"Has regalado {product.name} a {receiver.username} (Cuenta Nº{receiver.id}).")
+                    request, f"Has regalado {product.name} a {receiver.full_name} (Cuenta Nº{receiver.id}).")
 
     else:
         messages.error(

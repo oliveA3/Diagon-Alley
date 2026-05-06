@@ -111,7 +111,12 @@ def gift_product(request, sender_account: BankAccount, receiver: CustomUser, pro
                 if receiver_account.is_frozen:
                     receiver_account.is_frozen = False
                     receiver_account.save()
-                
+
+                n_msg = f"¡{sender_account.user.full_name} te ha regalado el artículo {product.name}! Accede a él desde tu inventario."
+                Notification.objects.create(
+                    user=receiver,
+                    message=(n_msg)
+                )
                 messages.success(
                     request, f"Has regalado {product.name} a {receiver.username} (Cuenta Nº{receiver.id}).")
 

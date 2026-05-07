@@ -78,7 +78,7 @@ def purchase_product(request, user, account, product: Product, discount):
             if add_product_to_inventory(request, user, product):
                 account.balance -= price_to_pay
                 account.last_pur_date = timezone.now().date()
-                utils.generate_purchase_receipt(user, product, 'purchase', price_to_pay)
+                utils.generate_purchase_receipt(user, product, price_to_pay)
 
                 if account.is_frozen:
                     account.is_frozen = False
@@ -101,7 +101,7 @@ def gift_product(request, sender_account: BankAccount, receiver: CustomUser, pro
             if add_product_to_inventory(request, receiver, product):
                 sender_account.balance -= total_cost
                 sender_account.last_pur_date = timezone.now().date()
-                utils.generate_purchase_receipt(sender_account.user, product, total_cost, 'gift', receiver)
+                utils.generate_purchase_receipt(sender_account.user, product, total_cost, receiver)
 
                 if sender_account.is_frozen:
                     sender_account.is_frozen = False

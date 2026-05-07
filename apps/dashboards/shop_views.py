@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from apps.users.models import CustomUser
 from apps.stores.models import Store, Product, WarehouseItem, InventoryItem
 from apps.bank.models import BankAccount, Loan, Transaction
-from apps.utils.models import PurchaseReceipt, UsageReceipt
+from apps.utils.models import PurchaseReceipt, GiftReceipt, UsageReceipt
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import user_passes_test
@@ -110,10 +110,12 @@ def grant_product_view(request, pk):
 
 @user_passes_test(is_shopkeeper)
 def purchase_list_view(request):
-    receipts = PurchaseReceipt.objects.select_related("user", "product").all()
+    purchases = PurchaseReceipt.objects.select_related("user", "product").all()
+    gifts = GiftReceipt.objects.select_related("user", "product").all()
 
     return render(request, "shopkeeper/purchase_list.html", {
-        "receipts": receipts
+        "purchases": purchases
+        "gifts": gifts
     })
 
 

@@ -28,7 +28,7 @@
             </thead>
 
             <tbody>
-                {% for r in receipts %}
+                {% for r in purchases %}
                 <tr>
                     <td>{{ r.code }}</td>
                     <td>#{{ r.user.pk }} ({{ r.user.username }})</td>
@@ -47,6 +47,47 @@
 
         <div>
             <p colspan="5" class="text-center">Los recibos de compras se eliminarán al pasar 30 días</p>
+        </div>
+    </div>
+
+    <!-- Gifts receipts list -->
+    <div>
+        <h2>Recibos de regalo</h2>
+
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Usuario</th>
+                    <th>Producto</th>
+                    <th>Tipo</th>
+                    <th>Precio</th>
+                    <th>Fecha</th>
+                    <th>Destinatario</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for r in gifts %}
+                <tr>
+                    <td>{{ r.code }}</td>
+                    <td>#{{ r.user.pk }} ({{ r.user.username }})</td>
+                    <td>{% if r.product %}{{ r.product.name }}{% else %}—{% endif %}</td>
+                    <td>{{ r.get_purchase_type_display }}</td>
+                    <td>{{ r.price }}</td>
+                    <td>{{ r.created_at }}</td>
+                    <td>{{ r.receiver }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">No hay recibos de regalos.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div>
+            <p colspan="5" class="text-center">Los recibos de regalos se eliminarán al pasar 30 días</p>
         </div>
     </div>
 </main>

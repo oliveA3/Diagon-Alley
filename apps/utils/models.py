@@ -13,6 +13,8 @@ class Notification(models.Model):
 class BaseReceipt(models.Model):
     code = models.CharField(max_length=8, unique=True)
     user = models.ForeignKey('users.CustomUser', on_delete=models.CASCADE)
+    product = models.ForeignKey(
+        'stores.Product', on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateField(auto_now_add=True)
 
     class Meta:
@@ -20,15 +22,12 @@ class BaseReceipt(models.Model):
 
 
 class PurchaseReceipt(BaseReceipt):
-    product = models.ForeignKey(
-        'stores.Product', on_delete=models.SET_NULL, null=True, blank=True)
+    price = models.PositiveIntegerField()
+
+
+class GiftReceipt(BaseReceipt):
     price = models.PositiveIntegerField()
     
-    PURCHASE_TYPES = {
-        'purchase': 'Compra',
-        'gift': 'Regalo',
-    }
-    purchase_type = models.CharField(choices=PURCHASE_TYPES)
     receiver = models.ForeignKey(
         'users.CustomUser',
         on_delete=models.SET_NULL,
@@ -37,8 +36,5 @@ class PurchaseReceipt(BaseReceipt):
         related_name='gift_receipts'
     )
 
-
 class UsageReceipt(BaseReceipt):
-    product = models.ForeignKey(
-        'stores.Product', on_delete=models.SET_NULL, null=True)
     uses_left = models.PositiveIntegerField()

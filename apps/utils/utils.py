@@ -51,15 +51,27 @@ def generate_notification(user: CustomUser, message: str):
     )
 
 
-def generate_purchase_receipt(user: CustomUser, product: Product, p_type: str, price: int):
+def generate_purchase_receipt(user: CustomUser, product: Product, price: int):
     receipt_code = str(uuid.uuid4())[:8].upper()
 
     receipt = PurchaseReceipt.objects.create(
         code=receipt_code,
         user=user,
         product_id=product.id,
-        purchase_type=p_type,
         price=price
+    )
+
+    return receipt
+
+def generate_gift_receipt(user: CustomUser, product: Product, price: int, receiver: CustomUser):
+    receipt_code = str(uuid.uuid4())[:8].upper()
+
+    receipt = PurchaseReceipt.objects.create(
+        code=receipt_code,
+        user=user,
+        product_id=product.id,
+        price=price,
+        receiver=receiver
     )
 
     return receipt

@@ -113,7 +113,7 @@ def purchase_gift_list_view(request):
     purchases = PurchaseReceipt.objects.select_related("user", "product").all()
     gifts = GiftReceipt.objects.select_related("user", "product").all()
 
-    return render(request, "shopkeeper/purchase_list.html", {
+    return render(request, "shopkeeper/purchase_gift_list.html", {
         "purchases": purchases,
         "gifts": gifts
     })

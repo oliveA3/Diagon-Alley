@@ -23,6 +23,7 @@ def purchase_premium(request, account: BankAccount, duration_days: int):
             account.duration_days = duration_days
             account.upgraded_at = timezone.now()
             account.balance -= price
+            account.is_frozen = False
             account.save()
 
             string = "3 meses" if duration_days == 90 else "6 meses"

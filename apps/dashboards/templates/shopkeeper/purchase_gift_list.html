@@ -76,7 +76,7 @@
                     <td>{{ r.get_purchase_type_display }}</td>
                     <td>{{ r.price }}</td>
                     <td>{{ r.created_at }}</td>
-                    <td>{{ r.receiver }}</td>
+                    <td>#{{ r.receiver.pk }} ({{ r.receiver.username }})</td>
                 </tr>
                 {% empty %}
                 <tr>

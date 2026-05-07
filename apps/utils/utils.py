@@ -1,7 +1,7 @@
 import uuid
 from apps.users.models import CustomUser
 from apps.stores.models import Product, InventoryItem
-from .models import PurchaseReceipt, UsageReceipt
+from .models import PurchaseReceipt, GiftReceipt, UsageReceipt
 from apps.bank.models import BankAccount
 from datetime import datetime
 from .models import Notification

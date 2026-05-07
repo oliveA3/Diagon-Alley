@@ -92,34 +92,37 @@
                 Asimismo, el perfil incluye las opciones de edición de datos, cambio de contraseña y cierre de sesión.
             </p>
 
-            <p>
-                En esta misma sección se encuentra el <a class="dark-link" href="{% url 'profile' %}#inventory">inventario
-                    personal</a>, donde se listan todos los productos adquiridos
-                junto
-                con
-                su información: fecha de compra, fecha de vencimiento, usos restantes (cuando aplique) y descripción. El
-                inventario
-                dispone además de un buscador para facilitar la localización de productos.
-            </p>
+            <section>
+                <h3 class="third-title">Inventario</h3>
+                <p>
+                    En esta misma sección se encuentra el <a class="dark-link" href="{% url 'profile' %}#inventory">inventario
+                        personal</a>, donde se listan todos los productos adquiridos
+                    junto
+                    con
+                    su información: fecha de compra, fecha de vencimiento, usos restantes (cuando aplique) y descripción. El
+                    inventario
+                    dispone además de un buscador para facilitar la localización de productos.
+                </p>
 
-            <p>
-                Los productos pueden clasificarse en dos tipos. Por un lado, aquellos que generan efectos durante un período
-                de
-                tiempo determinado (por ejemplo: el escarbato otorga descuentos durante una copa, la lechuza aumenta los
-                puntos
-                en
-                bibliotecas y el gato influye en dinámicas).
-                <br>Por otro lado, existen productos de uso puntual. Para
-                utilizarlos,
-                el
-                usuario debe acceder al <a class="dark-link" href="{% url 'profile' %}#inventory">inventario</a>,
-                seleccionar la opción “usar” y obtener un ticket de uso, al cual debe
-                hacersele captura de pantalla y presentarlo en la actividad correspondiente. Tras su uso, el producto
-                permanecerá en el
-                inventario
-                con un
-                uso menos, en caso de que sea reutilizable.
-            </p>
+                <p>
+                    Los productos pueden clasificarse en dos tipos. Por un lado, aquellos que generan efectos durante un período
+                    de
+                    tiempo determinado (por ejemplo: el escarbato otorga descuentos durante una copa, la lechuza aumenta los
+                    puntos
+                    en
+                    bibliotecas y el gato influye en dinámicas).
+                    <br>Por otro lado, existen productos de uso puntual. Para
+                    utilizarlos,
+                    el
+                    usuario debe acceder al <a class="dark-link" href="{% url 'profile' %}#inventory">inventario</a>,
+                    seleccionar la opción “usar” y obtener un ticket de uso, al cual debe
+                    hacersele captura de pantalla y presentarlo en la actividad correspondiente. Tras su uso, el producto
+                    permanecerá en el
+                    inventario
+                    con un
+                    uso menos, en caso de que sea reutilizable.
+                </p>
+            </section>
 
             <hr class="line" style="border-color:grey">
         </section>

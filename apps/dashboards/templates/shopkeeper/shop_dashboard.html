@@ -59,6 +59,7 @@
                     <table class="table table-sm">
                         <thead>
                             <tr>
+                                <th>ID</th>
                                 <th>Nombre</th>
                                 <th>Precio</th>
                                 <th>Duración</th>
@@ -71,6 +72,7 @@
                         <tbody>
                             {% for product in store.products.all %}
                             <tr>
+                                <td>{{ product.pk }}</td>
                                 <td>{{ product.name }}</td>
                                 <td>{{ product.price }}</td>
 

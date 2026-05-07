@@ -21,7 +21,6 @@
                     <th>Código</th>
                     <th>Usuario</th>
                     <th>Producto</th>
-                    <th>Tipo</th>
                     <th>Precio</th>
                     <th>Fecha</th>
                 </tr>
@@ -33,7 +32,6 @@
                     <td>{{ r.code }}</td>
                     <td>#{{ r.user.pk }} ({{ r.user.username }})</td>
                     <td>{% if r.product %}{{ r.product.name }}{% else %}—{% endif %}</td>
-                    <td>{{ r.get_purchase_type_display }}</td>
                     <td>{{ r.price }}</td>
                     <td>{{ r.created_at }}</td>
                 </tr>
@@ -60,7 +58,6 @@
                     <th>Código</th>
                     <th>Usuario</th>
                     <th>Producto</th>
-                    <th>Tipo</th>
                     <th>Precio</th>
                     <th>Fecha</th>
                     <th>Destinatario</th>
@@ -73,7 +70,6 @@
                     <td>{{ r.code }}</td>
                     <td>#{{ r.user.pk }} ({{ r.user.username }})</td>
                     <td>{% if r.product %}{{ r.product.name }}{% else %}—{% endif %}</td>
-                    <td>{{ r.get_purchase_type_display }}</td>
                     <td>{{ r.price }}</td>
                     <td>{{ r.created_at }}</td>
                     <td>#{{ r.receiver.pk }} ({{ r.receiver.username }})</td>

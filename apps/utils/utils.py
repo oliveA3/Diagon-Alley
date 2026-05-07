@@ -66,7 +66,7 @@ def generate_purchase_receipt(user: CustomUser, product: Product, price: int):
 def generate_gift_receipt(user: CustomUser, product: Product, price: int, receiver: CustomUser):
     receipt_code = str(uuid.uuid4())[:8].upper()
 
-    receipt = PurchaseReceipt.objects.create(
+    receipt = GiftReceipt.objects.create(
         code=receipt_code,
         user=user,
         product_id=product.id,

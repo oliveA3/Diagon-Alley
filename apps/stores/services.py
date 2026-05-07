@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 from .models import Store, Product, WarehouseItem, InventoryItem
 from apps.users.models import CustomUser
 from apps.utils import utils
+from apps.utils.models import Notification
 from django.db import transaction as db_transaction
 from apps.bank.models import BankAccount
 from django.db.models import Max

@@ -100,8 +100,8 @@ def gift_product(request, sender_account: BankAccount, receiver: CustomUser, pro
         with db_transaction.atomic():
             if add_product_to_inventory(request, receiver, product):
                 sender_account.balance -= total_cost
-                utils.generate_purchase_receipt(sender_account.user, product, 'gift', total_cost)
                 sender_account.last_pur_date = timezone.now().date()
+                utils.generate_purchase_receipt(sender_account.user, product, total_cost, 'gift', receiver)
 
                 if sender_account.is_frozen:
                     sender_account.is_frozen = False

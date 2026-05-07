@@ -22,13 +22,20 @@ class BaseReceipt(models.Model):
 class PurchaseReceipt(BaseReceipt):
     product = models.ForeignKey(
         'stores.Product', on_delete=models.SET_NULL, null=True, blank=True)
+    price = models.PositiveIntegerField()
     
     PURCHASE_TYPES = {
         'purchase': 'Compra',
         'gift': 'Regalo',
     }
     purchase_type = models.CharField(choices=PURCHASE_TYPES)
-    price = models.PositiveIntegerField()
+    receiver = models.ForeignKey(
+        'users.CustomUser',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='gift_receipts'
+    )
 
 
 class UsageReceipt(BaseReceipt):

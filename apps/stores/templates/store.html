@@ -20,13 +20,22 @@
             {% elif store.name == "Ollivander's" %}
             Usa el emoji ➖ para representar varitas en actividades del colegio.
             {% endif %}
-        </p>
 
-        <small>Consulta desde tu <a class="dark-link" href="{% url 'profile' %}#inventory">inventario</a> los artículos que has comprado en las tiendas.</small>
+            <small>
+                Consulta desde tu <a class="dark-link" href="{% url 'profile' %}#inventory">inventario</a> los artículos que has comprado en las tiendas.
+            </small>
+        </p>
     </div>
 
     <!-- Store products (warehouse) -->
-    {% include "store_products.html" %}
+    {% for item in warehouse_items %}
+    {% include "store_product.html" %}
+    {% empty %}
+    <div class="empty-container">
+        <img src="{% static 'imgs/No productos.png' %}" alt="No hay productos disponibles">
+    </div>
+    {% endfor %}
+
 </main>
 {% endblock %}
 

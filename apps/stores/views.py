@@ -28,6 +28,9 @@ def store_view(request, store_id):
 
     working_hours = utils.working_hours()
 
+    if store.name == 'Honeydukes':
+        warehouse_items = warehouse_items.filter(available=True)
+
     context = {
         'store': store,
         'warehouse_items': warehouse_items,

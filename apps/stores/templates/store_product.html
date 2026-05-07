@@ -1,7 +1,6 @@
 {% load discount_tag %}
 {% load static %}
 
-{% for item in warehouse_items %}
 <div class="product-card">
     <div class="card-left">
         <div class="product-image-placeholder">
@@ -68,9 +67,3 @@
         </form>
     </div>
 </div>
-
-{% empty %}
-<div class="empty-container">
-    <img src="{% static 'imgs/No productos.png' %}" alt="No hay productos disponibles">
-</div>
-{% endfor %}

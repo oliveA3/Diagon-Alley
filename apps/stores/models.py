@@ -47,7 +47,7 @@ class Product(models.Model):
     ]
     product_type = models.CharField(max_length=20, choices=PRODUCT_TYPES, default='misc')
 
-    duration_days = models.PositiveIntegerField(blank=True, null=True)
+    duration_days = models.PositiveIntegerField()
 
     # For wands and brooms depends on the product, for wheezes = 1
     uses = models.PositiveIntegerField(null=True, blank=True)

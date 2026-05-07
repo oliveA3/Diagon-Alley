@@ -11,6 +11,7 @@ from .banker_services import bulk_add, update_account
 from django.contrib.auth.decorators import login_required
 from .forms import StoreUpdateForm, ProductCreationForm, ProductUpdateForm
 from .shop_services import grant_product
+from django.db import transaction as db_transaction
 
 # SHOPKEEPER DASHBOARD
 

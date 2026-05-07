@@ -3,6 +3,7 @@ from apps.users.models import CustomUser
 from apps.stores.models import Store, Product, WarehouseItem, InventoryItem
 from django.contrib import messages
 from datetime import date
+from django.db import transaction as db_transaction
 
 
 def grant_product(request, user: CustomUser, product: Product):

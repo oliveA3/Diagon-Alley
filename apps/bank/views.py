@@ -54,14 +54,20 @@ def transactions_view(request):
     # Execute transaction
     if request.method == "POST":
         sender = request.user
+        amount = request.POST.get("amount")
         receiver_id = request.POST.get("receiver_id")
-        receiver = get_object_or_404(CustomUser, id=receiver_id)
-        amount = int(request.POST.get("amount"))
 
-        tx = Transaction(sender=sender, receiver=receiver, amount=amount)
+        if amount and receiver_id:
+            receiver = get_object_or_404(CustomUser, id=receiver_id)
+            amount = int(amount)
 
-        execute_transaction(request, sender.bank_account,
-                            receiver.bank_account, amount, tx)
+            tx = Transaction(sender=sender, receiver=receiver, amount=amount)
+
+            execute_transaction(request, sender.bank_account,
+                                receiver.bank_account, amount, tx)
+
+        else:
+            messages.error(request, "Debes seleccionar la cuenta a la que quieres transferir y la cantidad de galeones.")
 
         return redirect("transactions")
 

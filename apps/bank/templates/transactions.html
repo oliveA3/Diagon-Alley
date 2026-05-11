@@ -31,8 +31,7 @@
                 <input type="number" name="amount" id="amount" class="form-input" required>
             </div>
 
-            <button type="button" class="btn btn-primary" 
-                data-title="Confirmación de transferencia"
+            <button type="button" class="btn btn-primary" data-title="Confirmación de transferencia"
                 onclick="return prepareConfirm(this)">
                 Transferir
             </button>
@@ -68,8 +67,12 @@
         const receiverName = receiverInput.value;
         const amount = amountInput.value;
 
-        button.setAttribute("data-message",
-            `¿Deseas transferir ${amount} galeones a la cuenta Nº${receiverName}? (Esta acción es irreversible)`);
+        button.setAttribute(
+            "data-message",
+            receiverName
+                ? `¿Deseas transferir ${amount} galeones a la cuenta Nº${receiverName}? (Esta acción es irreversible)`
+                : `¿Deseas transferir ${amount} galeones? (Esta acción es irreversible)`
+        );
         showConfirm(button);
     }
 </script>

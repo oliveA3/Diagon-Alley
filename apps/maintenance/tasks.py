@@ -23,7 +23,12 @@ def clear_inventory():
 def reset_stock():
     for item in WarehouseItem.objects.all():
         if item.stock:
-            item.stock = 10
+            if item.id == 15: # Libro Mordedor
+                item.stock = 10
+            
+            elif item.id == 18: # Pergamino Inservible
+                item.stock = 15
+            
             item.available = True
             item.save()
 

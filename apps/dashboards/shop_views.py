@@ -110,8 +110,8 @@ def grant_product_view(request, pk):
 
 @user_passes_test(is_shopkeeper)
 def purchase_gift_list_view(request):
-    purchases = PurchaseReceipt.objects.select_related("user", "product").all()
-    gifts = GiftReceipt.objects.select_related("user", "product").all()
+    purchases = PurchaseReceipt.objects.select_related("user", "product").order_by("-created_at")
+    gifts = GiftReceipt.objects.select_related("user", "product").order_by("-created_at")
 
     return render(request, "shopkeeper/purchase_gift_list.html", {
         "purchases": purchases,
@@ -121,7 +121,7 @@ def purchase_gift_list_view(request):
 
 @user_passes_test(is_shopkeeper)
 def usage_list_view(request):
-    receipts = UsageReceipt.objects.select_related("user", "product").all()
+    receipts = UsageReceipt.objects.select_related("user", "product").order_by("-created_at")
 
     return render(request, "shopkeeper/usage_list.html", {
         "receipts": receipts

@@ -7,6 +7,7 @@ from .models import Store, Product, WarehouseItem, InventoryItem
 from .services import purchase_product, gift_product
 from apps.utils import utils
 from django.utils import timezone
+from django.contrib import messages
 
 
 def store_view(request, store_id):
@@ -48,10 +49,15 @@ def gift_view(request, product_id):
 
     if request.method == "POST":
         receiver_id = request.POST.get("receiver_id")
-        receiver = get_object_or_404(CustomUser, id=receiver_id)
-        sender = get_object_or_404(BankAccount, user=request.user.id)
 
-        gift_product(request, sender, receiver, product_id, discount)
+        if receiver_id:
+            receiver = get_object_or_404(CustomUser, id=receiver_id)
+            sender = get_object_or_404(BankAccount, user=request.user.id)
+
+            gift_product(request, sender, receiver, product_id, discount)
+
+        else:
+            messages.error(request, f"Debes seleccionar a quién le vas a regalar el artículo.")
 
         return redirect("store", store_id=product.store_id)
 

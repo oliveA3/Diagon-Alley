@@ -93,10 +93,10 @@
                                 </td>
 
                                 <td>
-                                    {% if product.warehouse_item.stock %}
-                                    {{ product.warehouse_item.stock }}
+                                    {% if product.warehouse_item.stock is not None %}
+                                        {{ product.warehouse_item.stock }}
                                     {% else %}
-                                    ̶
+                                        ̶
                                     {% endif %}
                                 </td>
 

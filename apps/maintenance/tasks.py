@@ -26,7 +26,7 @@ def reset_stock():
             if item.id == 15: # Libro Mordedor
                 item.stock = 10
             
-            elif item.id == 18: # Pergamino Inservible
+            elif item.id == 16: # Pluma Invisible
                 item.stock = 15
             
             item.available = True

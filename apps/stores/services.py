@@ -18,7 +18,7 @@ def add_product_to_inventory(request, user: CustomUser, product: Product):
         user_id=user.id, product_id=product.id).first()
     added = False
 
-    if warehouse_i and warehouse_i.available:
+    if warehouse_i.available:
         # It's already in the inventory
         if inventory_i:
             if product.product_type in ['broom', 'wand']:
@@ -54,6 +54,11 @@ def add_product_to_inventory(request, user: CustomUser, product: Product):
             if warehouse_i.stock == 0:
                 warehouse_i.available = False
             warehouse_i.save()
+        return added
+
+    elif warehouse_i.stock == 0:
+        messages.error(
+            request, "Este artículo se ha agotado por hoy.")
         return added
 
     else:

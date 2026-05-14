@@ -22,11 +22,11 @@ def clear_inventory():
 # Reset stock to 10 on WarehouseItems (reset every day)
 def reset_stock():
     for item in WarehouseItem.objects.all():
-        if item.stock:
-            if item.id == 15: # Libro Mordedor
+        if item.stock is not None:
+            if item.product_id == 15: # Libro Mordedor
                 item.stock = 10
             
-            elif item.id == 16: # Pluma Invisible
+            elif item.product_id == 16: # Pluma Invisible
                 item.stock = 15
             
             item.available = True

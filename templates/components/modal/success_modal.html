@@ -8,7 +8,7 @@
             <div class="modal-body" id="successModalBody">
             {% for message in messages %}
             {% if "success" in message.tags %}
-            {{ message }}
+            {{ message|safe }}
             <br>
             {% endif %}
             {% endfor %}

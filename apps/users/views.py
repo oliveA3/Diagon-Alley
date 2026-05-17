@@ -12,6 +12,7 @@ from apps.utils.models import Notification
 from .models import CustomUser
 from apps.utils import utils
 from django.db import transaction as db_transaction
+from .services import use_inventory_item, filter_inventory
 
 User = get_user_model()
 
@@ -68,7 +69,7 @@ def login_view(request):
 
 # Profile views for students
 
-@login_required
+@login_required(login_url='/users/login/')
 def profile_view(request):
     user = request.user
     bank_account = get_object_or_404(BankAccount, user_id=user.id)
@@ -99,14 +100,7 @@ def profile_view(request):
     # Use inventory item
     if request.method == 'POST':
         item_id = request.POST.get('item_id')
-        item = get_object_or_404(InventoryItem, id=item_id)
-        result = item.use()
-
-        receipt = utils.generate_usage_receipt(user, item)
-        usage_message = utils.generate_usage_message(receipt)
-
-        if result == 'deleted':
-            usage_message += "\n\nEl artículo no tiene más usos, \npor lo que se ha eliminado \nde su inventario."
+        usage_message = use_inventory_item(item_id, user)
 
     context = {
         'user': user,
@@ -124,7 +118,7 @@ def profile_view(request):
     return render(request, 'profile/profile.html', context)
 
 
-@login_required
+@login_required(login_url='/users/login/')
 def notifications_view(request):
     notifications = Notification.objects.filter(
         user=request.user).order_by('-created_at')
@@ -149,7 +143,7 @@ def notifications_view(request):
     return render(request, 'profile/notifications.html', context)
 
 
-@login_required
+@login_required(login_url='/users/login/')
 def house_stats_view(request):
     user = request.user
     users_with_wands = CustomUser.objects.filter(
@@ -169,7 +163,7 @@ def house_stats_view(request):
     })
 
 
-@login_required
+@login_required(login_url='/users/login/')
 def edit_profile_view(request):
     user = request.user
 
@@ -194,7 +188,7 @@ def edit_profile_view(request):
     return render(request, 'profile/edit_profile.html', context)
 
 
-@login_required
+@login_required(login_url='/users/login/')
 def update_password_view(request):
     user = request.user
 

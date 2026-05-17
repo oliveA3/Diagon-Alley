@@ -8,8 +8,9 @@ from .services import purchase_product, gift_product
 from apps.utils import utils
 from django.utils import timezone
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
-
+@login_required(login_url='/users/login/')
 def store_view(request, store_id):
     store = get_object_or_404(Store, id=store_id)
     warehouse_items = WarehouseItem.objects.select_related(
@@ -42,6 +43,7 @@ def store_view(request, store_id):
     return render(request, 'store.html', context)
 
 
+@login_required(login_url='/users/login/')
 def gift_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     accounts = BankAccount.objects.exclude(user=request.user)
@@ -68,6 +70,7 @@ def gift_view(request, product_id):
     return render(request, "gift.html", context)
 
 
+@login_required(login_url='/users/login/')
 def product_owners_view(request, product_id):
     users = CustomUser.objects.filter(
         inventory_items__product_id=product_id

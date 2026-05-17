@@ -73,7 +73,7 @@ def create_product_view(request, store_id):
     return render(request, "shopkeeper/forms/product_form.html", {"form": form, "store": store})
 
 
-@login_required
+@login_required(login_url='/users/login/')
 def update_product_view(request, pk):
     product = get_object_or_404(Product, pk=pk)
     if request.method == "POST":

@@ -1,5 +1,7 @@
 from datetime import date
 from django.contrib import messages
+from django.utils.safestring import mark_safe
+from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from .models import Store, Product, WarehouseItem, InventoryItem
 from apps.users.models import CustomUser
@@ -90,8 +92,12 @@ def purchase_product(request, user, account, product: Product, discount):
                     account.is_frozen = False
                 account.save()
 
-                messages.success(
-                    request, f"Has comprado {product.name} por {price_to_pay} galeones.")
+                msg = f"Has comprado {product.name} por {price_to_pay} galeones."
+                if product.uses:
+                    link = reverse('profile') + '#inventory'
+                    msg += mark_safe(f'\nPara usar el artículo dirígete al <a href="{link}" class="dark-link">inventario</a> en tu perfil.')
+
+                messages.success(request, msg)
     else:
         messages.error(
             request, "No tienes suficientes galeones para comprar este artículo.")

@@ -86,7 +86,7 @@
             </button>
         </form>
 
-        {% if not wands and not brooms and not pets and not wheezes %}
+        {% if not wands and not brooms and not pets and not wheezes and not misc %}
         <p>No tienes artículos en tu inventario{% if query %} que coincidan con "{{ query }}"{% endif %}.</p>
         {% else %}
 
@@ -95,7 +95,7 @@
             <h4 class="category-title">Varitas</h4>
             <div class="inventory-grid d-flex flex-wrap gap-3">
                 {% for item in wands %}
-                {% include "profile/inventory_section.html" with item=item %}
+                {% include "profile/inventory_item.html" with item=item %}
                 {% empty %}
                 <p class="empty-text">No tienes varitas en tu inventario{% if query %} que coincidan con "{{ query }}"
                     {%endif %}.</p>
@@ -108,7 +108,7 @@
             <h4 class="category-title">Escobas</h4>
             <div class="inventory-grid d-flex flex-wrap gap-3">
                 {% for item in brooms %}
-                {% include "profile/inventory_section.html" with item=item %}
+                {% include "profile/inventory_item.html" with item=item %}
                 {% empty %}
                 <p class="empty-text">No tienes escobas en tu inventario{% if query %} que coincidan con "{{ query }}"
                     {% endif %}.</p>
@@ -121,7 +121,7 @@
             <h4 class="category-title">Mascotas</h4>
             <div class="inventory-grid d-flex flex-wrap gap-3">
                 {% for item in pets %}
-                {% include "profile/inventory_section.html" with item=item %}
+                {% include "profile/inventory_item.html" with item=item %}
                 {% empty %}
                 <p class="empty-text">No has comprado ninguna mascota{% if query %} que coincida con "{{ query }}"
                     {% endif %}.
@@ -135,7 +135,7 @@
             <h4 class="category-title">Sortilegios</h4>
             <div class="inventory-grid d-flex flex-wrap gap-3">
                 {% for item in wheezes %}
-                {% include "profile/inventory_section.html" with item=item %}
+                {% include "profile/inventory_item.html" with item=item %}
                 {% empty %}
                 <p class="empty-text">No tienes artículos de Sortilegios Weasley en tu inventario{% if query %} que
                     coincidan con "{{ query}}"
@@ -144,6 +144,18 @@
                 {% endfor %}
             </div>
         </div>
+
+        <!-- Misc -->
+        {% if misc %}
+        <div class="category-block mb-4">
+            <h4 class="category-title">Miscelaneos</h4>
+            <div class="inventory-grid d-flex flex-wrap gap-3">
+                {% for item in misc %}
+                {% include "profile/inventory_item.html" with item=item %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
 
         {% endif %}
     </section>

@@ -84,6 +84,8 @@ def profile_view(request):
         user_id=user.id, product__product_type='pet')
     wheezes = InventoryItem.objects.select_related('product').filter(
         user_id=user.id, product__product_type='wheezes')
+    misc = InventoryItem.objects.select_related('product').filter(
+        user_id=user.id, product__product_type='misc')
 
     # Search by name
     query = request.GET.get("q")
@@ -92,6 +94,7 @@ def profile_view(request):
         brooms = brooms.filter(product__name__icontains=query)
         pets = pets.filter(product__name__icontains=query)
         wheezes = wheezes.filter(product__name__icontains=query)
+        misc = misc.filter(product__name__icontains=query)
 
     usage_message = None
     pending_loans = Loan.objects.filter(
@@ -110,6 +113,7 @@ def profile_view(request):
         'brooms': brooms,
         'pets': pets,
         'wheezes': wheezes,
+        'misc': misc,
         'query': query,
         'usage_message': usage_message,
         'pending_loans': pending_loans,

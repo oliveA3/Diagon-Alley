@@ -40,6 +40,16 @@ def add_product_to_inventory(request, user: CustomUser, product: Product):
                         request, f"Este artículo ya está en el inventario de {user.username} y no es acumulable.")
                 return added
 
+            elif product.product_type == 'misc':
+                if product.stackable and product.uses:
+                    inventory_i.uses += product.uses
+                    inventory_i.pur_date = date.today()
+                    inventory_i.save()
+                
+                else:
+                    messages.error(
+                        request, f"Solo puedes tener uno de estos artículos en tu inventario.")
+
         # Not in the inventory
         else:
             InventoryItem.objects.create(

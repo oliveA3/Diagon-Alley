@@ -68,6 +68,7 @@ def add_product_to_inventory(request, user: CustomUser, product: Product):
             if warehouse_i.stock == 0:
                 warehouse_i.available = False
             warehouse_i.save()
+        
         return added
 
     elif warehouse_i.stock == 0:

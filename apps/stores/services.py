@@ -45,6 +45,8 @@ def add_product_to_inventory(request, user: CustomUser, product: Product):
                     inventory_i.uses += product.uses
                     inventory_i.pur_date = date.today()
                     inventory_i.save()
+
+                    added = True
                 
                 else:
                     messages.error(

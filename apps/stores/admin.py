@@ -12,7 +12,7 @@ class ProductAdmin(admin.ModelAdmin):
             WarehouseItem.objects.create(
                 product=obj,
                 store=obj.store,
-                stock=None,          # puedes inicializar stock en 0 o lo que quieras
+                stock=None,
                 available=True
             )
 

@@ -114,7 +114,6 @@ class StudentLoginForm(forms.Form):
         password = self.cleaned_data.get('password')
         if not password.isdigit():
             self.add_error('password', "La llave debe contener solo números.")
-            raise forms.ValidationError("La llave es numérica.")
 
         return cleaned_data
 

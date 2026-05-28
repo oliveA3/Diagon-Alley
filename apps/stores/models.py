@@ -15,11 +15,13 @@ STORE_PRODUCT_MAP = {
     4: 'misc',
 }
 
+
 class Store(models.Model):
     name = models.CharField(max_length=150)
     description = models.TextField()
-    discount = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
-    
+    discount = models.DecimalField(
+        max_digits=4, decimal_places=2, blank=True, null=True)
+
     def __str__(self):
         return self.name
 
@@ -37,7 +39,7 @@ class Product(models.Model):
     store = models.ForeignKey(
         Store, on_delete=models.CASCADE, related_name='products'
     )
-    
+
     PRODUCT_TYPES = [
         ('broom', 'Escoba'),
         ('pet', 'Mascota'),
@@ -45,7 +47,8 @@ class Product(models.Model):
         ('wheezes', 'Sortilegios'),
         ('misc', 'Miscelaneos'),
     ]
-    product_type = models.CharField(max_length=20, choices=PRODUCT_TYPES, default='misc')
+    product_type = models.CharField(
+        max_length=20, choices=PRODUCT_TYPES, default='misc')
 
     duration_days = models.PositiveIntegerField()
 
@@ -102,7 +105,7 @@ class WarehouseItem(models.Model):
     )
     stock = models.PositiveIntegerField(blank=True, null=True)
     available = models.BooleanField(default=True)
-    
+
     @property
     def current_price(self):
         if self.store.discount:
@@ -111,7 +114,6 @@ class WarehouseItem(models.Model):
 
     def __str__(self):
         return f"{self.product.name} en {self.store.name} - ({'Disponible' if self.available else 'Agotado'})"
-    
 
 
 class InventoryItem(models.Model):

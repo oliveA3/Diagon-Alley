@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from .models import CustomUser
+from django.core.validators import RegexValidator
 
 HOUSE_CHOICES = [
     ('gryffindor', 'Gryffindor'),
@@ -14,13 +15,15 @@ HOUSE_CHOICES = [
 
 class StudentRegistrationForm(forms.ModelForm):
     password = forms.CharField(
-        widget=forms.PasswordInput(attrs={'maxlength': 4}),
+        max_length=4,
         min_length=4,
-        label="Llave (PIN de 4 dígitos):"
+        widget=forms.PasswordInput(attrs={'inputmode': 'numeric'}),
+        label="Llave (PIN de 4 dígitos):",
     )
     confirm_password = forms.CharField(
-        widget=forms.PasswordInput(attrs={'maxlength': 4}),
+        max_length=4,
         min_length=4,
+        widget=forms.PasswordInput(attrs={'inputmode': 'numeric'}),
         label="Confirma tu llave:"
     )
 
@@ -54,7 +57,6 @@ class StudentRegistrationForm(forms.ModelForm):
             'title': 'Asegúrate de utilizar un nombre mágico con el que seas identificable en WhatsApp.'
         })
 
-
     def clean_username(self):
         username = self.cleaned_data.get('username')
         if " " in username:
@@ -83,23 +85,38 @@ class StudentRegistrationForm(forms.ModelForm):
         confirm = self.cleaned_data.get('confirm_password')
 
         if not password.isdigit() or not confirm.isdigit():
+            self.add_error('password', "La llave debe contener solo números.")
             raise forms.ValidationError("La llave debe contener solo números.")
 
         if password and confirm and password != confirm:
             self.add_error("confirm_password", "Las llaves no coinciden.")
+            raise forms.ValidationError("Las llaves no coinciden.")
 
         return cleaned_data
 
 
 class StudentLoginForm(forms.Form):
     username = forms.CharField(label="Nombre de usuario", max_length=150)
-    password = forms.CharField(label="Llave", widget=forms.PasswordInput)
+    password = forms.CharField(label="Llave",
+                               max_length=4,
+                               min_length=4,
+                               widget=forms.PasswordInput(attrs={'inputmode': 'numeric'}),)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'form-control'})
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        password = self.cleaned_data.get('password')
+        if not password.isdigit():
+            self.add_error('password', "La llave debe contener solo números.")
+            raise forms.ValidationError("La llave es numérica.")
+
+        return cleaned_data
 
 
 # PROFILE OPTIONS

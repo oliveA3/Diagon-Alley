@@ -47,7 +47,7 @@ def add_product_to_inventory(request, user: CustomUser, product: Product):
                     inventory_i.save()
 
                     added = True
-                
+
                 else:
                     messages.error(
                         request, f"Solo puedes tener uno de estos artículos en tu inventario.")
@@ -68,7 +68,7 @@ def add_product_to_inventory(request, user: CustomUser, product: Product):
             if warehouse_i.stock == 0:
                 warehouse_i.available = False
             warehouse_i.save()
-        
+
         return added
 
     elif warehouse_i.stock == 0:
@@ -108,7 +108,8 @@ def purchase_product(request, user, account, product: Product, discount):
                 msg = f"Has comprado {product.name} por {price_to_pay} galeones."
                 if product.uses:
                     link = reverse('profile') + '#inventory'
-                    msg += mark_safe(f'\nPara usar el artículo dirígete al <a href="{link}" class="dark-link">inventario</a> en tu perfil.')
+                    msg += mark_safe(
+                        f'\nPara usar el artículo dirígete al <a href="{link}" class="dark-link">inventario</a> en tu perfil.')
 
                 messages.success(request, msg)
     else:
@@ -126,7 +127,8 @@ def gift_product(request, sender_account: BankAccount, receiver: CustomUser, pro
             if add_product_to_inventory(request, receiver, product):
                 sender_account.balance -= total_cost
                 sender_account.last_pur_date = timezone.now().date()
-                utils.generate_gift_receipt(sender_account.user, product, total_cost, receiver)
+                utils.generate_gift_receipt(
+                    sender_account.user, product, total_cost, receiver)
 
                 if sender_account.is_frozen:
                     sender_account.is_frozen = False

@@ -98,30 +98,30 @@ def reset_weekly_transactions():
 
 # Delete transactions 30 days after the creation date (check every day)
 def delete_old_transactions():
-    cutoff = timezone.now().date() - timedelta(days=30)
+    cutoff = timezone.now().date() - timedelta(days=45)
     Transaction.objects.filter(created_at__lte=cutoff).delete()
 
 
 # Delete paid loans after 30 days (every month)
 def delete_paid_loans():
     today = timezone.now().date()
-    cutoff = today - timedelta(days=30)
+    cutoff = today - timedelta(days=45)
     Loan.objects.filter(state='paid', paid_date__lte=cutoff).delete()
 
 
 # Delete purchase receipts after 30 days
 def delete_old_purchase_receipts():
-    cutoff = timezone.now().date() - timedelta(days=30)
+    cutoff = timezone.now().date() - timedelta(days=45)
     PurchaseReceipt.objects.filter(created_at__lte=cutoff).delete()
 
 
 # Delete usage receipts after 30 days
 def delete_old_usage_receipts():
-    cutoff = timezone.now().date() - timedelta(days=30)
+    cutoff = timezone.now().date() - timedelta(days=45)
     UsageReceipt.objects.filter(created_at__lte=cutoff).delete()
 
 
 # Delete notifications after two weeks (check every day)
 def delete_notifications():
-    cutoff = timezone.now().date() - timedelta(days=14)
+    cutoff = timezone.now().date() - timedelta(days=20)
     Notification.objects.filter(created_at__lte=cutoff).delete()

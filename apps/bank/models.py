@@ -15,7 +15,7 @@ class BankAccount(models.Model):
 
     balance = models.IntegerField(default=20)
     last_pur_date = models.DateField(null=True, blank=True)
-    
+
     is_frozen = models.BooleanField(default=False)
     frozen_date = models.DateField(null=True, blank=True)
 
@@ -24,11 +24,12 @@ class BankAccount(models.Model):
         ('premium', 'Premium'),
         ('vip', 'VIP'),
     ]
-    account_type = models.CharField(choices=ACCOUNT_TYPES, default='standard')
+    account_type = models.CharField(
+        max_length=150, choices=ACCOUNT_TYPES, default='standard')
 
     created_at = models.DateField(auto_now_add=True)
     upgraded_at = models.DateField(null=True, blank=True)
-    
+
     # Just for premium
     duration_days = models.PositiveIntegerField(null=True, blank=True)
 
@@ -39,7 +40,7 @@ class BankAccount(models.Model):
     def current_limit(self):
         if self.account_type == 'vip':
             return None
-        
+
         return {
             'standard': 200,
             'premium': 400,
@@ -49,8 +50,13 @@ class BankAccount(models.Model):
     def premium_ex_date(self):
         if self.account_type == 'premium' and self.upgraded_at and self.duration_days:
             return self.upgraded_at + timedelta(days=self.duration_days)
-        
+
         return None
+
+    def delete(self, *args, **kwargs):
+        user = self.user
+        super().delete(*args, **kwargs)
+        user.delete()
 
 
 class Transaction(models.Model):
@@ -63,7 +69,8 @@ class Transaction(models.Model):
 
 
 class Loan(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='loans_requested')
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name='loans_requested')
     codebtor_a = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE,
         related_name='loans_as_codebtor_a',
@@ -113,11 +120,11 @@ class Loan(models.Model):
     @property
     def is_overdue(self):
         return self.due_date and timezone.now().date() > self.due_date
-    
+
     @property
     def is_near_due(self):
         if not self.due_date:
             return False
-        
+
         delta = self.due_date - timezone.now().date()
         return 0 <= delta.days <= 4

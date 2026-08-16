@@ -12,7 +12,7 @@ class CustomUserAdmin(UserAdmin):
     list_display = ("id", "username", "full_name", "house", "role", "is_staff", "is_active")
 
     # Campos que se pueden buscar
-    search_fields = ("username", "full_name")
+    search_fields = ("username", "full_name", "id")
 
     # Orden por defecto
     ordering = ("id",)

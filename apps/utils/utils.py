@@ -1,35 +1,37 @@
 import uuid
+from datetime import datetime
+from django.contrib import messages
+
+from .models import Notification, PurchaseReceipt, GiftReceipt, UsageReceipt
 from apps.users.models import CustomUser
 from apps.stores.models import Product, InventoryItem
-from .models import PurchaseReceipt, GiftReceipt, UsageReceipt
 from apps.bank.models import BankAccount
-from datetime import datetime
-from .models import Notification
+
+
+def has_niffler(user: CustomUser):
+    return InventoryItem.objects.filter(user=user, product=4).exists()
 
 
 def get_bonus_if_niffler(request, amount: int, user: CustomUser):
-    has_niffler = InventoryItem.objects.filter(
-        user=user, product=4).exists()
     bonus = 0
 
-    if has_niffler:
+    if has_niffler(user):
         fives = amount // 5
         bonus = fives * 2
 
-        messages.success(
-            request, f"Bono de {bonus} galeones a la cuenta Nº{user.id} {user.username} por tener un escarbato.")
+        if bonus > 0:
+            messages.success(
+                request, f"💰Bono por escarbato de {bonus} galeones a Nº{user.id} {user.username}.")
 
     return bonus
 
 
 def get_discount_if_niffler(user: CustomUser):
-    has_niffler = InventoryItem.objects.filter(
-        user=user, product=4).exists()
     discount = None
-    
-    if has_niffler:
+
+    if has_niffler(user):
         discount = 0.1
-    
+
     return discount
 
 
@@ -62,6 +64,7 @@ def generate_purchase_receipt(user: CustomUser, product: Product, price: int):
     )
 
     return receipt
+
 
 def generate_gift_receipt(user: CustomUser, product: Product, price: int, receiver: CustomUser):
     receipt_code = str(uuid.uuid4())[:8].upper()

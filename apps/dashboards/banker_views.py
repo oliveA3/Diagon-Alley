@@ -1,16 +1,16 @@
+from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test, login_required
+from django.core.exceptions import ValidationError
+from django.utils import timezone
+from django.db import transaction as db_transaction
+
 from apps.users.models import CustomUser
 from apps.bank.models import BankAccount, Loan, Transaction
 from apps.stores.models import InventoryItem
 from apps.utils.utils import generate_notification
 from apps.maintenance import maintenance
 from .banker_services import bulk_add, update_account
-from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib import messages
-from django.core.exceptions import ValidationError
-from django.contrib.auth.decorators import user_passes_test
-from django.utils import timezone
-from django.contrib.auth.decorators import login_required
-from django.db import transaction as db_transaction
 
 # BANKER DASHBOARD
 

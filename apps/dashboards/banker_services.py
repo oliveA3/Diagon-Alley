@@ -12,23 +12,29 @@ def bulk_add(request, ids, amount: int):
         with db_transaction.atomic():
             account = BankAccount.objects.get(pk=int(acc_id))
             bonus = get_bonus_if_niffler(request, amount, account.user)
-            account.balance = account.balance + bonus + amount
+            account.balance = account.balance + amount + bonus
+            
+            if account.is_frozen:
+                account.is_frozen = False
             account.save()
 
-            if account.current_limit and account.balance > account.current_limit:
-                account.balance = account.current_limit
+            if account.current_limit:
+                if account.balance > account.current_limit:
+                    account.balance = account.current_limit
             account.save()
 
 
-def update_account(request, account: BankAccount, house: str, new_balance: int, frozen: bool, new_type: str, new_duration: int):
+def update_account(request, account: BankAccount, new_house: str, new_balance: int, frozen: bool, new_type: str, new_duration: int):
     with db_transaction.atomic():
-        account.user.house = house
+        account.user.house = new_house
         account.user.save()
 
         added_amount = new_balance - account.balance
-        bonus = get_bonus_if_niffler(request, added_amount, account.user)
-        if bonus:
-            new_balance += bonus
+        if added_amount > 0:
+            bonus = get_bonus_if_niffler(request, added_amount, account.user)
+            if bonus:
+                new_balance += bonus
+
         account.balance = new_balance
         account.save()
 
@@ -41,18 +47,14 @@ def update_account(request, account: BankAccount, house: str, new_balance: int, 
         account.account_type = new_type
         account.save()
 
-        if account.current_limit and new_balance <= account.current_limit:
-            account.balance = new_balance
-            account.save()
+        if account.current_limit:
+            if new_balance > account.current_limit:
+                account.balance = account.current_limit
+                account.save()
 
-        elif account.current_limit and new_balance > account.current_limit:
-            account.balance = account.current_limit
-            account.save()
-
-            messages.error(
-                request, "La cantidad de galeones excede el límite de la cuenta así que pudo haber perdido galeones.")
-
-            return
+                messages.error(
+                    request, "La cantidad de galeones excede el límite de la cuenta así que pudo haber perdido galeones.")
+                return
 
         messages.success(
-            request, f"Cuenta de {account.user.username} actualizada.")
+            request, f"Cuenta Nº{account.pk} de {account.user.username} actualizada.")

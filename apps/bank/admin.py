@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import BankAccount, Transaction
+from .models import BankAccount, Transaction, Loan
 
 class BankAccountAdmin(admin.ModelAdmin):
     list_display = ["user_id_display", "user", "balance", "account_type", "is_frozen"]
@@ -27,3 +27,5 @@ class TransactionAdmin(admin.ModelAdmin):
     get_receiver.short_description = "Receptor"
 
 admin.site.register(Transaction, TransactionAdmin)
+
+admin.site.register(Loan)

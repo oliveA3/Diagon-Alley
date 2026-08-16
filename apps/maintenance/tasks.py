@@ -37,7 +37,7 @@ def reset_stock():
 def freeze_accounts():
     today = timezone.now().date()
     for acc in BankAccount.objects.filter(is_frozen=False).exclude(account_type='vip'):
-        if acc.last_pur_date and today - acc.last_pur_date >= timedelta(days=30):
+        if acc.last_pur_date and today - acc.last_pur_date >= timedelta(days=41):
             acc.is_frozen = True
             acc.frozen_date = today
             acc.save()
@@ -48,12 +48,12 @@ def freeze_accounts():
             )
 
 
-# Penalize frozen accounts (-5%) (penalize every 3 days)
+# Penalize frozen accounts (-3%)
 def penalize_frozen_accounts():
     today = timezone.now().date()
     for acc in BankAccount.objects.filter(is_frozen=True).exclude(pk=1):
         if acc.balance > 0:
-            penalty = int(acc.balance * 0.05)
+            penalty = int(acc.balance * 0.03)
             acc.balance -= penalty
             acc.save()
 

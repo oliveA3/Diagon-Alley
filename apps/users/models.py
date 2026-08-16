@@ -13,7 +13,7 @@ class CustomUser(AbstractUser):
         ('banker', 'Banquero'),
         ('shopkeeper', 'Dependiente'),
     ]
-    role = models.CharField(choices=ROLE_CHOICES, default='student')
+    role = models.CharField(max_length=150, choices=ROLE_CHOICES, default='student')
 
     username = models.CharField(
         max_length=100,
@@ -28,7 +28,7 @@ class CustomUser(AbstractUser):
         ('ravenclaw', 'Ravenclaw'),
         ('slytherin', 'Slytherin'),
     ]
-    house = models.CharField(null=True, blank=True, choices=HOUSE_CHOICES)
+    house = models.CharField(max_length=150, null=True, blank=True, choices=HOUSE_CHOICES)
 
 
     def __str__(self):

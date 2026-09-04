@@ -100,7 +100,7 @@ class StudentLoginForm(forms.Form):
     password = forms.CharField(label="Llave",
                                max_length=4,
                                min_length=4,
-                               widget=forms.PasswordInput(attrs={'inputmode': 'numeric'}),)
+                               widget=forms.PasswordInput(attrs={'inputmode': 'numeric'}))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -160,20 +160,54 @@ class EditProfileForm(forms.ModelForm):
 
 class CustomPasswordChangeForm(PasswordChangeForm):
     old_password = forms.CharField(
-        label="Llave actual",
+        max_length=4,
+        min_length=4,
         widget=forms.PasswordInput(
-            attrs={'class': 'form-control'})
+            attrs={'class': 'form-control', 'inputmode': 'numeric'}),
+        label="Llave actual"
     )
     new_password1 = forms.CharField(
-        label="Nueva llave",
+        max_length=4,
+        min_length=4,
         widget=forms.PasswordInput(
-            attrs={'class': 'form-control', 'placeholder': 'Nueva contraseña'})
+            attrs={'class': 'form-control', 'inputmode': 'numeric', 'placeholder': 'Nueva contraseña'}),
+        label="Nueva llave (número de 4 dígitos)"
     )
     new_password2 = forms.CharField(
-        label="Confirmar nueva contraseña",
+        max_length=4,
+        min_length=4,
         widget=forms.PasswordInput(
-            attrs={'class': 'form-control', 'placeholder': 'Confirmar nueva contraseña'})
+            attrs={'class': 'form-control', 'inputmode': 'numeric', 'placeholder': 'Confirmar nueva contraseña'}),
+        label="Confirmar nueva llave"
     )
+
+    def clean_new_password1(self):
+        password1 = self.cleaned_data.get('new_password1')
+
+        if password1 and not password1.isdigit():
+            raise forms.ValidationError(
+                "La llave debe contener solo números.")
+        return password1
+
+
+    def clean_new_password2(self):
+        password2 = self.cleaned_data.get('new_password2')
+
+        if password2 and not password2.isdigit():
+            raise forms.ValidationError(
+                "La llave debe contener solo números.")
+        return password2
+
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get('new_password1')
+        password2 = cleaned_data.get('new_password2')
+
+        if password1 and password2 and password1 != password2:
+            self.add_error('new_password2', "Las llaves no coinciden.")
+        
+        return cleaned_data
 
 
 # USER CREATION AS ADMIN

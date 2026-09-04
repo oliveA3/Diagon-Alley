@@ -121,7 +121,7 @@ class InventoryItem(models.Model):
         User, on_delete=models.CASCADE, related_name='inventory_items')
     product = models.ForeignKey(
         'Product', on_delete=models.CASCADE, related_name='inventory_items')
-    store = models.ForeignKey(
+    store = models.ForeignKey(    
         'Store', on_delete=models.CASCADE, related_name='inventory_items')
 
     uses = models.PositiveIntegerField(null=True, blank=True)

@@ -204,7 +204,7 @@ def update_password_view(request):
                 user = form.save()
                 update_session_auth_hash(request, user)
 
-        return redirect('profile')
+                return redirect('profile')
 
     else:
         form = CustomPasswordChangeForm(user=request.user)

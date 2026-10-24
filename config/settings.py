@@ -30,10 +30,23 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = True
 
 if 'PYTHONANYWHERE_DOMAIN' in os.environ:
-    ALLOWED_HOSTS = ['diagonalley3.pythonanywhere.com']
+    ALLOWED_HOSTS = ['diagonalley3.pythonanywhere.com', '.workers.dev']
 else:
     ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.workers.dev',
+    'https://*.cloudflareaccess.com'
+]
+
+SESSION_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_HTTPONLY = False
+
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Application definition
 

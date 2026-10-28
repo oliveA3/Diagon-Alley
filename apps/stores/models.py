@@ -143,15 +143,16 @@ class InventoryItem(models.Model):
         return 0 <= delta_days <= 3
 
     def use(self):
-        if self.uses > 0:
-            self.uses -= 1
-            if self.uses == 0:
-                self.delete()
-                return 'deleted'
-            else:
-                self.save()
-                return 'used'
-        return 'empty'
+        if self.uses is None or self.uses <= 0:
+            return 'empty'
+
+        self.uses -= 1
+        if self.uses == 0:
+            self.delete()
+            return 'deleted'
+
+        self.save()
+        return 'used'
 
     def __str__(self):
         return f"{self.user.username} - {self.product.name}"

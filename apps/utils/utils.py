@@ -82,12 +82,13 @@ def generate_gift_receipt(user: CustomUser, product: Product, price: int, receiv
 
 def generate_usage_receipt(user: CustomUser, inventory_item: InventoryItem):
     receipt_code = str(uuid.uuid4())[:8].upper()
+    uses_left = inventory_item.uses if inventory_item.uses is not None else 0
 
     receipt = UsageReceipt.objects.create(
         code=receipt_code,
         user=user,
         product_id=inventory_item.product_id,
-        uses_left=inventory_item.uses,
+        uses_left=uses_left,
     )
 
     return receipt

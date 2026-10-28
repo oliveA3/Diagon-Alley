@@ -28,7 +28,7 @@ def bank_view(request):
         if form_type == 'loan':
             loan_id = request.POST.get("loan_id")
             loan = get_object_or_404(Loan, id=loan_id, user=user)
-            pay_loan(loan, user)
+            pay_loan(request, loan, user)
             return redirect('bank')
         
         # Purchase premium

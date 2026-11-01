@@ -63,30 +63,32 @@
 
     <hr class="line" style="border-color:grey">
 
-    <!-- Bulk options -->
-    <form method="post" class="accounts-form">
-        {% csrf_token %}
+    <div class="accounts-form">
+        <!-- Bulk options: only sends amount + checked accounts (checkboxes link here via form="bulk-form") -->
+        <form method="post" id="bulk-form">
+            {% csrf_token %}
 
-        <!-- Bulk options -->
-        <div class="d-flex mb-3">
-            <input class="form-input" type="number" name="amount" placeholder="Cantidad" style="max-width: 150px;">
+            <div class="d-flex mb-3">
+                <input class="form-input" type="number" name="amount" placeholder="Cantidad" style="max-width: 150px;">
 
-            <button type="submit" name="action" value="bulk_add" class="btn btn-primary ms-2  btn-small">
-                Agregar
-            </button>
+                <button type="submit" name="action" value="bulk_add" class="btn btn-primary ms-2  btn-small">
+                    Agregar
+                </button>
 
-            <button type="submit" name="action" value="bulk_delete" class="btn btn-warning ms-auto btn-small">
-                Eliminar
-            </button>
-        </div>
+                <button type="submit" name="action" value="bulk_delete" class="btn btn-warning ms-auto btn-small">
+                    Eliminar
+                </button>
+            </div>
+        </form>
 
-        <!-- Accounts -->
+        <!-- Accounts: one form per card so each update only sends its own fields -->
         <section class="accounts-section">
             {% for acc in accounts %}
-            <div class="account-card">
+            <form method="post" class="account-card">
+                {% csrf_token %}
 
                 <label class="section-title">
-                    <input type="checkbox" name="selected_accounts" value="{{ acc.pk }}"> <i class="bi bi-bank"></i> {{ acc.pk }}: {{ acc.user.full_name }}
+                    <input type="checkbox" name="selected_accounts" value="{{ acc.pk }}" form="bulk-form"> <i class="bi bi-bank"></i> {{ acc.pk }}: {{ acc.user.full_name }}
                 </label>
                 
                 <div class="d-flex align-items-center justify-content-between">
@@ -157,10 +159,10 @@
                 <button type="submit" name="action" value="update_{{ acc.pk }}" class="mt-1 btn btn-primary">
                     Actualizar
                 </button>
-            </div>
+            </form>
             {% endfor %}
         </section>
-    </form>
+    </div>
 </main>
 
 {% endblock %}
@@ -176,7 +178,7 @@
         const checkboxes = document.querySelectorAll("input[name='selected_accounts']");
         checkboxes.forEach(cb => {
             cb.addEventListener("change", function () {
-                const row = cb.closest("tr");
+                const row = cb.closest(".account-card");
                 if (cb.checked) {
                     row.classList.add("selected-row");
                 } else {

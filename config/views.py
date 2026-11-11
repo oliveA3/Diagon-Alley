@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.staticfiles import finders
 from django.shortcuts import render, redirect
 from apps.stores.models import Store
 
@@ -12,7 +13,10 @@ def home_view(request):
     elif user.role == 'shopkeeper':
         return redirect('shopkeeper_dashboard')
 
-    stores = Store.objects.all()
+    stores = [
+        store for store in Store.objects.all()
+        if finders.find(f'imgs/signs/{store.id}.png')
+    ]
     return render(request, 'home.html', {'stores': stores})
 
 @login_required(login_url='/users/login/')

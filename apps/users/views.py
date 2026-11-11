@@ -4,11 +4,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.forms import ValidationError
 from django.shortcuts import get_object_or_404, render, redirect
+from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 from apps.stores.models import Product, InventoryItem
 from apps.bank.models import BankAccount, Transaction, Loan
-from apps.utils.models import Notification
+from apps.utils.models import Notification, PurchaseReceipt, GiftReceipt, UsageReceipt
 from .models import CustomUser
 from apps.utils import utils
 from django.db import transaction as db_transaction
@@ -103,7 +104,21 @@ def profile_view(request):
     # Use inventory item
     if request.method == 'POST':
         item_id = request.POST.get('item_id')
-        usage_message = use_inventory_item(item_id, user)
+        receipt = use_inventory_item(item_id, user)
+        if receipt:
+            return redirect(
+                f"{reverse('profile')}?usage_receipt={receipt.code}#inventory")
+        return redirect(f"{reverse('profile')}#inventory")
+
+    receipt_code = request.GET.get('usage_receipt')
+    if receipt_code:
+        receipt = UsageReceipt.objects.filter(
+            user=user, code=receipt_code
+        ).select_related('user', 'product').first()
+        if receipt:
+            usage_message = utils.generate_usage_message(receipt)
+            if receipt.uses_left == 0:
+                usage_message += "\n\nEl artículo no tiene más usos, \npor lo que se ha eliminado \nde su inventario."
 
     context = {
         'user': user,
@@ -120,6 +135,43 @@ def profile_view(request):
     }
 
     return render(request, 'profile/profile.html', context)
+
+
+@login_required(login_url='/users/login/')
+def receipts_view(request):
+    receipts = []
+
+    for receipt in PurchaseReceipt.objects.filter(user=request.user).select_related('product'):
+        receipts.append({
+            'created_at': receipt.created_at,
+            'kind': 'Compra',
+            'product': receipt.product.name if receipt.product else 'Producto eliminado',
+            'code': receipt.code,
+            'detail': f'{receipt.price} galeones',
+        })
+
+    for receipt in GiftReceipt.objects.filter(user=request.user).select_related('product', 'receiver'):
+        receiver = receipt.receiver.full_name if receipt.receiver else 'destinatario eliminado'
+        receipts.append({
+            'created_at': receipt.created_at,
+            'kind': 'Regalo',
+            'product': receipt.product.name if receipt.product else 'Producto eliminado',
+            'code': receipt.code,
+            'detail': f'{receipt.price} galeones; destinatario: {receiver}',
+        })
+
+    for receipt in UsageReceipt.objects.filter(user=request.user).select_related('product'):
+        receipts.append({
+            'created_at': receipt.created_at,
+            'kind': 'Uso',
+            'product': receipt.product.name if receipt.product else 'Producto eliminado',
+            'code': receipt.code,
+            'detail': f'Usos restantes: {receipt.uses_left}',
+            'url': f"{reverse('profile')}?usage_receipt={receipt.code}#inventory",
+        })
+
+    receipts.sort(key=lambda receipt: (receipt['created_at'], receipt['code']), reverse=True)
+    return render(request, 'profile/receipts.html', {'receipts': receipts})
 
 
 @login_required(login_url='/users/login/')

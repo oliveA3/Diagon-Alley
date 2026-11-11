@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Mis comprobantes</title>
+{% endblock %}
+
+{% block body %}
+{% include "components/nav.html" with url_link='home' url_name="Callejón Diagon" %}
+
+<main class="container py-4">
+    <div class="d-flex justify-content-between align-items-center gap-2 mb-4">
+        <h1 class="h3 mb-0">Mis comprobantes</h1>
+        <a href="{% url 'profile' %}#inventory" class="btn btn-outline-primary btn-sm">Volver al perfil</a>
+    </div>
+
+    {% if receipts %}
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Artículo</th>
+                    <th scope="col">Detalle</th>
+                    <th scope="col">Código</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for receipt in receipts %}
+                <tr>
+                    <td>{{ receipt.created_at|date:"d/m/Y" }}</td>
+                    <td>{{ receipt.kind }}</td>
+                    <td>{{ receipt.product }}</td>
+                    <td>{{ receipt.detail }}</td>
+                    <td>
+                        {% if receipt.url %}
+                        <a href="{{ receipt.url }}" aria-label="Abrir comprobante {{ receipt.code }}">
+                            <code>{{ receipt.code }}</code>
+                        </a>
+                        {% else %}
+                        <code>{{ receipt.code }}</code>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p>Aún no tienes comprobantes.</p>
+    {% endif %}
+</main>
+{% endblock %}
+
+{% block footer %}
+{% include "components/footer.html" %}
+{% endblock %}

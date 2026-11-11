@@ -14,7 +14,9 @@ def run_maintenance():
     
     tasks.delete_old_transactions()
     tasks.delete_paid_loans()
+    
     tasks.delete_old_purchase_receipts()
     tasks.delete_old_usage_receipts()
+    tasks.delete_old_gift_receipts()
     
     tasks.delete_notifications()
